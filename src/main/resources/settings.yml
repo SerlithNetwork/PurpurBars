@@ -1,0 +1,22 @@
+main:
+  rambar:
+    title: "<gray>Ram<yellow>:</yellow> <used>/<xmx> (<percent>)"
+    progress_overlay: "NOTCHED_20"
+    progress_color_good: "GREEN"
+    progress_color_medium: "YELLOW"
+    progress_color_low: "RED"
+    text_color_good: "<gradient:#55ff55:#00aa00><text></gradient>"
+    text_color_medium: "<gradient:#ffff55:#ffaa00><text></gradient>"
+    text_color_low: "<gradient:#ff5555:#aa0000><text></gradient>"
+    tick_interval: 20
+  tpsbar:
+    title: "<gray>TPS<yellow>:</yellow> <tps> MSPT<yellow>:</yellow> <mspt> Ping<yellow>:</yellow> <ping>ms"
+    progress_overlay: "NOTCHED_20"
+    progress_fill_mode: "MSTPT"
+    progress_color_good: "GREEN"
+    progress_color_medium: "YELLOW"
+    progress_color_low: "RED"
+    text_color_good: "<gradient:#55ff55:#00aa00><text></gradient>"
+    text_color_medium: "<gradient:#ffff55:#ffaa00><text></gradient>"
+    text_color_low: "<gradient:#ff5555:#aa0000><text></gradient>"
+    tick_interval: 20
