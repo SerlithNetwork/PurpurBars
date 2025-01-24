@@ -2,15 +2,13 @@ package net.serlith.purpur.configs
 
 import net.kyori.adventure.bossbar.BossBar
 import net.serlith.purpur.tasks.TpsBarTask
+import org.bukkit.configuration.ConfigurationSection
 import org.bukkit.configuration.file.YamlConfiguration
-import org.bukkit.configuration.serialization.ConfigurationSerializable
-import org.bukkit.configuration.serialization.ConfigurationSerialization
 import org.bukkit.plugin.java.JavaPlugin
 import java.io.File
+import kotlin.jvm.Throws
 
-/**
- * I don't like how bukkit handles configs
-**/
+@Suppress("unused")
 class MainConfigManager (
     private val plugin: JavaPlugin,
 ) {
@@ -20,9 +18,6 @@ class MainConfigManager (
     private var config: YamlConfiguration = YamlConfiguration.loadConfiguration(configPath)
 
     init {
-        ConfigurationSerialization.registerClass(RamBarConfig::class.java)
-        ConfigurationSerialization.registerClass(TpsBarConfig::class.java)
-
         this.reload()
     }
 
@@ -30,38 +25,18 @@ class MainConfigManager (
     class RamBarConfig (
         val title: String,
         val progressOverlay: BossBar.Overlay,
-        val progressColorGood: BossBar.Color,
-        val progressColorMedium: BossBar.Color,
-        val progressColorLow: BossBar.Color,
-        val textColorGood: String,
-        val textColorMedium: String,
-        val textColorLow: String,
+        val progressColor: ProgressColor,
+        val textColor: TextColor,
         val tickInterval: Int,
-    ) : ConfigurationSerializable {
-
-        override fun serialize(): Map<String, Any> = mapOf(
-            "title" to title,
-            "progress_overlay" to progressOverlay.name,
-            "progress_color_good" to progressColorGood.name,
-            "progress_color_medium" to progressColorMedium.name,
-            "progress_color_low" to progressColorLow.name,
-            "text_color_good" to textColorGood,
-            "text_color_medium" to textColorMedium,
-            "text_color_low" to textColorLow,
-            "tick_interval" to tickInterval,
-        )
-
+    )  {
         companion object {
-            fun deserialize(serialized: Map<String, Any>): RamBarConfig = RamBarConfig(
-                serialized["title"] as String,
-                BossBar.Overlay.valueOf(serialized["progress_overlay"] as String),
-                BossBar.Color.valueOf(serialized["progress_color_good"] as String),
-                BossBar.Color.valueOf(serialized["progress_color_medium"] as String),
-                BossBar.Color.valueOf(serialized["progress_color_low"] as String),
-                serialized["text_color_good"] as String,
-                serialized["text_color_medium"] as String,
-                serialized["text_color_low"] as String,
-                serialized["tick_interval"] as Int,
+            @JvmStatic
+            fun deserialize(section: ConfigurationSection): RamBarConfig = RamBarConfig(
+                section.getString("title")!!,
+                BossBar.Overlay.valueOf(section.getString("progress_overlay")!!),
+                ProgressColor.deserialize(section.getConfigurationSection("progress_color")!!),
+                TextColor.deserialize(section.getConfigurationSection("text_color")!!),
+                section.getInt("tick_interval"),
             )
         }
     }
@@ -71,44 +46,54 @@ class MainConfigManager (
         val title: String,
         val progressOverlay: BossBar.Overlay,
         val progressFillMode: TpsBarTask.FillMode,
-        val progressColorGood: BossBar.Color,
-        val progressColorMedium: BossBar.Color,
-        val progressColorLow: BossBar.Color,
-        val textColorGood: String,
-        val textColorMedium: String,
-        val textColorLow: String,
+        val progressColor: ProgressColor,
+        val textColor: TextColor,
         val tickInterval: Int,
-    ) : ConfigurationSerializable {
-
-        override fun serialize(): Map<String, Any> = mapOf(
-            "title" to title,
-            "progress_overlay" to progressOverlay.name,
-            "progress_fill_mode" to progressFillMode.name,
-            "progress_color_good" to progressColorGood.name,
-            "progress_color_medium" to progressColorMedium.name,
-            "progress_color_low" to progressColorLow.name,
-            "text_color_good" to textColorGood,
-            "text_color_medium" to textColorMedium,
-            "text_color_low" to textColorLow,
-            "tick_interval" to tickInterval,
-        )
-
+    ) {
         companion object {
-            fun deserialize(serialized: Map<String, Any>): TpsBarConfig = TpsBarConfig(
-                serialized["title"] as String,
-                BossBar.Overlay.valueOf(serialized["progress_overlay"] as String),
-                TpsBarTask.FillMode.valueOf(serialized["progress_fill_mode"] as String),
-                BossBar.Color.valueOf(serialized["progress_color_good"] as String),
-                BossBar.Color.valueOf(serialized["progress_color_medium"] as String),
-                BossBar.Color.valueOf(serialized["progress_color_low"] as String),
-                serialized["text_color_good"] as String,
-                serialized["text_color_medium"] as String,
-                serialized["text_color_low"] as String,
-                serialized["tick_interval"] as Int,
+            @JvmStatic
+            fun deserialize(section: ConfigurationSection): TpsBarConfig = TpsBarConfig(
+                section.getString("title")!!,
+                BossBar.Overlay.valueOf(section.getString("progress_overlay")!!),
+                TpsBarTask.FillMode.valueOf(section.getString("progress_fill_mode")!!),
+                ProgressColor.deserialize(section.getConfigurationSection("progress_color")!!),
+                TextColor.deserialize(section.getConfigurationSection("text_color")!!),
+                section.getInt("tick_interval"),
             )
         }
     }
 
+    class ProgressColor (
+        val good: BossBar.Color,
+        val medium: BossBar.Color,
+        val low: BossBar.Color,
+    ) {
+        companion object {
+            @JvmStatic
+            fun deserialize(section: ConfigurationSection): ProgressColor = ProgressColor(
+                BossBar.Color.valueOf(section.getString("good")!!),
+                BossBar.Color.valueOf(section.getString("medium")!!),
+                BossBar.Color.valueOf(section.getString("low")!!),
+            )
+        }
+    }
+
+    class TextColor (
+        val good: String,
+        val medium: String,
+        val low: String,
+    ) {
+        companion object {
+            @JvmStatic
+            fun deserialize(section: ConfigurationSection): TextColor = TextColor(
+                section.getString("good")!!,
+                section.getString("medium")!!,
+                section.getString("low")!!,
+            )
+        }
+    }
+
+    @Throws(Exception::class)
     fun reload() {
         if (!this.configPath.exists()) {
             this.plugin.saveResource(this.fileName, false)
@@ -116,9 +101,8 @@ class MainConfigManager (
 
         this.config = YamlConfiguration.loadConfiguration(this.configPath)
         val main = this.config.getConfigurationSection("main")!!
-        this.rambar = main.getObject("rambar", RamBarConfig::class.java)!!
-        this.tpsbar = main.getObject("tpsbar", TpsBarConfig::class.java)!!
-
+        this.rambar = RamBarConfig.deserialize(main.getConfigurationSection("rambar")!!)
+        this.tpsbar = TpsBarConfig.deserialize(main.getConfigurationSection("tpsbar")!!)
     }
 
 }

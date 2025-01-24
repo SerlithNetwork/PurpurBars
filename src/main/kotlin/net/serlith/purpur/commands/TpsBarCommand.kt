@@ -15,6 +15,11 @@ class TpsBarCommand (
     private val empty = emptyList<String>()
 
     init {
+        this.permission = "purpurbars.monitor.tps"
+        this.usage = "/tpsbar"
+        this.description = "Displays server TPS using a bossbar"
+
+        this.permissionMessage(MiniMessage.miniMessage().deserialize("${this.plugin.prefix}<red>You have no permission to run this command"))
         this.plugin.server.commandMap.register("serlith", this)
     }
 
@@ -23,12 +28,8 @@ class TpsBarCommand (
         commandLabel: String,
         args: Array<out String>
     ): Boolean {
-        if (!sender.hasPermission("purpurbars.monitor.tps")) {
-            sender.sendMessage(MiniMessage.miniMessage().deserialize("<red>You have no permission to run this command"))
-            return false
-        }
         if (sender !is Player) {
-            sender.sendMessage(MiniMessage.miniMessage().deserialize("<red>This command can only be used by a player"))
+            sender.sendMessage(MiniMessage.miniMessage().deserialize("${this.plugin.prefix}<red>This command can only be used by a player"))
             return false
         }
         TpsBarTask.instance(PurpurBars.self).togglePlayer(sender)

@@ -11,9 +11,14 @@ class MainCommand (
     private val plugin: PurpurBars,
 ) : Command("purpurbars"), PluginIdentifiableCommand {
     private val empty = emptyList<String>()
-    private val options = listOf("return")
+    private val options = listOf("reload")
 
     init {
+        this.permission = "purpurbars.admin"
+        this.usage = "/purpurbars [reload]"
+        this.description = "Main PurpurBars administration command"
+
+        this.permissionMessage(MiniMessage.miniMessage().deserialize("${this.plugin.prefix}<red>You have no permission to run this command"))
         this.plugin.server.commandMap.register("serlith", this)
     }
 
@@ -22,16 +27,21 @@ class MainCommand (
         commandLabel: String,
         args: Array<out String>
     ): Boolean {
-        if (!sender.hasPermission("purpurbars.admin")) {
-            sender.sendMessage(MiniMessage.miniMessage().deserialize("<red>You have no permission to run this command"))
+        if ("reload" !in args) {
+            sender.sendMessage(MiniMessage.miniMessage().deserialize("${this.plugin.prefix}<red>Command not found"))
             return false
         }
-        this.plugin.mainConfigManager.reload()
+        try {
+            this.plugin.mainConfigManager.reload()
+        } catch (_: Exception) {
+            sender.sendMessage(MiniMessage.miniMessage().deserialize("${this.plugin.prefix}<red>Failed to load configuration!"))
+            return false
+        }
+        sender.sendMessage(MiniMessage.miniMessage().deserialize("${this.plugin.prefix}<white>Configuration reloaded!"))
         return true
     }
 
     override fun tabComplete(sender: CommandSender, alias: String, args: Array<out String>): List<String?> {
-        if (!sender.hasPermission("purpurbars.admin")) return this.empty
         if (args.isEmpty()) return this.empty
         if (args.size == 1) return this.options
         return this.empty

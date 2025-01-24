@@ -59,9 +59,9 @@ class TpsBarTask (
         else max(min(this.tps.toFloat() / 20f, 1f), 0f)
 
     fun getBossBarColor(): BossBar.Color =
-        if (this.isGood(this.plugin.mainConfigManager.tpsbar.progressFillMode)) this.plugin.mainConfigManager.tpsbar.progressColorGood
-        else if (this.isMedium(this.plugin.mainConfigManager.tpsbar.progressFillMode)) this.plugin.mainConfigManager.tpsbar.progressColorMedium
-        else this.plugin.mainConfigManager.tpsbar.progressColorLow
+        if (this.isGood(this.plugin.mainConfigManager.tpsbar.progressFillMode)) this.plugin.mainConfigManager.tpsbar.progressColor.good
+        else if (this.isMedium(this.plugin.mainConfigManager.tpsbar.progressFillMode)) this.plugin.mainConfigManager.tpsbar.progressColor.medium
+        else this.plugin.mainConfigManager.tpsbar.progressColor.low
 
 
     private fun isGood(mode: FillMode, ping: Int = 0) =
@@ -79,25 +79,25 @@ class TpsBarTask (
         }
 
     private fun getTpsColor(): Component {
-        val color = if (this.isGood(FillMode.TPS)) this.plugin.mainConfigManager.tpsbar.textColorGood
-        else if (this.isMedium(FillMode.TPS)) this.plugin.mainConfigManager.tpsbar.textColorMedium
-        else this.plugin.mainConfigManager.tpsbar.textColorLow
+        val color = if (this.isGood(FillMode.TPS)) this.plugin.mainConfigManager.tpsbar.textColor.good
+        else if (this.isMedium(FillMode.TPS)) this.plugin.mainConfigManager.tpsbar.textColor.medium
+        else this.plugin.mainConfigManager.tpsbar.textColor.low
 
         return MiniMessage.miniMessage().deserialize(color, Placeholder.parsed("text", "%.2f".format(this.tps)))
     }
 
     private fun getMsptColor(): Component {
-        val color = if (this.isGood(FillMode.MSPT)) this.plugin.mainConfigManager.tpsbar.textColorGood
-        else if (this.isMedium(FillMode.MSPT)) this.plugin.mainConfigManager.tpsbar.textColorMedium
-        else this.plugin.mainConfigManager.tpsbar.textColorLow
+        val color = if (this.isGood(FillMode.MSPT)) this.plugin.mainConfigManager.tpsbar.textColor.good
+        else if (this.isMedium(FillMode.MSPT)) this.plugin.mainConfigManager.tpsbar.textColor.medium
+        else this.plugin.mainConfigManager.tpsbar.textColor.low
 
         return MiniMessage.miniMessage().deserialize(color, Placeholder.parsed("text", "%.2f".format(this.mspt)))
     }
 
     private fun getPingColor(ping: Int): Component {
-        val color = if (this.isGood(FillMode.PING, ping)) this.plugin.mainConfigManager.tpsbar.textColorGood
-        else if (this.isMedium(FillMode.PING, ping)) this.plugin.mainConfigManager.tpsbar.textColorMedium
-        else this.plugin.mainConfigManager.tpsbar.textColorLow
+        val color = if (this.isGood(FillMode.PING, ping)) this.plugin.mainConfigManager.tpsbar.textColor.good
+        else if (this.isMedium(FillMode.PING, ping)) this.plugin.mainConfigManager.tpsbar.textColor.medium
+        else this.plugin.mainConfigManager.tpsbar.textColor.low
 
         return MiniMessage.miniMessage().deserialize(color, Placeholder.parsed("text", "$ping"))
     }

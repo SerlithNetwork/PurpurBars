@@ -6,3 +6,4 @@ api-version: '1.19'
 authors: [ Biquaternions ]
 description: Plugin implementation of Purpur's tps and ram bars
 website: https://serlith.net
+load: STARTUP

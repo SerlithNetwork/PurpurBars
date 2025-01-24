@@ -14,6 +14,7 @@ public class PurpurBarsLoader implements PluginLoader {
         MavenLibraryResolver resolver = new MavenLibraryResolver();
         resolver.addRepository(new RemoteRepository.Builder("central", "default", "https://repo.maven.apache.org/maven2/").build());
         resolver.addDependency(new Dependency(new DefaultArtifact("org.jetbrains.kotlin:kotlin-stdlib:2.1.0"), null));
+        resolver.addDependency(new Dependency(new DefaultArtifact("org.jetbrains:annotations:26.0.1"), null));
         pluginClasspathBuilder.addLibrary(resolver);
     }
 }

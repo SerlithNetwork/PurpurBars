@@ -15,6 +15,11 @@ class RamBarCommand (
     private val empty = emptyList<String>()
 
     init {
+        this.permission = "purpurbars.monitor.ram"
+        this.usage = "/rambar"
+        this.description = "Displays server RAM using a bossbar"
+
+        this.permissionMessage(MiniMessage.miniMessage().deserialize("${this.plugin.prefix}<red>You have no permission to run this command"))
         this.plugin.server.commandMap.register("serlith", this)
     }
 
@@ -23,12 +28,8 @@ class RamBarCommand (
         commandLabel: String,
         args: Array<out String>
     ): Boolean {
-        if (!sender.hasPermission("purpurbars.monitor.ram")) {
-            sender.sendMessage(MiniMessage.miniMessage().deserialize("<red>You have no permission to run this command"))
-            return false
-        }
         if (sender !is Player) {
-            sender.sendMessage(MiniMessage.miniMessage().deserialize("<red>This command can only be used by a player"))
+            sender.sendMessage(MiniMessage.miniMessage().deserialize("${this.plugin.prefix}<red>This command can only be used by a player"))
             return false
         }
         RamBarTask.instance(PurpurBars.self).togglePlayer(sender)

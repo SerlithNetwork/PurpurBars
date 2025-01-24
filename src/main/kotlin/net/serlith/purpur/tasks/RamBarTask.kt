@@ -48,7 +48,7 @@ class RamBarTask (
             Placeholder.component("used", format(this.used)),
             Placeholder.component("xmx", format(this.xmx)),
             Placeholder.component("xms", format(this.xms)),
-            Placeholder.unparsed("percent", "${this.percent * 100}%")
+            Placeholder.unparsed("percent", "%.2f%%".format(this.percent * 100))
         ))
     }
 
@@ -62,25 +62,26 @@ class RamBarTask (
         this.used = heap.used
         this.xmx = heap.max
         this.xms = heap.init
-        this.percent = max(min((this.used / this.xmx).toFloat(), 1f), 0f)
+        this.percent = max(min((this.used.toFloat() / this.xmx), 1f), 0f)
 
         super.run()
     }
 
     private fun getBossBarColor(): BossBar.Color =
-        if (this.percent < 0.5f) this.plugin.mainConfigManager.rambar.progressColorGood
-        else if (this.percent < 0.75f) this.plugin.mainConfigManager.rambar.progressColorMedium
-        else this.plugin.mainConfigManager.rambar.progressColorLow
+        if (this.percent < 0.5f) this.plugin.mainConfigManager.rambar.progressColor.good
+        else if (this.percent < 0.75f) this.plugin.mainConfigManager.rambar.progressColor.medium
+        else this.plugin.mainConfigManager.rambar.progressColor.low
 
     fun format(v: Long): Component {
-        val color = if (this.percent < 0.60f) this.plugin.mainConfigManager.rambar.textColorGood
-        else if (this.percent < 0.85f) this.plugin.mainConfigManager.rambar.textColorMedium
-        else this.plugin.mainConfigManager.rambar.textColorLow
+        val color = if (this.percent < 0.60f) this.plugin.mainConfigManager.rambar.textColor.good
+        else if (this.percent < 0.85f) this.plugin.mainConfigManager.rambar.textColor.medium
+        else this.plugin.mainConfigManager.rambar.textColor.low
 
         val value = if (v < 1024) "${v}B"
         else {
             val z = (63 - v.countLeadingZeroBits()) / 10
-            "${ v / (1L shl (z * 10)) }${ "BKMGTPE"[z] }"
+            if (z > 2) "%.1f".format(v.toFloat() / (1L shl (z * 10))) + "${ "BKMGTPE"[z] }"
+            else "${ v / (1L shl (z * 10)) }${ "BKMGTPE"[z] }"
         }
 
         return MiniMessage.miniMessage().deserialize(color, Placeholder.unparsed("text", value))
