@@ -93,6 +93,26 @@ class MainConfigManager (
         }
     }
 
+    lateinit var messages: MessagesConfig
+    class MessagesConfig (
+        val noPermission: String,
+        val notFound: String,
+        val notPlayer: String,
+        val failedReload: String,
+        val successfulReload: String,
+    ) {
+        companion object {
+            @JvmStatic
+            fun deserialize(section: ConfigurationSection): MessagesConfig = MessagesConfig(
+                section.getString("no_permission")!!,
+                section.getString("not_found")!!,
+                section.getString("not_player")!!,
+                section.getString("failed_reload")!!,
+                section.getString("successful_reload")!!,
+            )
+        }
+    }
+
     @Throws(Exception::class)
     fun reload() {
         if (!this.configPath.exists()) {
@@ -100,9 +120,13 @@ class MainConfigManager (
         }
 
         this.config = YamlConfiguration.loadConfiguration(this.configPath)
-        val main = this.config.getConfigurationSection("main")!!
-        this.rambar = RamBarConfig.deserialize(main.getConfigurationSection("rambar")!!)
-        this.tpsbar = TpsBarConfig.deserialize(main.getConfigurationSection("tpsbar")!!)
+
+        val format = this.config.getConfigurationSection("format")!!
+        this.rambar = RamBarConfig.deserialize(format.getConfigurationSection("rambar")!!)
+        this.tpsbar = TpsBarConfig.deserialize(format.getConfigurationSection("tpsbar")!!)
+
+        val messages = this.config.getConfigurationSection("messages")!!
+        this.messages = MessagesConfig.deserialize(messages)
     }
 
 }

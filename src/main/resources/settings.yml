@@ -1,7 +1,14 @@
-main:
+#
+# Formatting that will be used by the bars
+# These configurations only support Adventure's MiniMessage
+# Learn more: https://docs.advntr.dev/minimessage/format.html
+#
+format:
+  # RamBar format configuration
   rambar:
     title: "<gray>Ram<yellow>:</yellow> <used>/<xmx> (<percent>)"
     progress_overlay: "NOTCHED_20"
+    # Possible colors: https://jd.advntr.dev/api/4.7.0/net/kyori/adventure/bossbar/BossBar.Color.html?is-external=true
     progress_color:
       good: "GREEN"
       medium: "YELLOW"
@@ -10,11 +17,15 @@ main:
       good: "<gradient:#55ff55:#00aa00><text></gradient>"
       medium: "<gradient:#ffff55:#ffaa00><text></gradient>"
       low: "<gradient:#ff5555:#aa0000><text></gradient>"
+    # Delay (in ticks) between bar update
     tick_interval: 20
+  # TpsBar format configuration
   tpsbar:
     title: "<gray>TPS<yellow>:</yellow> <tps> MSPT<yellow>:</yellow> <mspt> Ping<yellow>:</yellow> <ping>ms"
     progress_overlay: "NOTCHED_20"
+    # Possible values: TPS, MSPT & PING
     progress_fill_mode: "MSPT"
+    # Possible colors: https://jd.advntr.dev/api/4.7.0/net/kyori/adventure/bossbar/BossBar.Color.html?is-external=true
     progress_color:
       good: "GREEN"
       medium: "YELLOW"
@@ -23,4 +34,17 @@ main:
       good: "<gradient:#55ff55:#00aa00><text></gradient>"
       medium: "<gradient:#ffff55:#ffaa00><text></gradient>"
       low: "<gradient:#ff5555:#aa0000><text></gradient>"
+    # Delay (in ticks) between bar update
     tick_interval: 20
+
+#
+# Feedback messages when using commands
+# These configurations only support Adventure's MiniMessage
+# Learn more: https://docs.advntr.dev/minimessage/format.html
+#
+messages:
+  no_permission: "<red>You have no permission to run this command"
+  not_found: "<red>Command not found"
+  not_player: "<red>This command can only be used by a player"
+  failed_reload: "<red>Failed to load configuration!"
+  successful_reload: "<green>Configuration reloaded!"

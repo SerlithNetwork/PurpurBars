@@ -19,7 +19,7 @@ class TpsBarCommand (
         this.usage = "/tpsbar"
         this.description = "Displays server TPS using a bossbar"
 
-        this.permissionMessage(MiniMessage.miniMessage().deserialize("${this.plugin.prefix}<red>You have no permission to run this command"))
+        this.permissionMessage(MiniMessage.miniMessage().deserialize(this.plugin.prefix + this.plugin.mainConfigManager.messages.noPermission))
         this.plugin.server.commandMap.register("serlith", this)
     }
 
@@ -29,7 +29,7 @@ class TpsBarCommand (
         args: Array<out String>
     ): Boolean {
         if (sender !is Player) {
-            sender.sendMessage(MiniMessage.miniMessage().deserialize("${this.plugin.prefix}<red>This command can only be used by a player"))
+            sender.sendMessage(MiniMessage.miniMessage().deserialize(this.plugin.prefix + this.plugin.mainConfigManager.messages.notPlayer))
             return false
         }
         TpsBarTask.instance(PurpurBars.self).togglePlayer(sender)

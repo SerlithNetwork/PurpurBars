@@ -18,7 +18,7 @@ class MainCommand (
         this.usage = "/purpurbars [reload]"
         this.description = "Main PurpurBars administration command"
 
-        this.permissionMessage(MiniMessage.miniMessage().deserialize("${this.plugin.prefix}<red>You have no permission to run this command"))
+        this.permissionMessage(MiniMessage.miniMessage().deserialize(this.plugin.prefix + this.plugin.mainConfigManager.messages.noPermission))
         this.plugin.server.commandMap.register("serlith", this)
     }
 
@@ -28,16 +28,16 @@ class MainCommand (
         args: Array<out String>
     ): Boolean {
         if ("reload" !in args) {
-            sender.sendMessage(MiniMessage.miniMessage().deserialize("${this.plugin.prefix}<red>Command not found"))
+            sender.sendMessage(MiniMessage.miniMessage().deserialize(this.plugin.prefix + this.plugin.mainConfigManager.messages.notFound))
             return false
         }
         try {
             this.plugin.mainConfigManager.reload()
         } catch (_: Exception) {
-            sender.sendMessage(MiniMessage.miniMessage().deserialize("${this.plugin.prefix}<red>Failed to load configuration!"))
+            sender.sendMessage(MiniMessage.miniMessage().deserialize(this.plugin.prefix + this.plugin.mainConfigManager.messages.failedReload))
             return false
         }
-        sender.sendMessage(MiniMessage.miniMessage().deserialize("${this.plugin.prefix}<white>Configuration reloaded!"))
+        sender.sendMessage(MiniMessage.miniMessage().deserialize(this.plugin.prefix + this.plugin.mainConfigManager.messages.successfulReload))
         return true
     }
 
