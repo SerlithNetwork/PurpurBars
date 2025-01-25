@@ -6,12 +6,14 @@ import net.serlith.purpur.commands.RamBarCommand
 import net.serlith.purpur.commands.TpsBarCommand
 import net.serlith.purpur.configs.MainConfigManager
 import net.serlith.purpur.tasks.BossBarTask
+import org.bstats.bukkit.Metrics
 import org.bukkit.plugin.java.JavaPlugin
 
 class PurpurBars : JavaPlugin() {
 
     lateinit var mainConfigManager: MainConfigManager
     val prefix = "<gray>[<gradient:#429fff:#d621ff>PurpurBars</gradient>]<gray> "
+    val namespace = "purpurbars"
 
     companion object {
         lateinit var self: PurpurBars
@@ -23,6 +25,7 @@ class PurpurBars : JavaPlugin() {
 
     override fun onEnable() {
         this.mainConfigManager = MainConfigManager(this)
+        Metrics(this, 24547)
 
         MainCommand(this)
         RamBarCommand(this)

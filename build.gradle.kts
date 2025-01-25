@@ -18,6 +18,7 @@ repositories {
 
 dependencies {
     compileOnly("io.papermc.paper:paper-api:1.19.4-R0.1-SNAPSHOT")
+    implementation("org.bstats:bstats-bukkit:3.0.2")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
 }
 
@@ -37,6 +38,8 @@ tasks.shadowJar {
     exclude("kotlin/**")
     exclude("org/jetbrains/**")
     exclude("org/intellij/**")
+
+    relocate("org.bstats", "net.serlith.bstats")
 }
 
 tasks.jar {

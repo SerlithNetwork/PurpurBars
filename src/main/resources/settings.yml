@@ -8,7 +8,7 @@ format:
   rambar:
     title: "<gray>Ram<yellow>:</yellow> <used>/<xmx> (<percent>)"
     progress_overlay: "NOTCHED_20"
-    # Possible colors: https://jd.advntr.dev/api/4.7.0/net/kyori/adventure/bossbar/BossBar.Color.html?is-external=true
+    # Possible colors: https://jd.advntr.dev/api/4.7.0/net/kyori/adventure/bossbar/BossBar.Color.html
     progress_color:
       good: "GREEN"
       medium: "YELLOW"
@@ -25,7 +25,7 @@ format:
     progress_overlay: "NOTCHED_20"
     # Possible values: TPS, MSPT & PING
     progress_fill_mode: "MSPT"
-    # Possible colors: https://jd.advntr.dev/api/4.7.0/net/kyori/adventure/bossbar/BossBar.Color.html?is-external=true
+    # Possible colors: https://jd.advntr.dev/api/4.7.0/net/kyori/adventure/bossbar/BossBar.Color.html
     progress_color:
       good: "GREEN"
       medium: "YELLOW"

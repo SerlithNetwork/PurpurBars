@@ -20,7 +20,7 @@ class RamBarCommand (
         this.description = "Displays server RAM using a bossbar"
 
         this.permissionMessage(MiniMessage.miniMessage().deserialize(this.plugin.prefix + this.plugin.mainConfigManager.messages.noPermission))
-        this.plugin.server.commandMap.register("serlith", this)
+        this.plugin.server.commandMap.register(this.plugin.namespace, this)
     }
 
     override fun execute(
