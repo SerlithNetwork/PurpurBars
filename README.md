@@ -1,13 +1,11 @@
-# 🟣 Purpur Bars
+<div align="center">
+<img src="assets/purpur_bars_fit.svg" height="256">
+</div>
+
+# Purpur Bars
 Just a convenient plugin implementation of Purpur's 
 [`/tpsbar`](https://github.com/PurpurMC/Purpur/commit/42bf7db01862c6bc9ed3441cd252655243b3a505) and 
 [`/rambar`](https://github.com/PurpurMC/Purpur/commit/e13b74d31e76acb8fdd3023a176382f846e0b248) for non Purpur-based servers
-
-<div align="center">
-<p>🟩🟩🟩🟩⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜</p>
-<p>🟨🟨🟨🟨🟨🟨🟨🟨🟨🟨🟨🟨⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜</p>
-<p>🟥🟥🟥🟥🟥🟥🟥🟥🟥🟥🟥🟥🟥🟥🟥🟥🟥🟥🟥🟥⬜⬜⬜⬜</p>
-</div>
 
 ## Commands
 * `/purpurbars reload`: Reload plugin configuration
