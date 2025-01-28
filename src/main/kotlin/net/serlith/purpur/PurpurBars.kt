@@ -3,6 +3,7 @@ package net.serlith.purpur
 import net.kyori.adventure.text.minimessage.MiniMessage
 import net.serlith.purpur.commands.MainCommand
 import net.serlith.purpur.commands.RamBarCommand
+import net.serlith.purpur.commands.RamCommand
 import net.serlith.purpur.commands.TpsBarCommand
 import net.serlith.purpur.configs.MainConfigManager
 import net.serlith.purpur.tasks.BossBarTask
@@ -28,8 +29,9 @@ class PurpurBars : JavaPlugin() {
         Metrics(this, 24547)
 
         MainCommand(this)
-        RamBarCommand(this)
         TpsBarCommand(this)
+        RamBarCommand(this)
+        RamCommand(this)
 
         BossBarTask.startAll()
         this.printBanner()

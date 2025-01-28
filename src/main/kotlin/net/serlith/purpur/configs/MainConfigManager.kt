@@ -21,6 +21,28 @@ class MainConfigManager (
         this.reload()
     }
 
+    lateinit var tpsbar: TpsBarConfig
+    class TpsBarConfig (
+        val title: String,
+        val progressOverlay: BossBar.Overlay,
+        val progressFillMode: TpsBarTask.FillMode,
+        val progressColor: ProgressColor,
+        val textColor: TextColor,
+        val tickInterval: Int,
+    ) {
+        companion object {
+            @JvmStatic
+            fun deserialize(section: ConfigurationSection): TpsBarConfig = TpsBarConfig(
+                section.getString("title")!!,
+                BossBar.Overlay.valueOf(section.getString("progress_overlay")!!),
+                TpsBarTask.FillMode.valueOf(section.getString("progress_fill_mode")!!),
+                ProgressColor.deserialize(section.getConfigurationSection("progress_color")!!),
+                TextColor.deserialize(section.getConfigurationSection("text_color")!!),
+                section.getInt("tick_interval"),
+            )
+        }
+    }
+
     lateinit var rambar: RamBarConfig
     class RamBarConfig (
         val title: String,
@@ -41,25 +63,51 @@ class MainConfigManager (
         }
     }
 
-    lateinit var tpsbar: TpsBarConfig
-    class TpsBarConfig (
-        val title: String,
-        val progressOverlay: BossBar.Overlay,
-        val progressFillMode: TpsBarTask.FillMode,
-        val progressColor: ProgressColor,
-        val textColor: TextColor,
-        val tickInterval: Int,
+    lateinit var ram: RamConfig
+    class RamConfig (
+        val output: List<String>,
+        val length: Int,
+        val char: RamCharsConfig,
+        val color: RamColorConfig,
     ) {
         companion object {
             @JvmStatic
-            fun deserialize(section: ConfigurationSection): TpsBarConfig = TpsBarConfig(
-                section.getString("title")!!,
-                BossBar.Overlay.valueOf(section.getString("progress_overlay")!!),
-                TpsBarTask.FillMode.valueOf(section.getString("progress_fill_mode")!!),
-                ProgressColor.deserialize(section.getConfigurationSection("progress_color")!!),
-                TextColor.deserialize(section.getConfigurationSection("text_color")!!),
-                section.getInt("tick_interval"),
+            fun deserialize(section: ConfigurationSection): RamConfig = RamConfig(
+                section.getStringList("output"),
+                section.getInt("length"),
+                RamCharsConfig.deserialize(section.getConfigurationSection("chars")!!),
+                RamColorConfig.deserialize(section.getConfigurationSection("color")!!),
             )
+        }
+
+        class RamCharsConfig (
+            val bar: String,
+            val start: String,
+            val end: String,
+        ) {
+            companion object {
+                @JvmStatic
+                fun deserialize(section: ConfigurationSection): RamCharsConfig = RamCharsConfig(
+                    section.getString("bar")!!,
+                    section.getString("start")!!,
+                    section.getString("end")!!,
+                )
+            }
+        }
+
+        class RamColorConfig (
+            val used: String,
+            val unused: String,
+            val border: String,
+        ) {
+            companion object {
+                @JvmStatic
+                fun deserialize(section: ConfigurationSection): RamColorConfig = RamColorConfig(
+                    section.getString("used")!!,
+                    section.getString("unused")!!,
+                    section.getString("border")!!,
+                )
+            }
         }
     }
 
@@ -100,6 +148,7 @@ class MainConfigManager (
         val notPlayer: String,
         val failedReload: String,
         val successfulReload: String,
+        val ramDisplayTypeInvalid: String,
     ) {
         companion object {
             @JvmStatic
@@ -109,6 +158,7 @@ class MainConfigManager (
                 section.getString("not_player")!!,
                 section.getString("failed_reload")!!,
                 section.getString("successful_reload")!!,
+                section.getString("ram_display_type_invalid")!!,
             )
         }
     }
@@ -122,8 +172,9 @@ class MainConfigManager (
         this.config = YamlConfiguration.loadConfiguration(this.configPath)
 
         val format = this.config.getConfigurationSection("format")!!
-        this.rambar = RamBarConfig.deserialize(format.getConfigurationSection("rambar")!!)
         this.tpsbar = TpsBarConfig.deserialize(format.getConfigurationSection("tpsbar")!!)
+        this.rambar = RamBarConfig.deserialize(format.getConfigurationSection("rambar")!!)
+        this.ram = RamConfig.deserialize(format.getConfigurationSection("ram")!!)
 
         val messages = this.config.getConfigurationSection("messages")!!
         this.messages = MessagesConfig.deserialize(messages)

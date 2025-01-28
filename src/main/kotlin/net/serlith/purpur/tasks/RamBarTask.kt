@@ -48,7 +48,7 @@ class RamBarTask (
             Placeholder.component("used", format(this.used)),
             Placeholder.component("xmx", format(this.xmx)),
             Placeholder.component("xms", format(this.xms)),
-            Placeholder.unparsed("percent", "%.2f%%".format(this.percent * 100))
+            Placeholder.unparsed("percent", "${(this.percent * 100).toInt()}%")
         ))
     }
 
