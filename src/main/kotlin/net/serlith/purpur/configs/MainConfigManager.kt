@@ -148,7 +148,6 @@ class MainConfigManager (
         val notPlayer: String,
         val failedReload: String,
         val successfulReload: String,
-        val ramDisplayTypeInvalid: String,
     ) {
         companion object {
             @JvmStatic
@@ -158,7 +157,6 @@ class MainConfigManager (
                 section.getString("not_player")!!,
                 section.getString("failed_reload")!!,
                 section.getString("successful_reload")!!,
-                section.getString("ram_display_type_invalid")!!,
             )
         }
     }

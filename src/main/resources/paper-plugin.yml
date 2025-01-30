@@ -1,5 +1,5 @@
 name: PurpurBars
-version: '1.0-SNAPSHOT'
+version: $version
 main: net.serlith.purpur.PurpurBars
 loader: net.serlith.purpur.loader.PurpurBarsLoader
 api-version: '1.19'

@@ -75,4 +75,3 @@ messages:
   not_player: "<red>This command can only be used by a player"
   failed_reload: "<red>Failed to load configuration!"
   successful_reload: "<green>Configuration reloaded!"
-  ram_display_type_invalid: "<red>Ram display type <type> is not valid!"
