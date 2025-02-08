@@ -17,10 +17,10 @@ repositories {
 }
 
 dependencies {
+    compileOnly("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
     compileOnly("io.papermc.paper:paper-api:1.19.4-R0.1-SNAPSHOT")
     compileOnly("net.kyori:adventure-text-minimessage:4.18.0")
     implementation("org.bstats:bstats-bukkit:3.0.2")
-    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
 }
 
 val targetJavaVersion = 17
@@ -35,10 +35,6 @@ tasks.build {
 tasks.shadowJar {
     minimize()
     archiveClassifier.set("")
-
-    exclude("kotlin/**")
-    exclude("org/jetbrains/**")
-    exclude("org/intellij/**")
 
     relocate("org.bstats", "net.serlith.bstats")
 }
