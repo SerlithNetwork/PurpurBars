@@ -47,6 +47,11 @@ abstract class BossBarTask (
         player.showBossBar(bossbar)
     }
 
+    fun refreshPlayer(player: Player) {
+        val bossbar = this.bossbars[player.uniqueId] ?: return
+        player.showBossBar(bossbar)
+    }
+
     fun hasPlayer(uuid: UUID) = this.bossbars.containsKey(uuid)
 
     fun togglePlayer(player: Player): Boolean {
@@ -85,6 +90,11 @@ abstract class BossBarTask (
         fun removeFromAll(player: Player) {
             RamBarTask.instance(PurpurBars.self).removePlayer(player)
             TpsBarTask.instance(PurpurBars.self).removePlayer(player)
+        }
+
+        fun refreshAll(player: Player) {
+            RamBarTask.instance(PurpurBars.self).refreshPlayer(player)
+            TpsBarTask.instance(PurpurBars.self).refreshPlayer(player)
         }
 
     }

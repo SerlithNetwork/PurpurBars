@@ -6,6 +6,7 @@ import net.serlith.purpur.commands.RamBarCommand
 import net.serlith.purpur.commands.RamCommand
 import net.serlith.purpur.commands.TpsBarCommand
 import net.serlith.purpur.configs.MainConfigManager
+import net.serlith.purpur.listeners.PlayerListener
 import net.serlith.purpur.tasks.BossBarTask
 import org.bstats.bukkit.Metrics
 import org.bukkit.plugin.java.JavaPlugin
@@ -18,6 +19,7 @@ class PurpurBars : JavaPlugin() {
 
     companion object {
         lateinit var self: PurpurBars
+            private set
     }
 
     override fun onLoad() {
@@ -32,6 +34,8 @@ class PurpurBars : JavaPlugin() {
         TpsBarCommand(this)
         RamBarCommand(this)
         RamCommand(this)
+
+        PlayerListener(this)
 
         BossBarTask.startAll()
         this.printBanner()
