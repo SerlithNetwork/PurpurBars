@@ -73,28 +73,28 @@ abstract class BossBarTask (
     companion object {
 
         fun startAll() {
-            RamBarTask.instance(PurpurBars.self).start()
             TpsBarTask.instance(PurpurBars.self).start()
+            RamBarTask.instance(PurpurBars.self).start()
         }
 
         fun stopAll() {
-            RamBarTask.instance(PurpurBars.self).stop()
             TpsBarTask.instance(PurpurBars.self).stop()
+            RamBarTask.instance(PurpurBars.self).stop()
         }
 
         fun addToAll(player: Player) {
-            RamBarTask.instance(PurpurBars.self).addPlayer(player)
             TpsBarTask.instance(PurpurBars.self).addPlayer(player)
+            RamBarTask.instance(PurpurBars.self).addPlayer(player)
         }
 
         fun removeFromAll(player: Player) {
-            RamBarTask.instance(PurpurBars.self).removePlayer(player)
             TpsBarTask.instance(PurpurBars.self).removePlayer(player)
+            RamBarTask.instance(PurpurBars.self).removePlayer(player)
         }
 
         fun refreshAll(player: Player) {
-            RamBarTask.instance(PurpurBars.self).refreshPlayer(player)
             TpsBarTask.instance(PurpurBars.self).refreshPlayer(player)
+            RamBarTask.instance(PurpurBars.self).refreshPlayer(player)
         }
 
     }
