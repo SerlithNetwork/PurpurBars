@@ -8,7 +8,7 @@ Just a convenient plugin implementation of Purpur's
 [`/rambar`](https://github.com/PurpurMC/Purpur/commit/e13b74d31e76acb8fdd3023a176382f846e0b248) for non Purpur-based servers
 
 > [!NOTE]
-> Now includes `/ram` command!
+> Includes `/ram` command!
 
 ## Screenshot
 <div align="center">
@@ -19,12 +19,14 @@ Just a convenient plugin implementation of Purpur's
 * `/purpurbars reload`: Reload plugin configuration
 * `/tpsbar`: Shows Purpur's TPS bar
 * `/rambar`: Shows Purpur's RAM bar
+* `/compass`: Shows Purpur's Compass bar
 * `/ram`: Display RAM usage in chat
 
 ## Permissions
 * `purpurbars.admin`: Reload the plugin
 * `purpurbars.monitor.tps`: Use `/tpsbar` command
 * `purpurbars.monitor.ram`: Use `/rambar` command
+* `purpurbars.monitor.compass`: Use `/compass` command
 * `purpurbars.check.ram`: Use `/ram` command
 
 ## How to compile
