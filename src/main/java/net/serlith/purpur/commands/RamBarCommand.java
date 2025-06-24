@@ -36,13 +36,6 @@ public class RamBarCommand extends Command implements PluginIdentifiableCommand 
             sender.sendMessage(this.plugin.getPrefix().append(RootConfig.MESSAGES._NOT_PLAYER));
             return false;
         }
-        if (RootConfig.JOIN_EVENT.SAVE_ACROSS_RESTARTS) {
-            if (DataStorage.RAM_BAR.contains(player.getUniqueId())) {
-                DataStorage.RAM_BAR.remove(player.getUniqueId());
-            } else  {
-                DataStorage.RAM_BAR.add(player.getUniqueId());
-            }
-        }
         RamBarTask.getInstance(this.plugin).togglePlayer(player);
         return true;
     }

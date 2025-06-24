@@ -46,6 +46,15 @@ public abstract class BossBarTask extends BukkitRunnable {
     }
 
 
+    public Set<UUID> getAllPlayerUUIDs() {
+        return bossBars.keySet();
+    }
+
+    public abstract Set<UUID> loadAllPlayerUUIDs();
+
+    public void initializeAllPlayerUUIDs() {
+        this.loadAllPlayerUUIDs().forEach(u -> this.bossBars.put(u, this.createBossBar()));
+    }
 
     public boolean removePlayer(@NotNull Player player) {
         @Nullable BossBar bossBar = bossBars.remove(player.getUniqueId());
@@ -64,14 +73,6 @@ public abstract class BossBarTask extends BukkitRunnable {
         player.showBossBar(bossBar);
     }
 
-    public void lazyAddPlayer(@NotNull Player player) {
-        if (!this.bossBars.containsKey(player.getUniqueId())) {
-            BossBar bossBar = this.createBossBar();
-            this.bossBars.put(player.getUniqueId(), bossBar);
-            this.updateBossBar(bossBar, player);
-        }
-    }
-
     public void refreshPlayer(@NotNull Player player) {
         @Nullable BossBar bossBar = this.bossBars.get(player.getUniqueId());
         if (bossBar != null) {
@@ -79,14 +80,9 @@ public abstract class BossBarTask extends BukkitRunnable {
         }
     }
 
-    public boolean hasPlayer(@NotNull Player player) {
-        return this.bossBars.containsKey(player.getUniqueId());
-    }
-
-    public boolean togglePlayer(@NotNull Player player) {
-        if (this.removePlayer(player)) return false;
+    public void togglePlayer(@NotNull Player player) {
+        if (this.removePlayer(player)) return;
         this.addPlayer(player);
-        return true;
     }
 
     public void start() {
@@ -101,54 +97,46 @@ public abstract class BossBarTask extends BukkitRunnable {
         }
     }
 
+    public void dumpAndStop() {
+        this.stop();
+    }
 
+
+    // Reduce lambda allocations
     private static final Comparator<BossBarTask> taskCompare = Comparator.comparingInt(a -> RootConfig.JOIN_EVENT.ORDER.indexOf(a.getType()));
 
     public static void startAll() {
         Stream.of(
                 TpsBarTask.getInstance(PurpurBars.getInstance()),
-                RamBarTask.getInstance(PurpurBars.getInstance())
-                )
-                .sorted(taskCompare)
-                .forEach(BossBarTask::start);
+                RamBarTask.getInstance(PurpurBars.getInstance()),
+                CompassBarTask.getInstance(PurpurBars.getInstance())
+        ).forEach(BossBarTask::start);
     }
 
-    public static void stopAll() {
+    public static void dumpAndStopAll() {
         Stream.of(
-                        TpsBarTask.getInstance(PurpurBars.getInstance()),
-                        RamBarTask.getInstance(PurpurBars.getInstance())
-                )
-                .sorted(taskCompare)
-                .forEach(BossBarTask::stop);
+                TpsBarTask.getInstance(PurpurBars.getInstance()),
+                RamBarTask.getInstance(PurpurBars.getInstance()),
+                CompassBarTask.getInstance(PurpurBars.getInstance())
+        ).forEach(BossBarTask::dumpAndStop);
     }
 
-    public static void addToAll(Player player) {
+    public static void loadAll() {
         Stream.of(
-                        TpsBarTask.getInstance(PurpurBars.getInstance()),
-                        RamBarTask.getInstance(PurpurBars.getInstance())
-                )
-                .sorted(taskCompare)
-                .forEach(a -> a.addPlayer(player));
-    }
-
-    public static void removeFromAll(Player player) {
-        Stream.of(
-                        TpsBarTask.getInstance(PurpurBars.getInstance()),
-                        RamBarTask.getInstance(PurpurBars.getInstance())
-                )
-                .sorted(taskCompare)
-                .forEach(a -> a.removePlayer(player));
+                TpsBarTask.getInstance(PurpurBars.getInstance()),
+                RamBarTask.getInstance(PurpurBars.getInstance()),
+                CompassBarTask.getInstance(PurpurBars.getInstance())
+        ).forEach(BossBarTask::initializeAllPlayerUUIDs);
     }
 
     public static void refreshAll(Player player) {
         Stream.of(
-                        TpsBarTask.getInstance(PurpurBars.getInstance()),
-                        RamBarTask.getInstance(PurpurBars.getInstance())
-                )
-                .sorted(taskCompare)
-                .forEach(a -> a.refreshPlayer(player));
+                TpsBarTask.getInstance(PurpurBars.getInstance()),
+                RamBarTask.getInstance(PurpurBars.getInstance()),
+                CompassBarTask.getInstance(PurpurBars.getInstance())
+        ).sorted(taskCompare).forEach(a -> a.refreshPlayer(player));
     }
 
-    public enum Type { TPS_BAR, RAM_BAR }
+    public enum Type { TPS_BAR, RAM_BAR, COMPASS_BAR }
 
 }

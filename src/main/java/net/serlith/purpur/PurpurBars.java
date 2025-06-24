@@ -4,10 +4,7 @@ import lombok.Getter;
 import net.j4c0b3y.api.config.ConfigHandler;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
-import net.serlith.purpur.commands.MainCommand;
-import net.serlith.purpur.commands.RamBarCommand;
-import net.serlith.purpur.commands.RamCommand;
-import net.serlith.purpur.commands.TpsBarCommand;
+import net.serlith.purpur.commands.*;
 import net.serlith.purpur.configs.RootConfig;
 import net.serlith.purpur.data.DataStorage;
 import net.serlith.purpur.listeners.PlayerListener;
@@ -49,17 +46,19 @@ public final class PurpurBars extends JavaPlugin {
         new MainCommand(this);
         new TpsBarCommand(this);
         new RamBarCommand(this);
+        new CompassCommand(this);
         new RamCommand(this);
         new PlayerListener(this);
 
         BossBarTask.startAll();
+        BossBarTask.loadAll();
         this.printBanner();
     }
 
     @Override
     public void onDisable() {
+        BossBarTask.dumpAndStopAll();
         DataStorage.INSTANCE.save();
-        BossBarTask.stopAll();
     }
 
 

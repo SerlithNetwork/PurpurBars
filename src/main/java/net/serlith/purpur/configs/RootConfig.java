@@ -69,6 +69,7 @@ public class RootConfig extends StaticConfig {
     }
 
 
+    @Order(1)
     @Comment("Configurations for formatting bars and commands")
     public static class FORMAT {
 
@@ -131,6 +132,26 @@ public class RootConfig extends StaticConfig {
 
         }
 
+        @Comment("CompassBar format configuration")
+        public static class COMPASS_BAR {
+
+            @Comment("\uD83D\uDD25 Title to be shown on the COMPASS bar")
+            public static String TITLE = "S  ·  ◈  ·  ◈  ·  ◈  ·  SW  ·  ◈  ·  ◈  ·  ◈  ·  W  ·  ◈  ·  ◈  ·  ◈  ·  NW  ·  ◈  ·  ◈  ·  ◈  ·  N  ·  ◈  ·  ◈  ·  ◈  ·  NE  ·  ◈  ·  ◈  ·  ◈  ·  E  ·  ◈  ·  ◈  ·  ◈  ·  SE  ·  ◈  ·  ◈  ·  ◈  ·  S  ·  ◈  ·  ◈  ·  ◈  ·  SW  ·  ◈  ·  ◈  ·  ◈  ·  W  ·  ◈  ·  ◈  ·  ◈  ·  NW  ·  ◈  ·  ◈  ·  ◈  ·  N  ·  ◈  ·  ◈  ·  ◈  ·  NE  ·  ◈  ·  ◈  ·  ◈  ·  E  ·  ◈  ·  ◈  ·  ◈  ·  SE  ·  ◈  ·  ◈  ·  ◈  ·  ";
+
+            @Comment("\uD83D\uDD25 Possible overlays: https://jd.advntr.dev/api/4.7.0/net/kyori/adventure/bossbar/BossBar.Overlay.html")
+            public static BossBar.Overlay PROGRESS_OVERLAY = BossBar.Overlay.PROGRESS;
+
+            @Comment("\uD83D\uDD25 Delay (in ticks) between bar update")
+            public static int TICK_INTERVAL = 5;
+
+            @Comment("\uD83D\uDD25 Possible colors: https://jd.advntr.dev/api/4.7.0/net/kyori/adventure/bossbar/BossBar.Color.html")
+            public static BossBar.Color PROGRESS_COLOR = BossBar.Color.BLUE;
+
+            @Comment("\uD83D\uDD25 How full the bar should be, can take any number from 0.0 to 1.0")
+            public static float PROGRESS_PERCENT = 1.0f;
+
+        }
+
         @Comment("Ram command format configuration")
         public static class RAM {
 
@@ -184,6 +205,7 @@ public class RootConfig extends StaticConfig {
 
     }
 
+    @Order(2)
     @Comment("Configurations to apply bars when PlayerJoinEvent is called")
     public static class JOIN_EVENT {
 
@@ -196,20 +218,15 @@ public class RootConfig extends StaticConfig {
         public static EventPriority PRIORITY = EventPriority.MONITOR;
 
         @Comment({
-                "\uD83D\uDD25 If empty, bars will apply in any order",
-                "Possible values: TPS_BAR, RAM_BAR",
+                "\uD83D\uDD25 If empty, bars will apply in any order when re-joining",
+                "Possible values: TPS_BAR, RAM_BAR, COMPASS_BAR",
                 "Example: [TPS_BAR, RAM_BAR] will place the TPS bar above the RAM bar"
         })
         public static List<BossBarTask.Type> ORDER = List.of();
 
-        @Comment({
-                "\uD83D\uDD25 Enables saving tpsbar/rambar across restarts",
-                "Due to some limitations, it can cause a minor performance impact if too many players have access to these bars"
-        })
-        public static boolean SAVE_ACROSS_RESTARTS = false;
-
     }
 
+    @Order(3)
     @Comment("\uD83D\uDD25 Configurations for message feedback when running a command")
     public static class MESSAGES {
 

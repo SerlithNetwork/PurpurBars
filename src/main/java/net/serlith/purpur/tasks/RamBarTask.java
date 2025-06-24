@@ -7,9 +7,12 @@ import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import net.serlith.purpur.PurpurBars;
 import net.serlith.purpur.configs.RootConfig;
+import net.serlith.purpur.data.DataStorage;
 import org.bukkit.entity.Player;
 
 import java.lang.management.ManagementFactory;
+import java.util.Set;
+import java.util.UUID;
 
 public class RamBarTask extends BossBarTask {
 
@@ -76,6 +79,17 @@ public class RamBarTask extends BossBarTask {
         this.percent = Math.max(Math.min((float) this.used / this.xmx, 1F), 0F);
 
         super.run();
+    }
+
+    @Override
+    public void dumpAndStop() {
+        DataStorage.RAM_BAR = this.getAllPlayerUUIDs();
+        super.dumpAndStop();
+    }
+
+    @Override
+    public Set<UUID> loadAllPlayerUUIDs() {
+        return DataStorage.RAM_BAR;
     }
 
     private BossBar.Color getBossBarColor() {

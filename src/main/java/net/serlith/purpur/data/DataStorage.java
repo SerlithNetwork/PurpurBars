@@ -24,4 +24,6 @@ public class DataStorage extends StaticConfig {
 
     public static Set<UUID> TPS_BAR = Set.of();
 
+    public static Set<UUID> COMPASS_BAR = Set.of();
+
 }

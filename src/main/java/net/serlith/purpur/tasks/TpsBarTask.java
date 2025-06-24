@@ -7,8 +7,12 @@ import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import net.serlith.purpur.PurpurBars;
 import net.serlith.purpur.configs.RootConfig;
+import net.serlith.purpur.data.DataStorage;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+
+import java.util.Set;
+import java.util.UUID;
 
 public class TpsBarTask extends BossBarTask {
 
@@ -63,6 +67,17 @@ public class TpsBarTask extends BossBarTask {
         this.mspt = Bukkit.getAverageTickTime();
 
         super.run();
+    }
+
+    @Override
+    public void dumpAndStop() {
+        DataStorage.TPS_BAR = this.getAllPlayerUUIDs();
+        super.dumpAndStop();
+    }
+
+    @Override
+    public Set<UUID> loadAllPlayerUUIDs() {
+        return DataStorage.TPS_BAR;
     }
 
     public float getPercent() {
