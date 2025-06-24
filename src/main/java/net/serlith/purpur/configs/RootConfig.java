@@ -68,14 +68,6 @@ public class RootConfig extends StaticConfig {
         map.forEach(this::relocate);
     }
 
-    @Order(1)
-    @Comment("❌ Don't touch")
-    @SuppressWarnings("unused")
-    public static class INFO {
-
-        public static String VERSION = "2.0";
-
-    }
 
     @Comment("Configurations for formatting bars and commands")
     public static class FORMAT {
