@@ -11,6 +11,7 @@ import net.serlith.purpur.tasks.TpsBarTask;
 import org.bukkit.event.EventPriority;
 
 import java.io.File;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -29,11 +30,45 @@ public class RootConfig extends StaticConfig {
         super(new File(plugin.getDataFolder(), "settings.yml"), plugin.getConfigHandler());
         INSTANCE = this;
 
-        Map.of(
-                "", ""
-        ).forEach(this::relocate);
+        Map<String, String> map = new HashMap<>();
+        map.put("format.tpsbar.title", "format.tps-bar.title");
+        map.put("format.tpsbar.progress_overlay", "format.tps-bar.progress-overlay");
+        map.put("format.tpsbar.progress_fill_mode", "format.tps-bar.progress-fill-mode");
+        map.put("format.tpsbar.progress_color.good", "format.tps-bar.progress-color.good");
+        map.put("format.tpsbar.progress_color.medium", "format.tps-bar.progress-color.medium");
+        map.put("format.tpsbar.progress_color.low", "format.tps-bar.progress-color.low");
+        map.put("format.tpsbar.text_color.good", "format.tps-bar.text-color.good");
+        map.put("format.tpsbar.text_color.medium", "format.tps-bar.text-color.medium");
+        map.put("format.tpsbar.text_color.low", "format.tps-bar.text-color.low");
+        map.put("format.tpsbar.tick_interval", "format.tps-bar.tick-interval");
+
+        map.put("format.rambar.title", "format.ram-bar.title");
+        map.put("format.rambar.progress_overlay", "format.ram-bar.progress-overlay");
+        map.put("format.rambar.progress_color.good", "format.ram-bar.progress-color.good");
+        map.put("format.rambar.progress_color.medium", "format.ram-bar.progress-color.medium");
+        map.put("format.rambar.progress_color.low", "format.ram-bar.progress-color.low");
+        map.put("format.rambar.text_color.good", "format.ram-bar.text-color.good");
+        map.put("format.rambar.text_color.medium", "format.ram-bar.text-color.medium");
+        map.put("format.rambar.text_color.low", "format.ram-bar.text-color.low");
+        map.put("format.rambar.tick_interval", "format.ram-bar.tick-interval");
+
+        map.put("format.ram.length", "format.ram.usage-bar.length");
+        map.put("format.ram.chars.bar", "format.ram.usage-bar.chars.bar");
+        map.put("format.ram.chars.start", "format.ram.usage-bar.chars.start");
+        map.put("format.ram.chars.end", "format.ram.usage-bar.chars.end");
+        map.put("format.ram.color.used", "format.ram.usage-bar.color.used");
+        map.put("format.ram.color.unused", "format.ram.usage-bar.color.unused");
+        map.put("format.ram.color.border", "format.ram.usage-bar.color.border");
+
+        map.put("messages.no_permission", "messages.no-permission");
+        map.put("messages.not_found", "messages.not-found");
+        map.put("messages.not_player", "messages.not-player");
+        map.put("messages.failed_reload", "messages.failed-reload");
+        map.put("messages.successful_reload", "messages.successful-reload");
+        map.forEach(this::relocate);
     }
 
+    @Order(1)
     @Comment("❌ Don't touch")
     @SuppressWarnings("unused")
     public static class INFO {
@@ -162,7 +197,9 @@ public class RootConfig extends StaticConfig {
 
         @Comment({
                 "\uD83D\uDD03 Priority on which the bars will re-apply after joining the server again",
-                "This feature can help prevent these bars from interfering with other plugin's bossbars"
+                "This feature can help prevent these bars from interfering with other plugin's bossbars",
+                "Possible values: LOWEST, LOW, NORMAL, HIGH, HIGHEST, MONITOR",
+                "Source: https://jd.papermc.io/paper/1.21.6/org/bukkit/event/EventPriority.html"
         })
         public static EventPriority PRIORITY = EventPriority.MONITOR;
 
