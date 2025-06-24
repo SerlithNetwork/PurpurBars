@@ -1,10 +1,11 @@
 plugins {
-    kotlin("jvm") version "2.1.20-Beta1"
+    java
     id("com.gradleup.shadow") version "8.3.0"
+    id("io.freefair.lombok") version "8.13.1"
 }
 
-group = "net.serlith.purpur"
-version = "1.2-SNAPSHOT"
+group = "net.serlith"
+version = "1.3-SNAPSHOT"
 
 repositories {
     mavenCentral()
@@ -14,18 +15,34 @@ repositories {
     maven("https://oss.sonatype.org/content/groups/public/") {
         name = "sonatype"
     }
+    maven("https://jitpack.io") {
+        name = "jitpack"
+    }
 }
 
 dependencies {
-    compileOnly("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
     compileOnly("io.papermc.paper:paper-api:1.19.4-R0.1-SNAPSHOT")
-    compileOnly("net.kyori:adventure-text-minimessage:4.18.0")
+
+    implementation("net.serlith.ConfigAPI:ConfigAPI-core:1.2.2.2")
     implementation("org.bstats:bstats-bukkit:3.0.2")
 }
 
 val targetJavaVersion = 17
-kotlin {
-    jvmToolchain(targetJavaVersion)
+java {
+    val javaVersion = JavaVersion.toVersion(targetJavaVersion)
+    sourceCompatibility = javaVersion
+    targetCompatibility = javaVersion
+    if (JavaVersion.current() < javaVersion) {
+        toolchain.languageVersion = JavaLanguageVersion.of(targetJavaVersion)
+    }
+}
+
+tasks.compileJava {
+    options.encoding = "UTF-8"
+
+    if (targetJavaVersion >= 17 || JavaVersion.current().isJava10Compatible) {
+        options.release.set(targetJavaVersion)
+    }
 }
 
 tasks.build {
@@ -36,21 +53,25 @@ tasks.shadowJar {
     minimize()
     archiveClassifier.set("")
 
-    relocate("org.bstats", "net.serlith.bstats")
+    mapOf(
+        "org.bstats" to "metrics",
+        "net.j4c0b3y.api.config" to "config",
+        "dev.dejvokep.boostedyaml" to "boostedyaml",
+    ).forEach { key, value ->
+        relocate(key, "net.serlith.purpur.libs.$value")
+    }
+
 }
 
 tasks.jar {
-    archiveClassifier.set("cache")
+    archiveClassifier.set("dev")
 }
 
 tasks.processResources {
     val props = mapOf("version" to version)
     inputs.properties(props)
     filteringCharset = "UTF-8"
-    filesMatching("paper-plugin.yml") {
-        expand(props)
-    }
-    filesMatching("plugin.yml") {
+    filesMatching("*plugin.yml") {
         expand(props)
     }
 }
