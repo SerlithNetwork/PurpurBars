@@ -8,6 +8,7 @@ import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import net.serlith.purpur.PurpurBars;
 import net.serlith.purpur.configs.RootConfig;
 import net.serlith.purpur.data.DataStorage;
+import net.serlith.purpur.listeners.ServerListener;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
@@ -63,7 +64,7 @@ public class TpsBarTask extends BossBarTask {
     public void run() {
         if (++this.tick % RootConfig.FORMAT.TPS_BAR.TICK_INTERVAL != 0) return;
 
-        this.tps = Math.max(Math.min(Bukkit.getTPS()[0], 20.0), 0.0);
+        this.tps = Math.max(Math.min(ServerListener.TPS_5_SEC.getAverage(), 20.0), 0.0);
         this.mspt = Bukkit.getAverageTickTime();
 
         super.run();

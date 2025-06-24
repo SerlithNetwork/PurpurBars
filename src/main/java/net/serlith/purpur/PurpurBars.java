@@ -8,6 +8,7 @@ import net.serlith.purpur.commands.*;
 import net.serlith.purpur.configs.RootConfig;
 import net.serlith.purpur.data.DataStorage;
 import net.serlith.purpur.listeners.PlayerListener;
+import net.serlith.purpur.listeners.ServerListener;
 import net.serlith.purpur.tasks.BossBarTask;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -49,6 +50,7 @@ public final class PurpurBars extends JavaPlugin {
         new CompassCommand(this);
         new RamCommand(this);
         new PlayerListener(this);
+        new ServerListener(this);
 
         BossBarTask.startAll();
         BossBarTask.loadAll();
