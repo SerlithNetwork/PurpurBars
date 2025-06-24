@@ -55,7 +55,7 @@ public class RamBarTask extends BossBarTask {
                 Placeholder.component("used", this.format(this.used)),
                 Placeholder.component("xmx", this.format(this.xmx)),
                 Placeholder.component("xms", this.format(this.xms)),
-                Placeholder.unparsed("percent", "%d%%".formatted((int) (this.percent * 100)))
+                Placeholder.parsed("percent", "%d%%".formatted((int) (this.percent * 100)))
         ));
     }
 
@@ -73,7 +73,7 @@ public class RamBarTask extends BossBarTask {
         this.used = heap.getUsed();
         this.xmx = heap.getMax();
         this.xms = heap.getInit();
-        this.percent = Math.max(Math.min(((float) this.used) / this.xmx, 1F), 0F);
+        this.percent = Math.max(Math.min((float) this.used / this.xmx, 1F), 0F);
 
         super.run();
     }

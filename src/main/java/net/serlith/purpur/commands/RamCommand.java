@@ -40,7 +40,7 @@ public class RamCommand extends Command implements PluginIdentifiableCommand {
                 Placeholder.component("xmx", ramTask.format(ramTask.getXmx())),
                 Placeholder.component("xms", ramTask.format(ramTask.getXms())),
                 Placeholder.component("bar", this.createProgressBar(ramTask.getUsed(), ramTask.getXmx())),
-                Placeholder.unparsed("percent", "%d%%".formatted((int) ramTask.getPercent() * 100))
+                Placeholder.parsed("percent", "%d%%".formatted((int) (ramTask.getPercent() * 100)))
                 )).forEach(sender::sendMessage);
         return true;
     }
