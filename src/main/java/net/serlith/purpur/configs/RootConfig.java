@@ -50,7 +50,7 @@ public class RootConfig extends StaticConfig {
         map.put("format.rambar.text_color.good", "format.ram-bar.text-color.good");
         map.put("format.rambar.text_color.medium", "format.ram-bar.text-color.medium");
         map.put("format.rambar.text_color.low", "format.ram-bar.text-color.low");
-        map.put("format.rambar.tick_interval", "format.ram-bar.tick-interval");
+        map.put("format.rambar.tick_interval", "format.ram-bar.update-interval");
 
         map.put("format.ram.length", "format.ram.usage-bar.length");
         map.put("format.ram.chars.bar", "format.ram.usage-bar.chars.bar");
@@ -65,11 +65,13 @@ public class RootConfig extends StaticConfig {
         map.put("messages.not_player", "messages.not-player");
         map.put("messages.failed_reload", "messages.failed-reload");
         map.put("messages.successful_reload", "messages.successful-reload");
+
+        map.put("format.ram-bar.tick-interval", "format.ram-bar.update-interval");
         map.forEach(this::relocate);
     }
 
 
-    @Order(1)
+    @Priority(1)
     @Comment("Configurations for formatting bars and commands")
     public static class FORMAT {
 
@@ -85,8 +87,8 @@ public class RootConfig extends StaticConfig {
             @Comment("\uD83D\uDD25 Possible values: TPS, MSPT & PING")
             public static TpsBarTask.ProgressFillMode PROGRESS_FILL_MODE = TpsBarTask.ProgressFillMode.MSPT;
 
-            @Comment("\uD83D\uDD25 Delay (in ticks) between bar update")
-            public static int TICK_INTERVAL = 20;
+            @Comment("\uD83D\uDD25 Delay (in ticks) between bar updates")
+            public static int UPDATE_INTERVAL = 20;
 
             @Comment("\uD83D\uDD25 Possible colors: https://jd.advntr.dev/api/4.7.0/net/kyori/adventure/bossbar/BossBar.Color.html")
             public static class PROGRESS_COLOR {
@@ -205,7 +207,7 @@ public class RootConfig extends StaticConfig {
 
     }
 
-    @Order(2)
+    @Priority(2)
     @Comment("Configurations to apply bars when PlayerJoinEvent is called")
     public static class JOIN_EVENT {
 
@@ -226,7 +228,7 @@ public class RootConfig extends StaticConfig {
 
     }
 
-    @Order(3)
+    @Priority(3)
     @Comment("\uD83D\uDD25 Configurations for message feedback when running a command")
     public static class MESSAGES {
 

@@ -62,7 +62,7 @@ public class TpsBarTask extends BossBarTask {
 
     @Override
     public void run() {
-        if (++this.tick % RootConfig.FORMAT.TPS_BAR.TICK_INTERVAL != 0) return;
+        if (++this.tick % RootConfig.FORMAT.TPS_BAR.UPDATE_INTERVAL != 0) return;
 
         this.tps = Math.max(Math.min(ServerListener.TPS_5_SEC.getAverage(), 20.0), 0.0);
         this.mspt = Bukkit.getAverageTickTime();

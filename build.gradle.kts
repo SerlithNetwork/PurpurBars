@@ -23,7 +23,7 @@ repositories {
 dependencies {
     compileOnly("io.papermc.paper:paper-api:1.19.4-R0.1-SNAPSHOT")
 
-    implementation("net.serlith.ConfigAPI:ConfigAPI-core:1.2.2.2")
+    implementation("net.serlith.ConfigAPI:ConfigAPI-core:1.2.5")
     implementation("org.bstats:bstats-bukkit:3.0.2")
 }
 
