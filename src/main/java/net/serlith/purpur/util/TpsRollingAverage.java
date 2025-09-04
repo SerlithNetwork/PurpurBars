@@ -2,6 +2,7 @@ package net.serlith.purpur.util;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -50,4 +51,43 @@ public final class TpsRollingAverage {
     public double getAverage() {
         return this.total.divide(new BigDecimal(this.time), 30, RoundingMode.HALF_UP).doubleValue();
     }
+
+    @SuppressWarnings("DuplicatedCode")
+    public double getMin() {
+        BigDecimal min = null;
+        for (BigDecimal sample : this.samples) {
+            if (min == null || sample.compareTo(min) < 0) {
+                min = sample;
+            }
+        }
+        return min == null ? 0 : min.doubleValue();
+    }
+
+    @SuppressWarnings("DuplicatedCode")
+    public double getMax() {
+        BigDecimal max = null;
+        for (BigDecimal sample : this.samples) {
+            if (max == null || sample.compareTo(max) > 0) {
+                max = sample;
+            }
+        }
+        return max == null ? 0 : max.doubleValue();
+    }
+
+    public double getPercentile(double percentile) {
+        if (percentile < 0 || percentile > 1) {
+            throw new IllegalArgumentException("Invalid percentile: " + percentile);
+        }
+
+        BigDecimal[] sortedSamples;
+        if (this.samples.length == 0) {
+            return 0;
+        }
+        sortedSamples = this.samples.clone();
+        Arrays.sort(sortedSamples);
+
+        int rank = (int) Math.ceil(percentile * (sortedSamples.length - 1));
+        return sortedSamples[rank].doubleValue();
+    }
+
 }

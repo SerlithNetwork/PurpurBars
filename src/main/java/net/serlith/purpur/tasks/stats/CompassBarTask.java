@@ -1,4 +1,4 @@
-package net.serlith.purpur.tasks;
+package net.serlith.purpur.tasks.stats;
 
 import lombok.Getter;
 import net.kyori.adventure.bossbar.BossBar;
@@ -6,17 +6,18 @@ import net.kyori.adventure.text.Component;
 import net.serlith.purpur.PurpurBars;
 import net.serlith.purpur.configs.RootConfig;
 import net.serlith.purpur.data.DataStorage;
+import net.serlith.purpur.tasks.AbstractTask;
 import org.bukkit.entity.Player;
 
 import java.util.Set;
 import java.util.UUID;
 
-public class CompassBarTask extends BossBarTask {
+public class CompassBarTask extends AbstractTask {
 
     private static CompassBarTask INSTANCE;
-    public static CompassBarTask getInstance(PurpurBars plugin) {
+    public static CompassBarTask getInstance() {
         if (INSTANCE == null) {
-            INSTANCE = new CompassBarTask(plugin);
+            throw new IllegalStateException("CompassBar has not yet been initialized");
         }
         return INSTANCE;
     }
@@ -24,17 +25,18 @@ public class CompassBarTask extends BossBarTask {
     @Getter
     private int tick = 0;
 
-    private CompassBarTask(PurpurBars plugin) {
+    public CompassBarTask(PurpurBars plugin) {
         super(plugin);
+        INSTANCE = this;
     }
 
     @Override
-    BossBar createBossBar() {
+    protected BossBar createBossBar() {
         return BossBar.bossBar(Component.empty(), RootConfig.FORMAT.COMPASS_BAR.PROGRESS_PERCENT, RootConfig.FORMAT.COMPASS_BAR.PROGRESS_COLOR, RootConfig.FORMAT.COMPASS_BAR.PROGRESS_OVERLAY);
     }
 
     @Override
-    void updateBossBar(BossBar bossBar, Player player) {
+    protected void updateBossBar(BossBar bossBar, Player player) {
         float yaw = player.getLocation().getYaw();
         int length = RootConfig.FORMAT.COMPASS_BAR.TITLE.length();
         int pos = (int) ((normalize(yaw) * (length / 720F)) + (length / 2F));
@@ -42,20 +44,19 @@ public class CompassBarTask extends BossBarTask {
     }
 
     @Override
-    Type getType() {
+    public Type getType() {
         return Type.COMPASS_BAR;
     }
 
     @Override
     public void run() {
-        if (++this.tick % RootConfig.FORMAT.COMPASS_BAR.TICK_INTERVAL != 0) return;
+        if (++this.tick % RootConfig.FORMAT.COMPASS_BAR.UPDATE_INTERVAL != 0) return;
         super.run();
     }
 
     @Override
-    public void dumpAndStop() {
+    public void dumpAllPlayerUUIDs() {
         DataStorage.COMPASS_BAR = this.getAllPlayerUUIDs();
-        super.dumpAndStop();
     }
 
     @Override

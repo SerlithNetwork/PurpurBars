@@ -6,8 +6,8 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.serlith.purpur.PurpurBars;
-import net.serlith.purpur.tasks.BossBarTask;
-import net.serlith.purpur.tasks.TpsBarTask;
+import net.serlith.purpur.tasks.AbstractTask;
+import net.serlith.purpur.tasks.stats.TpsBarTask;
 import org.bukkit.event.EventPriority;
 
 import java.io.File;
@@ -66,7 +66,9 @@ public class RootConfig extends StaticConfig {
         map.put("messages.failed_reload", "messages.failed-reload");
         map.put("messages.successful_reload", "messages.successful-reload");
 
+        map.put("format.tps-bar.tick-interval", "format.tps-bar.update-interval");
         map.put("format.ram-bar.tick-interval", "format.ram-bar.update-interval");
+        map.put("format.compass-bar.tick-interval", "format.compass-bar.update-interval");
         map.forEach(this::relocate);
     }
 
@@ -87,8 +89,14 @@ public class RootConfig extends StaticConfig {
             @Comment("\uD83D\uDD25 Possible values: TPS, MSPT & PING")
             public static TpsBarTask.ProgressFillMode PROGRESS_FILL_MODE = TpsBarTask.ProgressFillMode.MSPT;
 
-            @Comment("\uD83D\uDD25 Delay (in ticks) between bar updates")
+            @Comment("\uD83D\uDD25 Delay (in ticks) between bar updates on the player screen")
             public static int UPDATE_INTERVAL = 20;
+
+            @Comment("\uD83D\uDD03 Sampling time interval (in seconds) for TPS. If 5, this means 5 second average, max, 95%ile...")
+            public static int TPS_SAMPLING_INTERVAL = 5;
+
+            @Comment("\uD83D\uDD03 Sampling time interval (in seconds) for MSPT. If 5, this means 5 second average, max, 95%ile...")
+            public static int MSPT_SAMPLING_INTERVAL = 5;
 
             @Comment("\uD83D\uDD25 Possible colors: https://jd.advntr.dev/api/4.7.0/net/kyori/adventure/bossbar/BossBar.Color.html")
             public static class PROGRESS_COLOR {
@@ -115,8 +123,8 @@ public class RootConfig extends StaticConfig {
             @Comment("\uD83D\uDD25 Possible overlays: https://jd.advntr.dev/api/4.7.0/net/kyori/adventure/bossbar/BossBar.Overlay.html")
             public static BossBar.Overlay PROGRESS_OVERLAY = BossBar.Overlay.NOTCHED_20;
 
-            @Comment("\uD83D\uDD25 Delay (in ticks) between bar update")
-            public static int TICK_INTERVAL = 20;
+            @Comment("\uD83D\uDD25 Delay (in ticks) between bar updates on the player screen")
+            public static int UPDATE_INTERVAL = 20;
 
             @Comment("\uD83D\uDD25 Possible colors: https://jd.advntr.dev/api/4.7.0/net/kyori/adventure/bossbar/BossBar.Color.html")
             public static class PROGRESS_COLOR {
@@ -143,8 +151,8 @@ public class RootConfig extends StaticConfig {
             @Comment("\uD83D\uDD25 Possible overlays: https://jd.advntr.dev/api/4.7.0/net/kyori/adventure/bossbar/BossBar.Overlay.html")
             public static BossBar.Overlay PROGRESS_OVERLAY = BossBar.Overlay.PROGRESS;
 
-            @Comment("\uD83D\uDD25 Delay (in ticks) between bar update")
-            public static int TICK_INTERVAL = 5;
+            @Comment("\uD83D\uDD25 Delay (in ticks) between bar updates on the player screen")
+            public static int UPDATE_INTERVAL = 5;
 
             @Comment("\uD83D\uDD25 Possible colors: https://jd.advntr.dev/api/4.7.0/net/kyori/adventure/bossbar/BossBar.Color.html")
             public static BossBar.Color PROGRESS_COLOR = BossBar.Color.BLUE;
@@ -224,7 +232,7 @@ public class RootConfig extends StaticConfig {
                 "Possible values: TPS_BAR, RAM_BAR, COMPASS_BAR",
                 "Example: [TPS_BAR, RAM_BAR] will place the TPS bar above the RAM bar"
         })
-        public static List<BossBarTask.Type> ORDER = List.of();
+        public static List<AbstractTask.Type> ORDER = List.of();
 
     }
 
@@ -252,6 +260,11 @@ public class RootConfig extends StaticConfig {
         public static Component _FAILED_RELOAD = Component.empty();
 
 
+        public static String INVALID_COMMAND_SYNTAX = "<red>Invalid command syntax!";
+        @Ignore
+        public static Component _INVALID_COMMAND_SYNTAX = Component.empty();
+
+
         public static String SUCCESSFUL_RELOAD = "<green>Configuration reloaded!";
         @Ignore
         public static Component _SUCCESSFUL_RELOAD = Component.empty();
@@ -271,6 +284,7 @@ public class RootConfig extends StaticConfig {
         MESSAGES._NOT_FOUND = MiniMessage.miniMessage().deserialize(MESSAGES.NOT_FOUND);
         MESSAGES._NOT_PLAYER = MiniMessage.miniMessage().deserialize(MESSAGES.NOT_PLAYER);
         MESSAGES._FAILED_RELOAD = MiniMessage.miniMessage().deserialize(MESSAGES.FAILED_RELOAD);
+        MESSAGES._INVALID_COMMAND_SYNTAX = MiniMessage.miniMessage().deserialize(MESSAGES.INVALID_COMMAND_SYNTAX);
         MESSAGES._SUCCESSFUL_RELOAD = MiniMessage.miniMessage().deserialize(MESSAGES.SUCCESSFUL_RELOAD);
 
     }

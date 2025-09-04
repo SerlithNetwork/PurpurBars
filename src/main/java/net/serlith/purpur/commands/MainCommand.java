@@ -32,7 +32,7 @@ public class MainCommand extends Command implements PluginIdentifiableCommand {
     public boolean execute(
             @NotNull CommandSender sender,
             @NotNull String commandLabel,
-            @NotNull String[] args
+            String @NotNull [] args
     ) {
 
         if (args.length != 1 && !args[0].equalsIgnoreCase("reload")) {

@@ -2,8 +2,7 @@ package net.serlith.purpur.commands;
 
 import net.serlith.purpur.PurpurBars;
 import net.serlith.purpur.configs.RootConfig;
-import net.serlith.purpur.data.DataStorage;
-import net.serlith.purpur.tasks.TpsBarTask;
+import net.serlith.purpur.tasks.stats.TpsBarTask;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.PluginIdentifiableCommand;
@@ -31,17 +30,17 @@ public class TpsBarCommand extends Command implements PluginIdentifiableCommand 
     }
 
     @Override
-    public boolean execute(@NotNull CommandSender sender, @NotNull String commandLabel, @NotNull String[] args) {
+    public boolean execute(@NotNull CommandSender sender, @NotNull String commandLabel, String @NotNull [] args) {
         if (!(sender instanceof Player player)) {
             sender.sendMessage(this.plugin.getPrefix().append(RootConfig.MESSAGES._NOT_PLAYER));
             return false;
         }
-        TpsBarTask.getInstance(this.plugin).togglePlayer(player);
+        TpsBarTask.getInstance().togglePlayer(player);
         return true;
     }
 
     @Override
-    public @NotNull List<String> tabComplete(@NotNull CommandSender sender, @NotNull String alias, String[] args) throws IllegalArgumentException {
+    public @NotNull List<String> tabComplete(@NotNull CommandSender sender, @NotNull String alias, String @NotNull [] args) throws IllegalArgumentException {
         return this.empty;
     }
 

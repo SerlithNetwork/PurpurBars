@@ -1,4 +1,4 @@
-package net.serlith.purpur.tasks;
+package net.serlith.purpur.tasks.stats;
 
 import lombok.Getter;
 import net.kyori.adventure.bossbar.BossBar;
@@ -8,23 +8,22 @@ import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import net.serlith.purpur.PurpurBars;
 import net.serlith.purpur.configs.RootConfig;
 import net.serlith.purpur.data.DataStorage;
+import net.serlith.purpur.tasks.AbstractTask;
 import org.bukkit.entity.Player;
 
 import java.lang.management.ManagementFactory;
 import java.util.Set;
 import java.util.UUID;
 
-public class RamBarTask extends BossBarTask {
+public class RamBarTask extends AbstractTask {
 
     private static RamBarTask INSTANCE;
-    public static RamBarTask getInstance(PurpurBars plugin) {
+    public static RamBarTask getInstance() {
         if (INSTANCE == null) {
-            INSTANCE = new RamBarTask(plugin);
+            throw new IllegalStateException("RamBar has not yet been initialized");
         }
         return INSTANCE;
     }
-
-    private final PurpurBars plugin;
 
     @Getter
     private long allocated = 0L;
@@ -41,12 +40,12 @@ public class RamBarTask extends BossBarTask {
 
     public RamBarTask(PurpurBars plugin) {
         super(plugin);
-        this.plugin = plugin;
+        INSTANCE = this;
     }
 
     @Override
     public BossBar createBossBar() {
-        return BossBar.bossBar(Component.empty(), 0F, getInstance(this.plugin).getBossBarColor(), RootConfig.FORMAT.RAM_BAR.PROGRESS_OVERLAY);
+        return BossBar.bossBar(Component.empty(), 0F, getInstance().getBossBarColor(), RootConfig.FORMAT.RAM_BAR.PROGRESS_OVERLAY);
     }
 
     @Override
@@ -69,7 +68,7 @@ public class RamBarTask extends BossBarTask {
 
     @Override
     public void run() {
-        if (++this.tick % RootConfig.FORMAT.RAM_BAR.TICK_INTERVAL != 0) return;
+        if (++this.tick % RootConfig.FORMAT.RAM_BAR.UPDATE_INTERVAL != 0) return;
 
         var heap = ManagementFactory.getMemoryMXBean().getHeapMemoryUsage();
         this.allocated = heap.getCommitted();
@@ -82,9 +81,8 @@ public class RamBarTask extends BossBarTask {
     }
 
     @Override
-    public void dumpAndStop() {
+    public void dumpAllPlayerUUIDs() {
         DataStorage.RAM_BAR = this.getAllPlayerUUIDs();
-        super.dumpAndStop();
     }
 
     @Override

@@ -5,7 +5,7 @@ import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import net.serlith.purpur.PurpurBars;
 import net.serlith.purpur.configs.RootConfig;
-import net.serlith.purpur.tasks.RamBarTask;
+import net.serlith.purpur.tasks.stats.RamBarTask;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.PluginIdentifiableCommand;
@@ -32,8 +32,8 @@ public class RamCommand extends Command implements PluginIdentifiableCommand {
     }
 
     @Override
-    public boolean execute(@NotNull CommandSender sender, @NotNull String commandLabel, @NotNull String[] args) {
-        RamBarTask ramTask = RamBarTask.getInstance(this.plugin);
+    public boolean execute(@NotNull CommandSender sender, @NotNull String commandLabel, String @NotNull [] args) {
+        RamBarTask ramTask = RamBarTask.getInstance();
         RootConfig.FORMAT.RAM.OUTPUT.stream().map(i -> MiniMessage.miniMessage().deserialize(i,
                 Placeholder.component("allocated", ramTask.format(ramTask.getAllocated())),
                 Placeholder.component("used", ramTask.format(ramTask.getUsed())),
@@ -56,7 +56,7 @@ public class RamCommand extends Command implements PluginIdentifiableCommand {
     }
 
     @Override
-    public @NotNull List<String> tabComplete(@NotNull CommandSender sender, @NotNull String alias, String[] args) throws IllegalArgumentException {
+    public @NotNull List<String> tabComplete(@NotNull CommandSender sender, @NotNull String alias, String @NotNull [] args) throws IllegalArgumentException {
         return this.empty;
     }
 

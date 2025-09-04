@@ -22,6 +22,7 @@ repositories {
 
 dependencies {
     compileOnly("io.papermc.paper:paper-api:1.19.4-R0.1-SNAPSHOT")
+    // compileOnly(files("libs/fish-api-1.21.8-R0.1-SNAPSHOT.jar")) // Used just for intellisense on PWT API
 
     implementation("net.serlith.ConfigAPI:ConfigAPI-core:1.2.5")
     implementation("org.bstats:bstats-bukkit:3.0.2")
