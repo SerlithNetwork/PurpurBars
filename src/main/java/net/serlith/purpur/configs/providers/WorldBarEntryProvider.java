@@ -16,7 +16,7 @@ public class WorldBarEntryProvider implements TypeProvider<WorldBarEntry> {
         if (context.getObject() instanceof Map<?,?> object) {
             return new WorldBarEntry((String) object.get("world"), ((List<String>) object.get("players")).stream().map(UUID::fromString).toList());
         }
-        throw new IllegalStateException("Cannot serialize ");
+        throw new IllegalStateException("Cannot serialize world bar entry");
     }
 
     @Override
