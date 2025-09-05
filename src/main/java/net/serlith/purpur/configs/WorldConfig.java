@@ -10,6 +10,7 @@ import java.io.File;
 
 @StaticConfig.Header({
         "If you're reading this config, it means your server software supports Parallel World Ticking",
+        "",
         "Configurations marked with \uD83D\uDD25 can be hot-reloaded",
         "Configurations marked with \uD83D\uDD03 require a server-restart",
         "Message configurations only support Adventure's MiniMessage format",
@@ -28,6 +29,10 @@ public class WorldConfig extends StaticConfig {
     @Priority(1)
     public static class FORMAT {
 
+        @Comment({
+                "WorldBar format configuration",
+                "WorldBars can be created to keep track of performance in other worlds",
+        })
         public static class WORLD_BAR {
 
             @Comment("\uD83D\uDD25 Title to be shown on the World MSPT bar")
@@ -48,13 +53,17 @@ public class WorldConfig extends StaticConfig {
 
             @Comment("\uD83D\uDD25 Color format for texts, the placeholder <text> represents the content")
             public static class TEXT_COLOR {
-                public static String GOOD = "<gradient:#aaffff:#55ffff><text></gradient>";
+                public static String GOOD = "<gradient:#aaffff:#77ffff><text></gradient>";
                 public static String MEDIUM = "<gradient:#ffff55:#ffaa00><text></gradient>";
                 public static String LOW = "<gradient:#ff5555:#aa0000><text></gradient>";
             }
 
         }
 
+        @Comment({
+                "WorldFollowBar format configuration",
+                "WorldFollowBars will keep track of performance in the current world you're in",
+        })
         public static class WORLD_FOLLOW_BAR {
 
             @Comment("\uD83D\uDD25 Title to be shown on the World MSPT bar")

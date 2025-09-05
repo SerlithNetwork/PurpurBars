@@ -1,6 +1,5 @@
 package net.serlith.purpur.tasks.stats;
 
-import lombok.Getter;
 import net.kyori.adventure.bossbar.BossBar;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
@@ -25,13 +24,8 @@ public class TpsBarTask extends AbstractTask {
         return INSTANCE;
     }
 
-    @Getter
     private double tps = 20.0;
-    @Getter
     private double mspt = 0.0;
-    @Getter
-    private double ping = 0;
-    @Getter
     private int tick = 0;
 
     private double tpsMin = 20.0;
@@ -51,17 +45,18 @@ public class TpsBarTask extends AbstractTask {
 
     @Override
     public BossBar createBossBar() {
-        return BossBar.bossBar(Component.empty(), 0F, getInstance().getBossBarColor(), RootConfig.FORMAT.TPS_BAR.PROGRESS_OVERLAY);
+        return BossBar.bossBar(Component.empty(), 0F, getInstance().getBossBarColor(0), RootConfig.FORMAT.TPS_BAR.PROGRESS_OVERLAY);
     }
 
     @Override
     public void updateBossBar(BossBar bossBar, Player player) {
-        bossBar.progress(this.getPercent());
-        bossBar.color(this.getBossBarColor());
+        int ping = player.getPing();
+        bossBar.progress(this.getPercent(ping));
+        bossBar.color(this.getBossBarColor(ping));
         bossBar.name(MiniMessage.miniMessage().deserialize(RootConfig.FORMAT.TPS_BAR.TITLE,
                 Placeholder.component("tps", this.getTpsColor(this.tps)),
                 Placeholder.component("mspt", this.getMsptColor(this.mspt)),
-                Placeholder.component("ping", this.getPingColor(player.getPing()))
+                Placeholder.component("ping", this.getPingColor(ping))
                 ,
                 Placeholder.component("tps-min", this.getTpsColor(this.tpsMin)),
                 Placeholder.component("tps-max", this.getTpsColor(this.tpsMax)),
@@ -73,7 +68,6 @@ public class TpsBarTask extends AbstractTask {
                 Placeholder.component("mspt-50ile", this.getMsptColor(this.mspt50Percentile)),
                 Placeholder.component("mspt-95ile", this.getMsptColor(this.mspt95Percentile))
         ));
-        this.ping = player.getPing();
     }
 
     @Override
@@ -111,19 +105,19 @@ public class TpsBarTask extends AbstractTask {
         return DataStorage.TPS_BAR;
     }
 
-    private float getPercent() {
+    private float getPercent(int ping) {
         return switch (RootConfig.FORMAT.TPS_BAR.PROGRESS_FILL_MODE) {
             case MSPT -> Math.max(Math.min(((float) this.mspt) / 50F, 1F), 0F);
             case TPS -> Math.max(Math.min(((float) this.tps) / 20F, 1F), 0F);
-            case PING -> Math.max(Math.min(((float) this.ping) / 200F, 1F), 0F);
+            case PING -> Math.max(Math.min(((float) ping) / 200F, 1F), 0F);
         };
     }
 
-    private BossBar.Color getBossBarColor() {
+    private BossBar.Color getBossBarColor(int ping) {
         BossBar.Color color;
-        if (this.isGood(RootConfig.FORMAT.TPS_BAR.PROGRESS_FILL_MODE)) {
+        if (this.isGood(ping)) {
             color = RootConfig.FORMAT.TPS_BAR.PROGRESS_COLOR.GOOD;
-        } else if (this.isMedium(RootConfig.FORMAT.TPS_BAR.PROGRESS_FILL_MODE)) {
+        } else if (this.isMedium(ping)) {
             color = RootConfig.FORMAT.TPS_BAR.PROGRESS_COLOR.MEDIUM;
         } else {
             color = RootConfig.FORMAT.TPS_BAR.PROGRESS_COLOR.LOW;
@@ -131,19 +125,19 @@ public class TpsBarTask extends AbstractTask {
         return color;
     }
 
-    private boolean isGood(ProgressFillMode mode) {
-        return switch (mode) {
+    private boolean isGood(int ping) {
+        return switch (RootConfig.FORMAT.TPS_BAR.PROGRESS_FILL_MODE) {
             case MSPT -> this.mspt < 40;
             case TPS -> this.tps >= 19;
-            default -> false;
+            case PING -> ping < 100;
         };
     }
 
-    private boolean isMedium(ProgressFillMode mode) {
-        return switch (mode) {
+    private boolean isMedium(int ping) {
+        return switch (RootConfig.FORMAT.TPS_BAR.PROGRESS_FILL_MODE) {
             case MSPT -> this.mspt < 50;
             case TPS -> this.tps >= 15;
-            default -> false;
+            case PING -> ping < 200;
         };
     }
 

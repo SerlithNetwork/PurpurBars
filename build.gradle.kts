@@ -5,7 +5,7 @@ plugins {
 }
 
 group = "net.serlith"
-version = "2.0-SNAPSHOT"
+version = "3.0-SNAPSHOT"
 
 repositories {
     mavenCentral()
@@ -23,12 +23,13 @@ repositories {
 dependencies {
     compileOnly("io.papermc.paper:paper-api:1.19.4-R0.1-SNAPSHOT")
     // compileOnly(files("libs/fish-api-1.21.8-R0.1-SNAPSHOT.jar")) // Used just for intellisense on PWT API
+    // compileOnly("dev.folia:folia-api:1.21.4-R0.1-SNAPSHOT") // Used just for intellisense of Folia API
 
     implementation("net.serlith.ConfigAPI:ConfigAPI-core:1.2.5")
     implementation("org.bstats:bstats-bukkit:3.0.2")
 }
 
-val targetJavaVersion = 17
+val targetJavaVersion = 21
 java {
     val javaVersion = JavaVersion.toVersion(targetJavaVersion)
     sourceCompatibility = javaVersion

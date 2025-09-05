@@ -44,16 +44,16 @@ jobs:
       - name: Upload PurpurBars
         uses: actions/upload-artifact@main
         with:
-          name: PurpurBars 2.0
-          path: ./build/libs/PurpurBars-2.0-SNAPSHOT.jar
+          name: PurpurBars 3.0
+          path: ./build/libs/PurpurBars-3.0-SNAPSHOT.jar
 
       - name: Release PurpurBars
         uses: softprops/action-gh-release@master
         with:
           name: "💜 PurpurBars build ${{ env.BUILD_NUMBER }}"
-          tag_name: "ver-2.0"
+          tag_name: "ver-3.0"
           files: |
-            ./build/libs/PurpurBars-2.0-SNAPSHOT.jar
+            ./build/libs/PurpurBars-3.0-SNAPSHOT.jar
           body_path: "./RELEASE.md"
           token: "${{ secrets.GITHUB_TOKEN }}"
           target_commitish: "${{ github.sha }}"

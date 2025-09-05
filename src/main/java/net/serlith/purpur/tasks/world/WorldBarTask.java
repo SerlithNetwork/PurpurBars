@@ -1,27 +1,22 @@
 package net.serlith.purpur.tasks.world;
 
-import lombok.Getter;
 import net.kyori.adventure.bossbar.BossBar;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import net.serlith.purpur.PurpurBars;
 import net.serlith.purpur.configs.WorldConfig;
-import net.serlith.purpur.configs.types.WorldBarEntry;
-import net.serlith.purpur.data.DataStorage;
 import net.serlith.purpur.tasks.AbstractTask;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 
 public class WorldBarTask extends AbstractTask {
 
-    @Getter
     private double mspt = 0.0;
-    @Getter
     private int tick = 0;
-    @Getter
     private final World world;
 
     public WorldBarTask(PurpurBars plugin, World world) {
@@ -36,6 +31,9 @@ public class WorldBarTask extends AbstractTask {
 
     @Override
     protected void updateBossBar(BossBar bossBar, Player player) {
+        try { // Used here instead of AbstractTask#run for synchronization
+            this.mspt = (double) this.plugin.getGetAverageTickTime().invoke(this.world);
+        } catch (IllegalAccessException | InvocationTargetException ignore) {}
         bossBar.progress(this.getPercent());
         bossBar.color(this.getBossBarColor());
         bossBar.name(MiniMessage.miniMessage().deserialize(WorldConfig.FORMAT.WORLD_BAR.TITLE,
@@ -52,9 +50,6 @@ public class WorldBarTask extends AbstractTask {
     @Override
     public void run() {
         if (++this.tick % WorldConfig.FORMAT.WORLD_BAR.UPDATE_INTERVAL != 0) return;
-        try {
-            this.mspt = (double) this.plugin.getGetAverageTickTime().invoke(this.world);
-        } catch (Throwable ignore) {}
         super.run();
     }
 
@@ -64,24 +59,10 @@ public class WorldBarTask extends AbstractTask {
 
     @Override
     public void dumpAllPlayerUUIDs() {
-        Optional<WorldBarEntry> entry = DataStorage.WORLD_BAR.stream().filter(w -> w.getWorld().equals(this.world.getName())).findFirst();
-        entry.ifPresentOrElse(
-                w -> w.setPlayers(new ArrayList<>(this.getAllPlayerUUIDs())),
-                () -> {
-                    Set<WorldBarEntry> entries = new HashSet<>(DataStorage.WORLD_BAR);
-                    entries.add(new WorldBarEntry(this.world.getName(), new ArrayList<>(this.getAllPlayerUUIDs())));
-                    DataStorage.WORLD_BAR = entries;
-                }
-        );
     }
 
     @Override
     public Set<UUID> loadAllPlayerUUIDs() {
-        Optional<WorldBarEntry> entry = DataStorage.WORLD_BAR.stream().filter(w -> w.getWorld().equals(this.world.getName())).findFirst();
-        WorldBarEntry barEntry = entry.orElse(null);
-        if (barEntry != null) {
-            return new HashSet<>(barEntry.getPlayers());
-        }
         return Set.of();
     }
 

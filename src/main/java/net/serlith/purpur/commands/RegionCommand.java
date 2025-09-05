@@ -2,7 +2,7 @@ package net.serlith.purpur.commands;
 
 import net.serlith.purpur.PurpurBars;
 import net.serlith.purpur.configs.RootConfig;
-import net.serlith.purpur.tasks.stats.TpsBarTask;
+import net.serlith.purpur.tasks.region.RegionBarTask;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.PluginIdentifiableCommand;
@@ -12,18 +12,18 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-public class TpsBarCommand extends Command implements PluginIdentifiableCommand {
+public class RegionCommand extends Command implements PluginIdentifiableCommand {
 
     private final PurpurBars plugin;
     private final List<String> empty = List.of();
 
-    public TpsBarCommand(PurpurBars plugin) {
-        super("tpsbar");
+    public RegionCommand(PurpurBars plugin) {
+        super("regionbar");
         this.plugin = plugin;
 
-        this.setPermission("purpurbars.monitor.tps");
-        this.setUsage("/tpsbar");
-        this.setDescription("Displays server TPS using a bossbar");
+        this.setPermission("purpurbars.monitor.region");
+        this.setUsage("/regionbar");
+        this.setDescription("Displays region TPS using a bossbar");
 
         this.permissionMessage(plugin.getPrefix().append(RootConfig.MESSAGES._NO_PERMISSION));
         this.plugin.getServer().getCommandMap().register(this.plugin.getNamespace(), this);
@@ -35,7 +35,7 @@ public class TpsBarCommand extends Command implements PluginIdentifiableCommand 
             sender.sendMessage(this.plugin.getPrefix().append(RootConfig.MESSAGES._NOT_PLAYER));
             return false;
         }
-        TpsBarTask.getInstance().togglePlayer(player);
+        RegionBarTask.getInstance().togglePlayer(player);
         return true;
     }
 

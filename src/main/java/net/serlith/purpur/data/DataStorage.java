@@ -29,6 +29,6 @@ public class DataStorage extends StaticConfig {
 
     public static Set<UUID> WORLD_FOLLOW_BAR = Set.of();
 
-    public static Set<WorldBarEntry> WORLD_BAR = Set.of();
+    public static Set<UUID> REGION_BAR = Set.of();
 
 }

@@ -12,6 +12,7 @@ import net.serlith.purpur.tasks.AbstractTask;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.Set;
 import java.util.UUID;
 
@@ -44,12 +45,13 @@ public class WorldFollowBarTask extends AbstractTask {
         double mspt = 0.0;
         try {
             mspt = (double) this.plugin.getGetAverageTickTime().invoke(world);
-        } catch (Throwable ignore) {}
+        } catch (IllegalAccessException | InvocationTargetException ignore) {}
         bossBar.progress(this.getPercent(mspt));
         bossBar.color(this.getBossBarColor(mspt));
         bossBar.name(MiniMessage.miniMessage().deserialize(WorldConfig.FORMAT.WORLD_FOLLOW_BAR.TITLE,
                 Placeholder.component("mspt", this.getMsptColor(mspt)),
-                Placeholder.component("world", this.getWorldColor(world.getName(), mspt))
+                Placeholder.component("world", this.getWorldColor(world.getName(), mspt)),
+                Placeholder.component("ping", this.getPingColor(player.getPing()))
         ));
     }
 
@@ -94,6 +96,10 @@ public class WorldFollowBarTask extends AbstractTask {
         return MiniMessage.miniMessage().deserialize(this.getColor(mspt), Placeholder.parsed("text", "%.2f".formatted(mspt)));
     }
 
+    private Component getPingColor(int ping) {
+        return MiniMessage.miniMessage().deserialize(this.getPingHealthColor(ping), Placeholder.parsed("text", "%d".formatted(ping)));
+    }
+
     private Component getWorldColor(String worldName, double mspt) {
         return MiniMessage.miniMessage().deserialize(this.getColor(mspt), Placeholder.parsed("text", worldName));
     }
@@ -103,6 +109,18 @@ public class WorldFollowBarTask extends AbstractTask {
         if (this.isGood(mspt)) {
             colored = WorldConfig.FORMAT.WORLD_FOLLOW_BAR.TEXT_COLOR.GOOD;
         } else if (this.isMedium(mspt)) {
+            colored = WorldConfig.FORMAT.WORLD_FOLLOW_BAR.TEXT_COLOR.MEDIUM;
+        } else {
+            colored = WorldConfig.FORMAT.WORLD_FOLLOW_BAR.TEXT_COLOR.LOW;
+        }
+        return colored;
+    }
+
+    private String getPingHealthColor(double ping) {
+        String colored;
+        if (ping < 100) {
+            colored = WorldConfig.FORMAT.WORLD_FOLLOW_BAR.TEXT_COLOR.GOOD;
+        } else if (ping < 200) {
             colored = WorldConfig.FORMAT.WORLD_FOLLOW_BAR.TEXT_COLOR.MEDIUM;
         } else {
             colored = WorldConfig.FORMAT.WORLD_FOLLOW_BAR.TEXT_COLOR.LOW;

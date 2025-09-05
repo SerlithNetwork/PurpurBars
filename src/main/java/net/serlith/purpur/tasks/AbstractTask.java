@@ -8,11 +8,12 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 public abstract class AbstractTask implements Runnable {
 
     protected final PurpurBars plugin;
-    private final Map<UUID, BossBar> bossBars = new HashMap<>();
+    private final Map<UUID, BossBar> bossBars = new ConcurrentHashMap<>();
 
     public AbstractTask(PurpurBars plugin) {
         this.plugin = plugin;
@@ -20,7 +21,12 @@ public abstract class AbstractTask implements Runnable {
 
     @Override
     public void run() {
-        this.bossBars.forEach(this::executeTask);
+        try {
+            this.bossBars.forEach(this::executeTask);
+        } catch (Exception exception) {
+            this.plugin.getLogger().severe(exception.getMessage());
+            Arrays.stream(exception.getStackTrace()).map(StackTraceElement::toString).forEach(plugin.getLogger()::severe);
+        }
     }
 
     private void executeTask(UUID uuid, BossBar bossBar) {
@@ -84,6 +90,6 @@ public abstract class AbstractTask implements Runnable {
         }
     }
 
-    public enum Type { TPS_BAR, RAM_BAR, COMPASS_BAR, WORLD_FOLLOW_BAR, WORLD_BAR }
+    public enum Type { TPS_BAR, RAM_BAR, COMPASS_BAR, WORLD_FOLLOW_BAR, WORLD_BAR, REGION_BAR }
 
 }

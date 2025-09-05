@@ -5,6 +5,7 @@ import net.j4c0b3y.api.config.ConfigHandler;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.serlith.purpur.commands.*;
+import net.serlith.purpur.configs.RegionConfig;
 import net.serlith.purpur.configs.WorldConfig;
 import net.serlith.purpur.configs.RootConfig;
 import net.serlith.purpur.configs.providers.WorldBarEntryProvider;
@@ -14,14 +15,13 @@ import net.serlith.purpur.listeners.PlayerListener;
 import net.serlith.purpur.listeners.ServerListener;
 import net.serlith.purpur.listeners.WorldListener;
 import net.serlith.purpur.schedule.BossBarRunnable;
+import net.serlith.purpur.tasks.region.RegionBarTask;
 import net.serlith.purpur.tasks.stats.CompassBarTask;
 import net.serlith.purpur.tasks.stats.RamBarTask;
 import net.serlith.purpur.tasks.stats.TpsBarTask;
 import net.serlith.purpur.tasks.world.WorldFollowBarTask;
 import org.bstats.bukkit.Metrics;
-import org.bukkit.Bukkit;
-import org.bukkit.Server;
-import org.bukkit.World;
+import org.bukkit.*;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
@@ -47,8 +47,13 @@ public final class PurpurBars extends JavaPlugin {
     private File storageFolder;
     @Getter
     private BossBarRunnable barsTask;
+
     @Getter
     private Method getAverageTickTime;
+    @Getter
+    private Method getRegionTPS;
+    @Getter
+    private Method getRegionAverageTickTimes;
 
 
     @Override
@@ -87,8 +92,13 @@ public final class PurpurBars extends JavaPlugin {
         });
         this.barsTask = new BossBarRunnable();
 
-        String extraFeature = ""; // I will re-use this for Folia
-        if (this.supportsParallelWorldTicking()) {
+        String extraFeature = "";
+        if (this.supportsFoliaRegions()) {
+            new RegionConfig(this).load();
+            new RegionCommand(this);
+            this.barsTask.addTask(new RegionBarTask(this));
+            extraFeature = "+ Folia";
+        } else if (this.supportsParallelWorldTicking()) {
             new WorldConfig(this).load();
             new WorldListener(this);
             new WorldBarCommand(this);
@@ -161,6 +171,32 @@ public final class PurpurBars extends JavaPlugin {
         }
 
         return enabled;
+    }
+
+    @SuppressWarnings("all")
+    private boolean supportsFoliaRegions() {
+        try {
+            Class.forName("io.papermc.paper.threadedregions.RegionizedServer");
+            this.getLogger().info("Folia API found, attempting to hook...");
+        } catch (ClassNotFoundException e) {
+            return false;
+        }
+        try {
+            this.getRegionTPS = Bukkit.class.getMethod("getRegionTPS", Location.class);
+        } catch (NoSuchMethodException e) {
+            this.getLogger().severe("Failed to hook Folia TPS API, you might be running an old unsupported version");
+            return false;
+        }
+
+        try {
+            this.getRegionAverageTickTimes = Bukkit.class.getMethod("getRegionAverageTickTimes", Location.class);
+        } catch (NoSuchMethodException ignore) {
+            this.getLogger().info("Folia MSPT API not found, region MSPT placeholders will not be available");
+        }
+
+        this.getLogger().info("Folia support enabled!");
+
+        return true;
     }
 
 }
