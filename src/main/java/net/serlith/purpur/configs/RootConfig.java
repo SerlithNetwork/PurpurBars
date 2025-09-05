@@ -229,7 +229,7 @@ public class RootConfig extends StaticConfig {
 
         @Comment({
                 "\uD83D\uDD25 If empty, bars will apply in any order when re-joining",
-                "Possible values: TPS_BAR, RAM_BAR, COMPASS_BAR",
+                "Possible values: TPS_BAR, RAM_BAR, COMPASS_BAR, WORLD_FOLLOW_BAR, REGION_BAR",
                 "Example: [TPS_BAR, RAM_BAR] will place the TPS bar above the RAM bar"
         })
         public static List<AbstractTask.Type> ORDER = List.of();
