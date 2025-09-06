@@ -34,6 +34,7 @@ public class WorldBarCommand extends Command implements PluginIdentifiableComman
     }
 
     @Override
+    @SuppressWarnings("DuplicatedCode")
     public boolean execute(@NotNull CommandSender sender, @NotNull String commandLabel, String @NotNull [] args) {
         if (!(sender instanceof Player player)) {
             sender.sendMessage(this.plugin.getPrefix().append(RootConfig.MESSAGES._NOT_PLAYER));

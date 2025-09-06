@@ -9,6 +9,7 @@ import net.serlith.purpur.PurpurBars;
 import net.serlith.purpur.configs.RootConfig;
 import net.serlith.purpur.data.DataStorage;
 import net.serlith.purpur.tasks.AbstractTask;
+import net.serlith.purpur.util.Utils;
 import org.bukkit.entity.Player;
 
 import java.lang.management.ManagementFactory;
@@ -35,7 +36,6 @@ public class RamBarTask extends AbstractTask {
     private long xms = 0L;
     @Getter
     private float percent = 0F;
-    @Getter
     private int tick = 0;
 
     public RamBarTask(PurpurBars plugin) {
@@ -102,7 +102,6 @@ public class RamBarTask extends AbstractTask {
         return color;
     }
 
-    private final char[] sizes = { 'B', 'K', 'M', 'G', 'T', 'P', 'E' };
     public Component format(long v) {
         String colored;
         if (this.percent < 0.6F) {
@@ -113,20 +112,8 @@ public class RamBarTask extends AbstractTask {
             colored = RootConfig.FORMAT.RAM_BAR.TEXT_COLOR.LOW;
         }
 
-        String value;
-        if (v < 1024) {
-            value = "%dB".formatted(v);
-        } else {
-            var z = (63 - Long.numberOfLeadingZeros(v)) / 10;
-            if (z > 2) {
-                value = "%.1f%c".formatted(((float) v) / (1L << (z * 10)), sizes[z]);
-            } else {
-                value = "%d%c".formatted(v / (1L << (z * 10)), sizes[z]);
-            }
-        }
-
         return MiniMessage.miniMessage().deserialize(colored,
-                Placeholder.unparsed("text", value)
+                Placeholder.unparsed("text", Utils.formatBytes(v))
         );
     }
 

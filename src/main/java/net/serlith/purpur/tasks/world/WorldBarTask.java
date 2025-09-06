@@ -1,5 +1,6 @@
 package net.serlith.purpur.tasks.world;
 
+import lombok.Getter;
 import net.kyori.adventure.bossbar.BossBar;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
@@ -15,6 +16,7 @@ import java.util.*;
 
 public class WorldBarTask extends AbstractTask {
 
+    @Getter
     private double mspt = 0.0;
     private int tick = 0;
     private final World world;
@@ -32,7 +34,7 @@ public class WorldBarTask extends AbstractTask {
     @Override
     protected void updateBossBar(BossBar bossBar, Player player) {
         try { // Used here instead of AbstractTask#run for synchronization
-            this.mspt = (double) this.plugin.getGetAverageTickTime().invoke(this.world);
+            this.mspt = (double) this.plugin.getGetWorldAverageTickTime().invoke(this.world);
         } catch (IllegalAccessException | InvocationTargetException ignore) {}
         bossBar.progress(this.getPercent());
         bossBar.color(this.getBossBarColor());

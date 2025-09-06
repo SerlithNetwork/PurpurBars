@@ -2,7 +2,6 @@ package net.serlith.purpur.data;
 
 import net.j4c0b3y.api.config.StaticConfig;
 import net.serlith.purpur.PurpurBars;
-import net.serlith.purpur.configs.types.WorldBarEntry;
 
 import java.io.File;
 import java.util.Set;
@@ -29,6 +28,6 @@ public class DataStorage extends StaticConfig {
 
     public static Set<UUID> WORLD_FOLLOW_BAR = Set.of();
 
-    public static Set<UUID> REGION_BAR = Set.of();
+    public static Set<UUID> REGION_FOLLOW_BAR = Set.of();
 
 }

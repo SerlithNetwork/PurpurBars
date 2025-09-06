@@ -1,5 +1,6 @@
 package net.serlith.purpur.tasks.stats;
 
+import lombok.Getter;
 import net.kyori.adventure.bossbar.BossBar;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
@@ -24,18 +25,28 @@ public class TpsBarTask extends AbstractTask {
         return INSTANCE;
     }
 
+    @Getter
     private double tps = 20.0;
+    @Getter
     private double mspt = 0.0;
     private int tick = 0;
 
+    @Getter
     private double tpsMin = 20.0;
+    @Getter
     private double tpsMax = 20.0;
+    @Getter
     private double tps50Percentile = 20.0;
+    @Getter
     private double tps95Percentile = 20.0;
 
+    @Getter
     private double msptMin = 0.0;
+    @Getter
     private double msptMax = 0.0;
+    @Getter
     private double mspt50Percentile = 0.0;
+    @Getter
     private double mspt95Percentile = 0.0;
 
     public TpsBarTask(PurpurBars plugin) {

@@ -7,3 +7,8 @@ description: Plugin implementation of Purpur's tps and ram bars
 website: https://serlith.net
 folia-supported: true
 load: STARTUP
+dependencies:
+  server:
+    PlaceholderAPI:
+      load: BEFORE
+      required: false

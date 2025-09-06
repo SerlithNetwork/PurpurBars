@@ -44,7 +44,7 @@ public class WorldFollowBarTask extends AbstractTask {
         World world = player.getWorld();
         double mspt = 0.0;
         try {
-            mspt = (double) this.plugin.getGetAverageTickTime().invoke(world);
+            mspt = (double) this.plugin.getGetWorldAverageTickTime().invoke(world);
         } catch (IllegalAccessException | InvocationTargetException ignore) {}
         bossBar.progress(this.getPercent(mspt));
         bossBar.color(this.getBossBarColor(mspt));

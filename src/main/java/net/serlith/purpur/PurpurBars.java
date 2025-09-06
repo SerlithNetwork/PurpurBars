@@ -11,11 +11,13 @@ import net.serlith.purpur.configs.RootConfig;
 import net.serlith.purpur.configs.providers.WorldBarEntryProvider;
 import net.serlith.purpur.configs.types.WorldBarEntry;
 import net.serlith.purpur.data.DataStorage;
+import net.serlith.purpur.hooks.PapiHook;
 import net.serlith.purpur.listeners.PlayerListener;
+import net.serlith.purpur.listeners.PlayerRegionListener;
 import net.serlith.purpur.listeners.ServerListener;
 import net.serlith.purpur.listeners.WorldListener;
 import net.serlith.purpur.schedule.BossBarRunnable;
-import net.serlith.purpur.tasks.region.RegionBarTask;
+import net.serlith.purpur.tasks.region.RegionFollowBarTask;
 import net.serlith.purpur.tasks.stats.CompassBarTask;
 import net.serlith.purpur.tasks.stats.RamBarTask;
 import net.serlith.purpur.tasks.stats.TpsBarTask;
@@ -49,7 +51,7 @@ public final class PurpurBars extends JavaPlugin {
     private BossBarRunnable barsTask;
 
     @Getter
-    private Method getAverageTickTime;
+    private Method getWorldAverageTickTime;
     @Getter
     private Method getRegionTPS;
     @Getter
@@ -92,11 +94,16 @@ public final class PurpurBars extends JavaPlugin {
         });
         this.barsTask = new BossBarRunnable();
 
+        if (Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) {
+            new PapiHook(this).register();
+        }
+
         String extraFeature = "";
         if (this.supportsFoliaRegions()) {
             new RegionConfig(this).load();
+            new PlayerRegionListener(this);
             new RegionCommand(this);
-            this.barsTask.addTask(new RegionBarTask(this));
+            this.barsTask.addTask(new RegionFollowBarTask(this));
             extraFeature = "+ Folia";
         } else if (this.supportsParallelWorldTicking()) {
             new WorldConfig(this).load();
@@ -163,7 +170,7 @@ public final class PurpurBars extends JavaPlugin {
         }
 
         try {
-            this.getAverageTickTime = World.class.getMethod("getAverageTickTime");
+            this.getWorldAverageTickTime = World.class.getMethod("getAverageTickTime");
         } catch (NoSuchMethodException e) {
             this.getLogger().severe("Your server software does not properly implement the Parallel World Ticking API method: World#getAverageTickTime");
             this.getLogger().severe("Contact the author of: " + Bukkit.getName());

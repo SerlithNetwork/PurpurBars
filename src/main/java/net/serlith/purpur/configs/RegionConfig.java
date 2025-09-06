@@ -2,8 +2,11 @@ package net.serlith.purpur.configs;
 
 import net.j4c0b3y.api.config.StaticConfig;
 import net.kyori.adventure.bossbar.BossBar;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.serlith.purpur.PurpurBars;
 import net.serlith.purpur.tasks.region.RegionBarTask;
+import net.serlith.purpur.tasks.region.RegionFollowBarTask;
 
 import java.io.File;
 
@@ -29,6 +32,7 @@ public class RegionConfig extends StaticConfig {
         this.plugin = plugin;
     }
 
+    @Priority(1)
     public static class FORMAT {
 
         @Comment({
@@ -52,6 +56,36 @@ public class RegionConfig extends StaticConfig {
 
             @Comment("\uD83D\uDD25 Possible colors: https://jd.advntr.dev/api/4.7.0/net/kyori/adventure/bossbar/BossBar.Color.html")
             public static class PROGRESS_COLOR {
+                public static BossBar.Color GOOD = BossBar.Color.WHITE;
+                public static BossBar.Color MEDIUM = BossBar.Color.YELLOW;
+                public static BossBar.Color LOW = BossBar.Color.RED;
+            }
+
+            @Comment("\uD83D\uDD25 Color format for texts, the placeholder <text> represents the content")
+            public static class TEXT_COLOR {
+                public static String GOOD = "<gradient:#aaffff:#77ffff><text></gradient>";
+                public static String MEDIUM = "<gradient:#ffff55:#ffaa00><text></gradient>";
+                public static String LOW = "<gradient:#ff5555:#aa0000><text></gradient>";
+            }
+
+        }
+
+        public static class REGION_FOLLOW_BAR {
+
+            @Comment("\uD83D\uDD25 Title to be shown on the TPS bar")
+            public static String TITLE = "<gray>TPS<yellow>:</yellow> <tps> MSPT<yellow>:</yellow> <mspt> Ping<yellow>:</yellow> <ping>ms";
+
+            @Comment("\uD83D\uDD25 Possible overlays: https://jd.advntr.dev/api/4.7.0/net/kyori/adventure/bossbar/BossBar.Overlay.html")
+            public static BossBar.Overlay PROGRESS_OVERLAY = BossBar.Overlay.NOTCHED_20;
+
+            @Comment("\uD83D\uDD25 Possible values: TPS, MSPT & PING")
+            public static RegionFollowBarTask.ProgressFillMode PROGRESS_FILL_MODE = RegionFollowBarTask.ProgressFillMode.MSPT;
+
+            @Comment("\uD83D\uDD25 Delay (in ticks) between bar updates on the player screen")
+            public static int UPDATE_INTERVAL = 20;
+
+            @Comment("\uD83D\uDD25 Possible colors: https://jd.advntr.dev/api/4.7.0/net/kyori/adventure/bossbar/BossBar.Color.html")
+            public static class PROGRESS_COLOR {
                 public static BossBar.Color GOOD = BossBar.Color.BLUE;
                 public static BossBar.Color MEDIUM = BossBar.Color.YELLOW;
                 public static BossBar.Color LOW = BossBar.Color.RED;
@@ -68,6 +102,15 @@ public class RegionConfig extends StaticConfig {
 
     }
 
+    @Priority(2)
+    public static class MESSAGES {
+
+        public static String PLAYER_DOES_NOT_EXIST = "<red>This player is not online!";
+        @Ignore
+        public static Component _PLAYER_DOES_NOT_EXIST = Component.empty();
+
+    }
+
     @Override
     public void load() {
         if (this.plugin.getGetRegionAverageTickTimes() == null && !new File(this.plugin.getDataFolder(), "settings-region.yml").exists()) {
@@ -78,6 +121,9 @@ public class RegionConfig extends StaticConfig {
             this.plugin.getLogger().warning("");
         }
         super.load();
+
+        MESSAGES._PLAYER_DOES_NOT_EXIST = MiniMessage.miniMessage().deserialize(MESSAGES.PLAYER_DOES_NOT_EXIST);
+
     }
 
 }
