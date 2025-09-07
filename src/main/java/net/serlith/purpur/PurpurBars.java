@@ -5,17 +5,16 @@ import net.j4c0b3y.api.config.ConfigHandler;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.serlith.purpur.commands.*;
+import net.serlith.purpur.configs.PapiConfig;
 import net.serlith.purpur.configs.RegionConfig;
 import net.serlith.purpur.configs.WorldConfig;
 import net.serlith.purpur.configs.RootConfig;
-import net.serlith.purpur.configs.providers.WorldBarEntryProvider;
-import net.serlith.purpur.configs.types.WorldBarEntry;
+import net.serlith.purpur.configs.providers.PapiBarEntryProvider;
+import net.serlith.purpur.configs.providers.WorldBarDataProvider;
+import net.serlith.purpur.configs.types.PapiBarEntry;
+import net.serlith.purpur.configs.types.WorldBarData;
 import net.serlith.purpur.data.DataStorage;
-import net.serlith.purpur.hooks.PapiHook;
-import net.serlith.purpur.listeners.PlayerListener;
-import net.serlith.purpur.listeners.PlayerRegionListener;
-import net.serlith.purpur.listeners.ServerListener;
-import net.serlith.purpur.listeners.WorldListener;
+import net.serlith.purpur.listeners.*;
 import net.serlith.purpur.schedule.BossBarRunnable;
 import net.serlith.purpur.tasks.region.RegionFollowBarTask;
 import net.serlith.purpur.tasks.stats.CompassBarTask;
@@ -64,7 +63,8 @@ public final class PurpurBars extends JavaPlugin {
         this.prefix = MiniMessage.miniMessage().deserialize("<gray>[<gradient:#429fff:#d621ff>PurpurBars</gradient>]<gray> ");
         this.storageFolder = new File(getDataFolder(), "storage");
 
-        this.configHandler.bind(WorldBarEntry.class, new WorldBarEntryProvider());
+        this.configHandler.bind(WorldBarData.class, new WorldBarDataProvider());
+        this.configHandler.bind(PapiBarEntry.class, new PapiBarEntryProvider());
     }
 
     @Override
@@ -92,10 +92,13 @@ public final class PurpurBars extends JavaPlugin {
             });
             return thread;
         });
-        this.barsTask = new BossBarRunnable();
+        this.barsTask = new BossBarRunnable(this);
 
-        if (Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) {
-            new PapiHook(this).register();
+        if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
+            new PapiConfig(this).load();
+            new PluginListener(this);
+            new PapiCommand(this);
+            this.getLogger().info("PlaceholderAPI support enabled!");
         }
 
         String extraFeature = "";

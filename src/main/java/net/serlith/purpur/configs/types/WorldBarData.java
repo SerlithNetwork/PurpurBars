@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.UUID;
 
 @AllArgsConstructor
-public class WorldBarEntry {
+public class WorldBarData {
 
     @Getter
     private final String world;

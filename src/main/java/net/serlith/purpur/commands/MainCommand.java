@@ -1,6 +1,7 @@
 package net.serlith.purpur.commands;
 
 import net.serlith.purpur.PurpurBars;
+import net.serlith.purpur.configs.PapiConfig;
 import net.serlith.purpur.configs.RegionConfig;
 import net.serlith.purpur.configs.RootConfig;
 import net.serlith.purpur.configs.WorldConfig;
@@ -46,6 +47,7 @@ public class MainCommand extends Command implements PluginIdentifiableCommand {
             RootConfig.INSTANCE.load();
             if (WorldConfig.INSTANCE != null) WorldConfig.INSTANCE.load();
             if (RegionConfig.INSTANCE != null) RegionConfig.INSTANCE.load();
+            if (PapiConfig.INSTANCE != null) PapiConfig.INSTANCE.load();
         } catch (Exception e) {
             sender.sendMessage(this.plugin.getPrefix().append(RootConfig.MESSAGES._FAILED_RELOAD));
             return false;

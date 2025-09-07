@@ -46,9 +46,10 @@ public class RegionBarTask extends AbstractTask {
         bossBar.progress(this.getPercent());
         bossBar.color(this.getBossBarColor());
         bossBar.name(MiniMessage.miniMessage().deserialize(RegionConfig.FORMAT.REGION_BAR.TITLE,
-                Placeholder.component("tps", this.getTpsColor(tps)),
-                Placeholder.component("mspt", this.getMsptColor(mspt)),
-                Placeholder.component("ping", this.getPingColor(ping))
+                Placeholder.component("tps", this.getTpsColor()),
+                Placeholder.component("mspt", this.getMsptColor()),
+                Placeholder.component("player", this.getPlayerColor()),
+                Placeholder.component("ping", this.getPingColor())
         ));
     }
 
@@ -111,16 +112,20 @@ public class RegionBarTask extends AbstractTask {
         };
     }
 
-    private Component getTpsColor(double tps) {
-        return MiniMessage.miniMessage().deserialize(this.getTpsHealthColor(), Placeholder.parsed("text", "%.2f".formatted(tps)));
+    private Component getTpsColor() {
+        return MiniMessage.miniMessage().deserialize(this.getTpsHealthColor(), Placeholder.parsed("text", "%.2f".formatted(this.tps)));
     }
 
-    private Component getMsptColor(double mspt) {
-        return MiniMessage.miniMessage().deserialize(this.getMsptHealthColor(), Placeholder.parsed("text", "%.2f".formatted(mspt)));
+    private Component getMsptColor() {
+        return MiniMessage.miniMessage().deserialize(this.getMsptHealthColor(), Placeholder.parsed("text", "%.2f".formatted(this.mspt)));
     }
 
-    private Component getPingColor(int ping) {
-        return MiniMessage.miniMessage().deserialize(this.getPingHealthColor(), Placeholder.parsed("text", "%d".formatted(ping)));
+    private Component getPlayerColor() {
+        return MiniMessage.miniMessage().deserialize(this.getMsptHealthColor(), Placeholder.parsed("text", this.player.getName()));
+    }
+
+    private Component getPingColor() {
+        return MiniMessage.miniMessage().deserialize(this.getPingHealthColor(), Placeholder.parsed("text", "%d".formatted(this.ping)));
     }
 
     private String getTpsHealthColor() {

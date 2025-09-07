@@ -43,7 +43,7 @@ public class RegionConfig extends StaticConfig {
         public static class REGION_BAR {
 
             @Comment("\uD83D\uDD25 Title to be shown on the TPS bar")
-            public static String TITLE = "<gray>TPS<yellow>:</yellow> <tps> MSPT<yellow>:</yellow> <mspt> Ping<yellow>:</yellow> <ping>ms";
+            public static String TITLE = "<gray>MSPT<yellow>:</yellow> <mspt> Player<yellow>:</yellow> [<player>] Ping<yellow>:</yellow> <ping>ms";
 
             @Comment("\uD83D\uDD25 Possible overlays: https://jd.advntr.dev/api/4.7.0/net/kyori/adventure/bossbar/BossBar.Overlay.html")
             public static BossBar.Overlay PROGRESS_OVERLAY = BossBar.Overlay.NOTCHED_20;

@@ -90,6 +90,6 @@ public abstract class AbstractTask implements Runnable {
         }
     }
 
-    public enum Type { TPS_BAR, RAM_BAR, COMPASS_BAR, WORLD_FOLLOW_BAR, WORLD_BAR, REGION_FOLLOW_BAR, REGION_BAR }
+    public enum Type { TPS_BAR, RAM_BAR, COMPASS_BAR, WORLD_FOLLOW_BAR, WORLD_BAR, REGION_FOLLOW_BAR, REGION_BAR, PAPI_BAR }
 
 }
