@@ -42,7 +42,7 @@ echo "" >> $RELEASE_NOTES
 } >> $RELEASE_NOTES
 
 # Get checksums
-file="./build/libs/PurpurBars-2.0-SNAPSHOT.jar"
+file="./build/libs/PurpurBars-3.0-SNAPSHOT.jar"
 if [ -f $file ]; then
   SHA256=$(sha256sum $file | awk '{ print $1 }')
   SHA512=$(sha512sum $file | awk '{ print $1 }')
