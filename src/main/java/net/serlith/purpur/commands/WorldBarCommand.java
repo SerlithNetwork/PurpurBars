@@ -65,7 +65,7 @@ public class WorldBarCommand extends Command implements PluginIdentifiableComman
     @Override
     public @NotNull List<String> tabComplete(@NotNull CommandSender sender, @NotNull String alias, String @NotNull [] args) throws IllegalArgumentException {
         if (args.length == 1) {
-            return Bukkit.getWorlds().stream().map(World::getName).toList();
+            return Bukkit.getWorlds().stream().map(World::getName).filter(s -> s.startsWith(args[0])).toList();
         }
         return this.empty;
     }

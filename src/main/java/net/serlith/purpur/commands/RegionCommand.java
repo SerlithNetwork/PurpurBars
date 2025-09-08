@@ -68,7 +68,7 @@ public class RegionCommand extends Command implements PluginIdentifiableCommand 
     @Override
     public @NotNull List<String> tabComplete(@NotNull CommandSender sender, @NotNull String alias, String @NotNull [] args) throws IllegalArgumentException {
         if (args.length == 1) {
-            return Bukkit.getOnlinePlayers().stream().map(Player::getName).toList();
+            return Bukkit.getOnlinePlayers().stream().map(Player::getName).filter(s -> s.startsWith(args[0])).toList();
         }
         return this.empty;
     }
