@@ -25,9 +25,7 @@ repositories {
 
 dependencies {
     compileOnly("io.papermc.paper:paper-api:1.19.4-R0.1-SNAPSHOT")
-    compileOnly(files("libs/paper-api-1.19.4-R0.1-SNAPSHOT.jar"))
-    compileOnly("net.kyori:adventure-api:4.25.0")
-    compileOnly("net.kyori:adventure-text-minimessage:4.25.0")
+    compileOnly(files("libs/paper-api-1.19.4-R0.1-SNAPSHOT.jar")) // This is a Paper build that contains PWT and Folia API backported
     compileOnly("me.clip:placeholderapi:2.11.6")
 
     implementation("net.serlith.ConfigAPI:ConfigAPI-core:1.2.5")
