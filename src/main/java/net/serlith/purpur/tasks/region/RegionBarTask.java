@@ -8,9 +8,9 @@ import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import net.serlith.purpur.PurpurBars;
 import net.serlith.purpur.configs.RegionConfig;
 import net.serlith.purpur.tasks.AbstractTask;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.Set;
 import java.util.UUID;
 
@@ -37,12 +37,10 @@ public class RegionBarTask extends AbstractTask {
 
     @Override
     protected void updateBossBar(BossBar bossBar, Player player) {
-        try {
-            this.tps = ((double[]) this.plugin.getGetRegionTPS().invoke(null, this.player.getLocation()))[0];
-            this.mspt = this.plugin.getGetRegionAverageTickTimes() == null ? 0.0 : ((double[]) this.plugin.getGetRegionAverageTickTimes().invoke(null, this.player.getLocation()))[0];
-        } catch (IllegalAccessException | InvocationTargetException ignore) {}
-
+        this.tps = Bukkit.getRegionTPS(this.player.getLocation())[0];
+        this.mspt = this.plugin.isSupportsFoliaMSPT() ? Bukkit.getRegionAverageTickTimes(this.player.getLocation())[0] : 0.0;
         this.ping = this.player.getPing();
+
         bossBar.progress(this.getPercent());
         bossBar.color(this.getBossBarColor());
         bossBar.name(MiniMessage.miniMessage().deserialize(RegionConfig.FORMAT.REGION_BAR.TITLE,

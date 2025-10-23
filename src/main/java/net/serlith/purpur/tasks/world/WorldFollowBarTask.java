@@ -12,7 +12,6 @@ import net.serlith.purpur.tasks.AbstractTask;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.Set;
 import java.util.UUID;
 
@@ -42,10 +41,7 @@ public class WorldFollowBarTask extends AbstractTask {
     @Override
     protected void updateBossBar(BossBar bossBar, Player player) {
         World world = player.getWorld();
-        double mspt = 0.0;
-        try {
-            mspt = (double) this.plugin.getGetWorldAverageTickTime().invoke(world);
-        } catch (IllegalAccessException | InvocationTargetException ignore) {}
+        double mspt = world.getAverageTickTime();
         bossBar.progress(this.getPercent(mspt));
         bossBar.color(this.getBossBarColor(mspt));
         bossBar.name(MiniMessage.miniMessage().deserialize(WorldConfig.FORMAT.WORLD_FOLLOW_BAR.TITLE,

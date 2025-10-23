@@ -113,7 +113,7 @@ public class RegionConfig extends StaticConfig {
 
     @Override
     public void load() {
-        if (this.plugin.getGetRegionAverageTickTimes() == null && !new File(this.plugin.getDataFolder(), "settings-region.yml").exists()) {
+        if (!this.plugin.isSupportsFoliaMSPT() && !new File(this.plugin.getDataFolder(), "settings-region.yml").exists()) {
             this.plugin.getLogger().warning("");
             this.plugin.getLogger().warning(" You have loaded PurpurBars in a Folia server that doesn't provide a MSPT API");
             this.plugin.getLogger().warning(" Placeholders for region MSPT will not be available in this version");

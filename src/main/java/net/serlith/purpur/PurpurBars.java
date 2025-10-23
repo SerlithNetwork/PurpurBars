@@ -26,8 +26,6 @@ import org.bukkit.*;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -50,11 +48,11 @@ public final class PurpurBars extends JavaPlugin {
     private BossBarRunnable barsTask;
 
     @Getter
-    private Method getWorldAverageTickTime;
+    private boolean supportsPWT = false;
     @Getter
-    private Method getRegionTPS;
+    private boolean supportsFoliaTPS = false;
     @Getter
-    private Method getRegionAverageTickTimes;
+    private boolean supportsFoliaMSPT = false;
 
 
     @Override
@@ -148,32 +146,24 @@ public final class PurpurBars extends JavaPlugin {
                 .forEach(this.getServer()::sendMessage);
     }
 
-    @SuppressWarnings("all")
     private boolean supportsParallelWorldTicking() {
-        Method isParallelWorldTickingEnabled = null;
         try {
-            isParallelWorldTickingEnabled = Server.class.getMethod("isParallelWorldTickingEnabled");
+            Server.class.getMethod("isParallelWorldTickingEnabled");
             this.getLogger().info("Parallel World Ticking API found, attempting to hook...");
         } catch (NoSuchMethodException e) {
             return false;
         }
 
-        boolean enabled;
-        try {
-            enabled = (boolean) isParallelWorldTickingEnabled.invoke(Bukkit.getServer());
-        } catch (InvocationTargetException | IllegalAccessException exception) {
-            this.getLogger().severe("Failed to hook Parallel World Ticking API");
-            return false;
-        }
-
-        if (enabled){
+        boolean enabled = Bukkit.getServer().isParallelWorldTickingEnabled();
+        if (enabled) {
             this.getLogger().info("Parallel World Ticking support enabled!");
         } else {
             this.getLogger().info("Parallel World Ticking is available but not enabled!");
         }
 
         try {
-            this.getWorldAverageTickTime = World.class.getMethod("getAverageTickTime");
+            World.class.getMethod("getAverageTickTime");
+            this.supportsPWT = true;
         } catch (NoSuchMethodException e) {
             this.getLogger().severe("Your server software does not properly implement the Parallel World Ticking API method: World#getAverageTickTime");
             this.getLogger().severe("Contact the author of: " + Bukkit.getName());
@@ -183,7 +173,6 @@ public final class PurpurBars extends JavaPlugin {
         return enabled;
     }
 
-    @SuppressWarnings("all")
     private boolean supportsFoliaRegions() {
         try {
             Class.forName("io.papermc.paper.threadedregions.RegionizedServer");
@@ -192,14 +181,16 @@ public final class PurpurBars extends JavaPlugin {
             return false;
         }
         try {
-            this.getRegionTPS = Bukkit.class.getMethod("getRegionTPS", Location.class);
+            Bukkit.class.getMethod("getRegionTPS", Location.class);
+            this.supportsFoliaTPS = true;
         } catch (NoSuchMethodException e) {
             this.getLogger().severe("Failed to hook Folia TPS API, you might be running an old unsupported version");
             return false;
         }
 
         try {
-            this.getRegionAverageTickTimes = Bukkit.class.getMethod("getRegionAverageTickTimes", Location.class);
+            Bukkit.class.getMethod("getRegionAverageTickTimes", Location.class);
+            this.supportsFoliaMSPT = true;
         } catch (NoSuchMethodException ignore) {
             this.getLogger().info("Folia MSPT API not found, region MSPT placeholders will not be available");
         }

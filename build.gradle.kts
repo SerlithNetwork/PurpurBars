@@ -24,10 +24,10 @@ repositories {
 }
 
 dependencies {
-    compileOnly("io.papermc.paper:paper-api:1.19.4-R0.1-SNAPSHOT")
+    compileOnly(files("libs/paper-api-1.19.4-R0.1-SNAPSHOT.jar"))
+    compileOnly("net.kyori:adventure-api:4.25.0")
+    compileOnly("net.kyori:adventure-text-minimessage:4.25.0")
     compileOnly("me.clip:placeholderapi:2.11.6")
-    // compileOnly(files("libs/fish-api-1.21.8-R0.1-SNAPSHOT.jar")) // Used just for intellisense on PWT API
-    // compileOnly("dev.folia:folia-api:1.21.4-R0.1-SNAPSHOT") // Used just for intellisense of Folia API
 
     implementation("net.serlith.ConfigAPI:ConfigAPI-core:1.2.5")
     implementation("org.bstats:bstats-bukkit:3.0.2")
