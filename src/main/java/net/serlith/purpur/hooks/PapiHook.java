@@ -58,6 +58,9 @@ public class PapiHook extends PlaceholderExpansion {
             case "ram_xms" -> Utils.formatBytes(RamBarTask.getInstance().getXms());
             case "ram_percent" -> "%d%%".formatted((int) (RamBarTask.getInstance().getPercent() * 100));
 
+            case "cpu_system" -> "%.2f".formatted(this.plugin.getSystemMonitorRunnable().getSystemCpuLoad());
+            case "cpu_process" -> "%.2f".formatted(this.plugin.getSystemMonitorRunnable().getProcessCpuLoad());
+
             default -> {
                 String[] args = params.split("_", 2);
                 if (args.length != 2) yield null;

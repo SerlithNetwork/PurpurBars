@@ -16,6 +16,7 @@ import net.serlith.purpur.configs.types.WorldBarData;
 import net.serlith.purpur.data.DataStorage;
 import net.serlith.purpur.listeners.*;
 import net.serlith.purpur.schedule.BossBarRunnable;
+import net.serlith.purpur.schedule.SystemMonitorRunnable;
 import net.serlith.purpur.tasks.region.RegionFollowBarTask;
 import net.serlith.purpur.tasks.stats.CompassBarTask;
 import net.serlith.purpur.tasks.stats.RamBarTask;
@@ -46,6 +47,8 @@ public final class PurpurBars extends JavaPlugin {
     private File storageFolder;
     @Getter
     private BossBarRunnable barsTask;
+    @Getter
+    private SystemMonitorRunnable systemMonitorRunnable;
 
     @Getter
     private boolean supportsPWT = false;
@@ -91,6 +94,7 @@ public final class PurpurBars extends JavaPlugin {
             return thread;
         });
         this.barsTask = new BossBarRunnable(this);
+        this.systemMonitorRunnable = new SystemMonitorRunnable();
 
         if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
             new PapiConfig(this).load();
@@ -120,6 +124,7 @@ public final class PurpurBars extends JavaPlugin {
 
         this.barsTask.init();
         EXECUTOR.scheduleAtFixedRate(this.barsTask, 0, 50, TimeUnit.MILLISECONDS);
+        EXECUTOR.scheduleAtFixedRate(this.systemMonitorRunnable, 0, 1, TimeUnit.SECONDS);
 
         this.printBanner(extraFeature);
     }
