@@ -37,6 +37,11 @@ public class PapiHook extends PlaceholderExpansion {
     }
 
     @Override
+    public boolean persist() {
+        return true;
+    }
+
+    @Override
     public String onRequest(@Nullable OfflinePlayer player, @NotNull String params) {
         return switch (params) {
             case "tps" -> "%.2f".formatted(TpsBarTask.getInstance().getTps());
