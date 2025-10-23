@@ -14,6 +14,7 @@ import net.serlith.purpur.configs.providers.WorldBarDataProvider;
 import net.serlith.purpur.configs.types.PapiBarEntry;
 import net.serlith.purpur.configs.types.WorldBarData;
 import net.serlith.purpur.data.DataStorage;
+import net.serlith.purpur.hooks.PapiHook;
 import net.serlith.purpur.listeners.*;
 import net.serlith.purpur.schedule.BossBarRunnable;
 import net.serlith.purpur.schedule.SystemMonitorRunnable;
@@ -98,7 +99,7 @@ public final class PurpurBars extends JavaPlugin {
 
         if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
             new PapiConfig(this).load();
-            new PluginListener(this);
+            new PapiHook(this).register();
             new PapiCommand(this);
             this.getLogger().info("PlaceholderAPI support enabled!");
         }
