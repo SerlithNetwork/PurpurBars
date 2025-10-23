@@ -117,6 +117,7 @@ public class RegionConfig extends StaticConfig {
             this.plugin.getLogger().warning("");
             this.plugin.getLogger().warning(" You have loaded PurpurBars in a Folia server that doesn't provide a MSPT API");
             this.plugin.getLogger().warning(" Placeholders for region MSPT will not be available in this version");
+            this.plugin.getLogger().warning(" RegionBar will not display the actual region MSPT");
             this.plugin.getLogger().warning(" You won't see this warning again!");
             this.plugin.getLogger().warning("");
         }
