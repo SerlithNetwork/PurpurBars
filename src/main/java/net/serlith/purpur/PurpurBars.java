@@ -22,6 +22,7 @@ import net.serlith.purpur.tasks.region.RegionFollowBarTask;
 import net.serlith.purpur.tasks.stats.CompassBarTask;
 import net.serlith.purpur.tasks.stats.RamBarTask;
 import net.serlith.purpur.tasks.stats.TpsBarTask;
+import net.serlith.purpur.tasks.world.WorldBarTask;
 import net.serlith.purpur.tasks.world.WorldFollowBarTask;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.*;
@@ -116,6 +117,7 @@ public final class PurpurBars extends JavaPlugin {
             new WorldListener(this);
             new WorldBarCommand(this);
             this.barsTask.addTask(new WorldFollowBarTask(this));
+            Bukkit.getWorlds().forEach(world -> this.barsTask.addWorldTask(world.getName(), new WorldBarTask(this, world)));
             extraFeature = "+ PWT";
         }
 
