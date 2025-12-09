@@ -65,8 +65,9 @@ public class BossBarRunnable implements Runnable {
     }
 
     public void addWorldTask(String name, WorldBarTask task) {
-        if (this.worldTasks.containsKey(name)) return;
-        this.worldTasks.put(name, task);
+        if (!this.worldTasks.containsKey(name)) {
+            this.worldTasks.put(name, task);
+        }
     }
 
     public void removeWorldTask(String name) {
