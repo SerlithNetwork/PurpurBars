@@ -15,12 +15,11 @@ import org.jspecify.annotations.NullMarked;
 
 @NullMarked
 @UtilityClass
-@SuppressWarnings("UnstableApiUsage")
 public class PapiCommands {
 
     public LiteralCommandNode<CommandSourceStack> buildPapiBarCommand() {
         return Commands.literal("papibar")
-                .requires(s -> s.getExecutor() instanceof Player player && player.hasPermission("purpurbars.monitor.papi"))
+                .requires(s -> PurpurBars.getInstance().isSupportsPAPI() && s.getExecutor() instanceof Player player && player.hasPermission("purpurbars.monitor.papi"))
                 .then(Commands.argument("bar", new PapiArgument())
                         .executes(ctx -> {
 

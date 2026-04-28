@@ -16,12 +16,11 @@ import org.jspecify.annotations.NullMarked;
 
 @NullMarked
 @UtilityClass
-@SuppressWarnings("UnstableApiUsage")
 public class WorldCommands {
 
     public LiteralCommandNode<CommandSourceStack> buildWorldBarCommand() {
         return Commands.literal("worldbar")
-                .requires(s -> s.getExecutor() instanceof Player player && player.hasPermission("purpurbars.monitor.world"))
+                .requires(s -> PurpurBars.getInstance().isSupportsPWT() && s.getExecutor() instanceof Player player && player.hasPermission("purpurbars.monitor.world"))
                 .executes(ctx -> {
 
                     Player player = (Player) ctx.getSource().getExecutor();

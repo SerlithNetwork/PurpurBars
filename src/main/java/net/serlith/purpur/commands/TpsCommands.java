@@ -11,7 +11,6 @@ import org.jspecify.annotations.NullMarked;
 
 @NullMarked
 @UtilityClass
-@SuppressWarnings("UnstableApiUsage")
 public class TpsCommands {
 
     public LiteralCommandNode<CommandSourceStack> buildTpsBarCommand() {

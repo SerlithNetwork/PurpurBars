@@ -11,7 +11,6 @@ import org.jspecify.annotations.NullMarked;
 
 @NullMarked
 @UtilityClass
-@SuppressWarnings("UnstableApiUsage")
 public class CompassCommands {
 
     public LiteralCommandNode<CommandSourceStack> buildCompassCommand() {

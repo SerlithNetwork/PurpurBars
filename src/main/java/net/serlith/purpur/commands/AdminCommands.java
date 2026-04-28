@@ -15,7 +15,6 @@ import org.jspecify.annotations.NullMarked;
 
 @NullMarked
 @UtilityClass
-@SuppressWarnings("UnstableApiUsage")
 public class AdminCommands {
 
     public LiteralCommandNode<CommandSourceStack> buildMainCommand() {

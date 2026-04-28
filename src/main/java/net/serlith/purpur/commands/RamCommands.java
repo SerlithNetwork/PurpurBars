@@ -16,7 +16,6 @@ import org.jspecify.annotations.NullMarked;
 
 @NullMarked
 @UtilityClass
-@SuppressWarnings("UnstableApiUsage")
 public class RamCommands {
 
     public LiteralCommandNode<CommandSourceStack> buildRamBarCommand() {

@@ -16,12 +16,11 @@ import org.jspecify.annotations.NullMarked;
 
 @NullMarked
 @UtilityClass
-@SuppressWarnings("UnstableApiUsage")
 public class RegionCommands {
 
     public LiteralCommandNode<CommandSourceStack> buildRegionBarCommand() {
         return Commands.literal("regionbar")
-                .requires(s -> s.getExecutor() instanceof Player player && player.hasPermission("purpurbars.monitor.region"))
+                .requires(s -> PurpurBars.getInstance().isSupportsFoliaTPS() && s.getExecutor() instanceof Player player && player.hasPermission("purpurbars.monitor.region"))
                 .executes(ctx -> {
 
                     Player player = (Player) ctx.getSource().getExecutor();
