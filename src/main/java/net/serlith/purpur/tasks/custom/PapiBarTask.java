@@ -9,6 +9,7 @@ import net.serlith.purpur.PurpurBars;
 import net.serlith.purpur.configs.types.PapiBarEntry;
 import net.serlith.purpur.tasks.AbstractTask;
 import org.bukkit.entity.Player;
+import org.jspecify.annotations.NonNull;
 
 import java.util.Set;
 import java.util.UUID;
@@ -30,7 +31,7 @@ public class PapiBarTask extends AbstractTask {
     }
 
     @Override
-    protected void updateBossBar(BossBar bossBar, Player player) {
+    protected void updateBossBar(@NonNull BossBar bossBar, @NonNull Player player) {
         float percent = this.getPercent(player);
         bossBar.progress(percent);
         bossBar.color(this.getBossBarColor(percent));
@@ -64,7 +65,7 @@ public class PapiBarTask extends AbstractTask {
         float min = this.tryParseNumber(player, this.entry.min());
         float value = this.tryParseNumber(player, this.entry.value()) - min;
         float max = this.tryParseNumber(player, this.entry.max()) - min;
-        return Math.max(Math.min(value / max, 1F), 0F);
+        return Math.clamp(value / max, 0F, 1F);
     }
 
     private float tryParseNumber(Player player, String string) {

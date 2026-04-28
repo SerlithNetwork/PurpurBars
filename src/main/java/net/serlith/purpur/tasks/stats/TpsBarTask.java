@@ -11,13 +11,16 @@ import net.serlith.purpur.data.DataStorage;
 import net.serlith.purpur.listeners.ServerListener;
 import net.serlith.purpur.tasks.AbstractTask;
 import org.bukkit.entity.Player;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
 import java.util.Set;
 import java.util.UUID;
 
+@NullMarked
 public class TpsBarTask extends AbstractTask {
 
-    private static TpsBarTask INSTANCE;
+    private static @Nullable TpsBarTask INSTANCE;
     public static TpsBarTask getInstance() {
         if (INSTANCE == null) {
             throw new IllegalStateException("TpsBar has not yet been initialized");
@@ -90,13 +93,13 @@ public class TpsBarTask extends AbstractTask {
     public void run() {
         if (++this.tick % RootConfig.FORMAT.TPS_BAR.UPDATE_INTERVAL != 0) return;
 
-        this.tps = Math.max(Math.min(ServerListener.TPS_AVERAGE.getAverage(), 20.0), 0.0);
+        this.tps = Math.clamp(ServerListener.TPS_AVERAGE.getAverage(), 0.0, 20.0);
         this.mspt = Math.max(0.0, ServerListener.MSPT_AVERAGE.getAverage());
 
-        this.tpsMin = Math.max(Math.min(ServerListener.TPS_AVERAGE.getMin(), 20.0), 0.0);
-        this.tpsMax = Math.max(Math.min(ServerListener.TPS_AVERAGE.getMax(), 20.0), 0.0);
-        this.tps50Percentile = Math.max(Math.min(ServerListener.TPS_AVERAGE.getPercentile(0.5), 20.0), 0.0);
-        this.tps95Percentile = Math.max(Math.min(ServerListener.TPS_AVERAGE.getPercentile(0.95), 20.0), 0.0);
+        this.tpsMin = Math.clamp(ServerListener.TPS_AVERAGE.getMin(), 0.0, 20.0);
+        this.tpsMax = Math.clamp(ServerListener.TPS_AVERAGE.getMax(), 0.0, 20.0);
+        this.tps50Percentile = Math.clamp(ServerListener.TPS_AVERAGE.getPercentile(0.5), 0.0, 20.0);
+        this.tps95Percentile = Math.clamp(ServerListener.TPS_AVERAGE.getPercentile(0.95), 0.0, 20.0);
 
         this.msptMin = Math.max(ServerListener.MSPT_AVERAGE.getMin(), 0.0);
         this.msptMax = Math.max(ServerListener.MSPT_AVERAGE.getMax(), 0.0);
@@ -118,9 +121,9 @@ public class TpsBarTask extends AbstractTask {
 
     private float getPercent(int ping) {
         return switch (RootConfig.FORMAT.TPS_BAR.PROGRESS_FILL_MODE) {
-            case MSPT -> Math.max(Math.min(((float) this.mspt) / 50F, 1F), 0F);
-            case TPS -> Math.max(Math.min(((float) this.tps) / 20F, 1F), 0F);
-            case PING -> Math.max(Math.min(((float) ping) / 200F, 1F), 0F);
+            case MSPT -> Math.clamp(((float) this.mspt) / 50F, 0F, 1F);
+            case TPS -> Math.clamp(((float) this.tps) / 20F, 0F, 1F);
+            case PING -> Math.clamp(((float) ping) / 200F, 0F, 1F);
         };
     }
 

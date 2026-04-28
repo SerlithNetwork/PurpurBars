@@ -7,11 +7,13 @@ import net.serlith.purpur.tasks.stats.TpsBarTask;
 import net.serlith.purpur.tasks.world.WorldBarTask;
 import net.serlith.purpur.util.Utils;
 import org.bukkit.Bukkit;
+import org.bukkit.NamespacedKey;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
+@NullMarked
 public class PapiHook extends PlaceholderExpansion {
 
     private final PurpurBars plugin;
@@ -21,18 +23,17 @@ public class PapiHook extends PlaceholderExpansion {
     }
 
     @Override
-    public @NotNull String getIdentifier() {
+    public String getIdentifier() {
         return "purpurbars";
     }
 
     @Override
-    public @NotNull String getAuthor() {
+    public String getAuthor() {
         return "Biquaternions";
     }
 
     @Override
-    @SuppressWarnings("UnstableApiUsage")
-    public @NotNull String getVersion() {
+    public String getVersion() {
         return this.plugin.getPluginMeta().getVersion();
     }
 
@@ -42,7 +43,7 @@ public class PapiHook extends PlaceholderExpansion {
     }
 
     @Override
-    public String onRequest(@Nullable OfflinePlayer player, @NotNull String params) {
+    public @Nullable String onRequest(@Nullable OfflinePlayer player, String params) {
         return switch (params) {
             case "tps" -> "%.2f".formatted(TpsBarTask.getInstance().getTps());
             case "mspt" -> "%.2f".formatted(TpsBarTask.getInstance().getMspt());
@@ -71,13 +72,18 @@ public class PapiHook extends PlaceholderExpansion {
                 if (args.length != 2) yield null;
 
                 if (this.plugin.isSupportsPWT() && args[1].equalsIgnoreCase("mspt")) {
-                    WorldBarTask task;
+                    WorldBarTask task = null;
                     if (args[0].equalsIgnoreCase("@") && player instanceof Player onlinePlayer) {
-                        task = this.plugin.getBarsTask().getWorldBarTask(onlinePlayer.getWorld().getName());
+                        task = this.plugin.getBarsTask().getWorldBarTask(onlinePlayer.getWorld());
                     } else {
-                        task = this.plugin.getBarsTask().getWorldBarTask(args[0]);
+                        NamespacedKey key = Utils.keyOrNullFromString(args[0]);
+                        if (key != null) {
+                            task = this.plugin.getBarsTask().getWorldBarTask(key);
+                        }
                     }
-                    if (task == null) yield null;
+                    if (task == null) {
+                        yield null;
+                    }
                     yield "%.2f".formatted(task.getMspt());
                 }
 

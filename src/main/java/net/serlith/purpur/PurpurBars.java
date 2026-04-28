@@ -2,6 +2,7 @@ package net.serlith.purpur;
 
 import lombok.Getter;
 import net.j4c0b3y.api.config.ConfigHandler;
+import net.j4c0b3y.api.config.platform.adventure.AdventureConfigHandler;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.serlith.purpur.commands.*;
@@ -40,11 +41,12 @@ public final class PurpurBars extends JavaPlugin {
     private static ScheduledExecutorService EXECUTOR = null;
 
     @Getter
+    private static PurpurBars instance;
+
+    @Getter
     private final String namespace = "purpurbars";
     @Getter
     private ConfigHandler configHandler;
-    @Getter
-    private Component prefix;
     @Getter
     private File storageFolder;
     @Getter
@@ -52,6 +54,8 @@ public final class PurpurBars extends JavaPlugin {
     @Getter
     private SystemMonitorRunnable systemMonitorRunnable;
 
+    @Getter
+    private boolean supportsPAPI = false;
     @Getter
     private boolean supportsPWT = false;
     @Getter
@@ -62,8 +66,9 @@ public final class PurpurBars extends JavaPlugin {
 
     @Override
     public void onLoad() {
-        this.configHandler = new ConfigHandler();
-        this.prefix = MiniMessage.miniMessage().deserialize("<gray>[<gradient:#429fff:#d621ff>PurpurBars</gradient>]<gray> ");
+        instance = this;
+
+        this.configHandler = new AdventureConfigHandler(this.getLogger(), MiniMessage.miniMessage().deserialize("<gray>[<gradient:#429fff:#d621ff>PurpurBars</gradient>]<gray>"));
         this.storageFolder = new File(getDataFolder(), "storage");
 
         this.configHandler.bind(WorldBarData.class, new WorldBarDataProvider());
@@ -76,11 +81,6 @@ public final class PurpurBars extends JavaPlugin {
         new DataStorage(this).load();
         new Metrics(this, 24547);
 
-        new MainCommand(this);
-        new TpsBarCommand(this);
-        new RamBarCommand(this);
-        new CompassCommand(this);
-        new RamCommand(this);
         new PlayerListener(this);
         new ServerListener(this);
 
@@ -90,18 +90,16 @@ public final class PurpurBars extends JavaPlugin {
             thread.setDaemon(false);
             thread.setPriority(Thread.MIN_PRIORITY);
             thread.setUncaughtExceptionHandler((t, e) -> {
-                this.getLogger().severe("Uncaught exception in PurpurBars thread");
-                Arrays.stream(e.getStackTrace()).map(Object::toString).forEach(this.getLogger()::severe);
+                this.getSLF4JLogger().error("Uncaught exception in PurpurBars thread", e);
             });
             return thread;
         });
         this.barsTask = new BossBarRunnable(this);
         this.systemMonitorRunnable = new SystemMonitorRunnable();
 
-        if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
+        if (this.supportsPapiPlaceholders()) {
             new PapiConfig(this).load();
             new PapiHook(this).register();
-            new PapiCommand(this);
             this.getLogger().info("PlaceholderAPI support enabled!");
         }
 
@@ -109,15 +107,13 @@ public final class PurpurBars extends JavaPlugin {
         if (this.supportsFoliaRegions()) {
             new RegionConfig(this).load();
             new PlayerRegionListener(this);
-            new RegionCommand(this);
             this.barsTask.addTask(new RegionFollowBarTask(this));
             extraFeature = "+ Folia";
         } else if (this.supportsParallelWorldTicking()) {
             new WorldConfig(this).load();
             new WorldListener(this);
-            new WorldBarCommand(this);
             this.barsTask.addTask(new WorldFollowBarTask(this));
-            Bukkit.getWorlds().forEach(world -> this.barsTask.addWorldTask(world.getName(), new WorldBarTask(this, world)));
+            Bukkit.getWorlds().forEach(world -> this.barsTask.addWorldTask(world, new WorldBarTask(this, world)));
             extraFeature = "+ PWT";
         }
 
@@ -152,6 +148,11 @@ public final class PurpurBars extends JavaPlugin {
                 )
                 .map(MiniMessage.miniMessage()::deserialize)
                 .forEach(this.getServer()::sendMessage);
+    }
+
+    private boolean supportsPapiPlaceholders() {
+        this.supportsPAPI = Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null;
+        return this.supportsPAPI;
     }
 
     private boolean supportsParallelWorldTicking() {

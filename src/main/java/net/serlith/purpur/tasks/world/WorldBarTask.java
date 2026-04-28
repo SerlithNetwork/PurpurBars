@@ -10,9 +10,11 @@ import net.serlith.purpur.configs.WorldConfig;
 import net.serlith.purpur.tasks.AbstractTask;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
+import org.jspecify.annotations.NullMarked;
 
 import java.util.*;
 
+@NullMarked
 public class WorldBarTask extends AbstractTask {
 
     @Getter
@@ -66,7 +68,7 @@ public class WorldBarTask extends AbstractTask {
     }
 
     private float getPercent() {
-        return Math.max(Math.min(((float) this.mspt) / 50F, 1F), 0F);
+        return Math.clamp(((float) this.mspt) / 50F, 0F, 1F);
     }
 
     private BossBar.Color getBossBarColor() {

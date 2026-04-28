@@ -1,9 +1,8 @@
 package net.serlith.purpur.configs;
 
 import net.j4c0b3y.api.config.StaticConfig;
+import net.j4c0b3y.api.config.platform.adventure.types.PrefixedComponent;
 import net.kyori.adventure.bossbar.BossBar;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.serlith.purpur.PurpurBars;
 import net.serlith.purpur.configs.types.PapiBarEntry;
 
@@ -65,17 +64,13 @@ public class PapiConfig extends StaticConfig {
     @Priority(2)
     public static class MESSAGES {
 
-        public static String BAR_DOES_NOT_EXIST = "<red>This bar does not exist!";
-        @Ignore
-        public static Component _BAR_DOES_NOT_EXIST = Component.empty();
+        public static PrefixedComponent BAR_DOES_NOT_EXIST = new PrefixedComponent("<red>This bar does not exist!");
 
     }
 
     @Override
     public void load() {
         super.load();
-
-        MESSAGES._BAR_DOES_NOT_EXIST = MiniMessage.miniMessage().deserialize(MESSAGES.BAR_DOES_NOT_EXIST);
 
         PAPI_BARS_NAMES = PAPI_BARS.stream().map(PapiBarEntry::name).toList();
         this.plugin.getBarsTask().removeNotPresentPapiBarTasks(PAPI_BARS_NAMES);

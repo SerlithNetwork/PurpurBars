@@ -1,10 +1,9 @@
 package net.serlith.purpur.configs;
 
 import net.j4c0b3y.api.config.StaticConfig;
+import net.j4c0b3y.api.config.platform.adventure.types.PrefixedComponent;
 import net.kyori.adventure.bossbar.BossBar;
-import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
-import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.serlith.purpur.PurpurBars;
 import net.serlith.purpur.tasks.AbstractTask;
 import net.serlith.purpur.tasks.stats.TpsBarTask;
@@ -240,34 +239,8 @@ public class RootConfig extends StaticConfig {
     @Comment("\uD83D\uDD25 Configurations for message feedback when running a command")
     public static class MESSAGES {
 
-        public static String NO_PERMISSION = "<red>You have no permission to run this command";
-        @Ignore
-        public static Component _NO_PERMISSION = Component.empty();
-
-
-        public static String NOT_FOUND = "<red>Command not found";
-        @Ignore
-        public static Component _NOT_FOUND = Component.empty();
-
-
-        public static String NOT_PLAYER = "<red>This command can only be used by a player";
-        @Ignore
-        public static Component _NOT_PLAYER = Component.empty();
-
-
-        public static String FAILED_RELOAD = "<red>Failed to load configuration!";
-        @Ignore
-        public static Component _FAILED_RELOAD = Component.empty();
-
-
-        public static String INVALID_COMMAND_SYNTAX = "<red>Invalid command syntax!";
-        @Ignore
-        public static Component _INVALID_COMMAND_SYNTAX = Component.empty();
-
-
-        public static String SUCCESSFUL_RELOAD = "<green>Configuration reloaded!";
-        @Ignore
-        public static Component _SUCCESSFUL_RELOAD = Component.empty();
+        public static PrefixedComponent FAILED_RELOAD = new PrefixedComponent("<red>Failed to load configuration!");
+        public static PrefixedComponent SUCCESSFUL_RELOAD = new PrefixedComponent("<green>Configuration reloaded!");
 
     }
 
@@ -280,12 +253,6 @@ public class RootConfig extends StaticConfig {
         FORMAT.RAM.USAGE_BAR.COLOR._UNUSED = TextColor.fromHexString(FORMAT.RAM.USAGE_BAR.COLOR.UNUSED);
         FORMAT.RAM.USAGE_BAR.COLOR._BORDER = TextColor.fromHexString(FORMAT.RAM.USAGE_BAR.COLOR.BORDER);
 
-        MESSAGES._NO_PERMISSION = MiniMessage.miniMessage().deserialize(MESSAGES.NO_PERMISSION);
-        MESSAGES._NOT_FOUND = MiniMessage.miniMessage().deserialize(MESSAGES.NOT_FOUND);
-        MESSAGES._NOT_PLAYER = MiniMessage.miniMessage().deserialize(MESSAGES.NOT_PLAYER);
-        MESSAGES._FAILED_RELOAD = MiniMessage.miniMessage().deserialize(MESSAGES.FAILED_RELOAD);
-        MESSAGES._INVALID_COMMAND_SYNTAX = MiniMessage.miniMessage().deserialize(MESSAGES.INVALID_COMMAND_SYNTAX);
-        MESSAGES._SUCCESSFUL_RELOAD = MiniMessage.miniMessage().deserialize(MESSAGES.SUCCESSFUL_RELOAD);
 
     }
 

@@ -2,8 +2,6 @@ package net.serlith.purpur.configs;
 
 import net.j4c0b3y.api.config.StaticConfig;
 import net.kyori.adventure.bossbar.BossBar;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.serlith.purpur.PurpurBars;
 import net.serlith.purpur.tasks.region.RegionBarTask;
 import net.serlith.purpur.tasks.region.RegionFollowBarTask;
@@ -102,15 +100,6 @@ public class RegionConfig extends StaticConfig {
 
     }
 
-    @Priority(2)
-    public static class MESSAGES {
-
-        public static String PLAYER_DOES_NOT_EXIST = "<red>This player is not online!";
-        @Ignore
-        public static Component _PLAYER_DOES_NOT_EXIST = Component.empty();
-
-    }
-
     @Override
     public void load() {
         if (!this.plugin.isSupportsFoliaMSPT() && !new File(this.plugin.getDataFolder(), "settings-region.yml").exists()) {
@@ -122,9 +111,6 @@ public class RegionConfig extends StaticConfig {
             this.plugin.getLogger().warning("");
         }
         super.load();
-
-        MESSAGES._PLAYER_DOES_NOT_EXIST = MiniMessage.miniMessage().deserialize(MESSAGES.PLAYER_DOES_NOT_EXIST);
-
     }
 
 }

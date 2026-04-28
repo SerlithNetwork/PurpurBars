@@ -4,16 +4,17 @@ import net.kyori.adventure.bossbar.BossBar;
 import net.serlith.purpur.PurpurBars;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.NullMarked;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
+@NullMarked
 public abstract class AbstractTask implements Runnable {
 
     protected final PurpurBars plugin;
-    private final Map<UUID, BossBar> bossBars = new ConcurrentHashMap<>();
+    private final ConcurrentMap<UUID, BossBar> bossBars = new ConcurrentHashMap<>();
 
     public AbstractTask(PurpurBars plugin) {
         this.plugin = plugin;
@@ -30,7 +31,7 @@ public abstract class AbstractTask implements Runnable {
     }
 
     private void executeTask(UUID uuid, BossBar bossBar) {
-        @Nullable Player player = Bukkit.getPlayer(uuid);
+        Player player = Bukkit.getPlayer(uuid);
         if (player != null) {
             this.updateBossBar(bossBar, player);
         }
@@ -50,8 +51,8 @@ public abstract class AbstractTask implements Runnable {
         return bossBars.keySet();
     }
 
-    public boolean removePlayer(@NotNull Player player) {
-        @Nullable BossBar bossBar = bossBars.remove(player.getUniqueId());
+    public boolean removePlayer(Player player) {
+        BossBar bossBar = bossBars.remove(player.getUniqueId());
         if (bossBar != null) {
             player.hideBossBar(bossBar);
             return true;
@@ -59,7 +60,7 @@ public abstract class AbstractTask implements Runnable {
         return false;
     }
 
-    public void addPlayer(@NotNull Player player) {
+    public void addPlayer(Player player) {
         this.removePlayer(player);
         BossBar bossBar = this.createBossBar();
         this.bossBars.put(player.getUniqueId(), bossBar);
@@ -67,15 +68,17 @@ public abstract class AbstractTask implements Runnable {
         player.showBossBar(bossBar);
     }
 
-    public void refreshPlayer(@NotNull Player player) {
-        @Nullable BossBar bossBar = this.bossBars.get(player.getUniqueId());
+    public void refreshPlayer(Player player) {
+        BossBar bossBar = this.bossBars.get(player.getUniqueId());
         if (bossBar != null) {
             player.showBossBar(bossBar);
         }
     }
 
-    public void togglePlayer(@NotNull Player player) {
-        if (this.removePlayer(player)) return;
+    public void togglePlayer(Player player) {
+        if (this.removePlayer(player)) {
+            return;
+        }
         this.addPlayer(player);
     }
 

@@ -11,14 +11,17 @@ import net.serlith.purpur.data.DataStorage;
 import net.serlith.purpur.tasks.AbstractTask;
 import net.serlith.purpur.util.Utils;
 import org.bukkit.entity.Player;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
 import java.lang.management.ManagementFactory;
 import java.util.Set;
 import java.util.UUID;
 
+@NullMarked
 public class RamBarTask extends AbstractTask {
 
-    private static RamBarTask INSTANCE;
+    private static @Nullable RamBarTask INSTANCE;
     public static RamBarTask getInstance() {
         if (INSTANCE == null) {
             throw new IllegalStateException("RamBar has not yet been initialized");
@@ -75,7 +78,7 @@ public class RamBarTask extends AbstractTask {
         this.used = heap.getUsed();
         this.xmx = heap.getMax();
         this.xms = heap.getInit();
-        this.percent = Math.max(Math.min((float) this.used / this.xmx, 1F), 0F);
+        this.percent = Math.clamp((float) this.used / this.xmx, 0F, 1F);
 
         super.run();
     }

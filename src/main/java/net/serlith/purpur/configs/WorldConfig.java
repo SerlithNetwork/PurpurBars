@@ -1,9 +1,8 @@
 package net.serlith.purpur.configs;
 
 import net.j4c0b3y.api.config.StaticConfig;
+import net.j4c0b3y.api.config.platform.adventure.types.PrefixedComponent;
 import net.kyori.adventure.bossbar.BossBar;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.serlith.purpur.PurpurBars;
 
 import java.io.File;
@@ -96,17 +95,7 @@ public class WorldConfig extends StaticConfig {
     @Priority(2)
     public static class MESSAGES {
 
-        public static String WORLD_DOES_NOT_EXIST = "<red>This world does not exist! Was it unloaded?";
-        @Ignore
-        public static Component _WORLD_DOES_NOT_EXIST = Component.empty();
-
-    }
-
-    @Override
-    public void load() {
-        super.load();
-
-        MESSAGES._WORLD_DOES_NOT_EXIST = MiniMessage.miniMessage().deserialize(MESSAGES.WORLD_DOES_NOT_EXIST);
+        public static PrefixedComponent WORLD_DOES_NOT_EXIST = new PrefixedComponent("<red>This world does not exist! Was it unloaded?");
 
     }
 
