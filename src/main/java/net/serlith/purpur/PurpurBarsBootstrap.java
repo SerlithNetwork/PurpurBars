@@ -23,14 +23,11 @@ public class PurpurBarsBootstrap implements PluginBootstrap {
             registrar.register(RamCommands.buildRamCommand(), "Displays server RAM usage in the chat");
             registrar.register(TpsCommands.buildTpsBarCommand(), "Displays server TPS using a bossbar");
 
-            // FIXME: Maybe always register, but only allow them via <requires> condition
-
-            // FIXME: Load these depending on the server
+            // Server dependant
             registrar.register(RegionCommands.buildRegionBarCommand(), "Displays region TPS using a bossbar");
             registrar.register(WorldCommands.buildWorldBarCommand(), "Displays world MSPT using a bossbar");
 
-            // FIXME: Load these if PAPI is on the classpath
-            //  or maybe load it during onEnable
+            // Plugin dependant
             registrar.register(PapiCommands.buildPapiBarCommand(), "Displays a customized bossbar with PlaceholderAPI placeholders");
         });
 

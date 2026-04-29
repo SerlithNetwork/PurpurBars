@@ -49,6 +49,7 @@ tasks {
 
         downloadPlugins {
             modrinth("luckperms", "v5.5.17-bukkit")
+            modrinth("placeholderapi", "2.12.2")
         }
     }
 
