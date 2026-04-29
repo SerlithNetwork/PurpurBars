@@ -11,10 +11,17 @@ import java.io.File;
 @StaticConfig.Header({
         "If you're reading this config, it means you're running Folia",
         "",
+        "==============================================================",
+        "                       READ CAREFULLY",
+        " Folia per-region TPS and MSPT tracking consume a lot of RAM",
+        "  This also applies to TPS or MSPT placeholders from other",
+        "  plugins. DO NOT keep multiple region bars active at once",
+        "==============================================================",
+        "",
         "Configurations marked with \uD83D\uDD25 can be hot-reloaded",
         "Configurations marked with \uD83D\uDD03 require a server-restart",
         "Message configurations only support Adventure's MiniMessage format",
-        "Learn more: https://docs.advntr.dev/minimessage/format.html"
+        "Learn more: https://docs.papermc.io/adventure/minimessage/format"
 })
 public class RegionConfig extends StaticConfig {
 

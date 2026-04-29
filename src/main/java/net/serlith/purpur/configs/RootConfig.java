@@ -18,7 +18,7 @@ import java.util.Map;
         "Configurations marked with \uD83D\uDD25 can be hot-reloaded",
         "Configurations marked with \uD83D\uDD03 require a server-restart",
         "Message configurations only support Adventure's MiniMessage format",
-        "Learn more: https://docs.advntr.dev/minimessage/format.html"
+        "Learn more: https://docs.papermc.io/adventure/minimessage/format"
 })
 public class RootConfig extends StaticConfig {
 
