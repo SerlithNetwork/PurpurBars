@@ -37,13 +37,13 @@ public class WorldConfig extends StaticConfig {
             @Comment("\uD83D\uDD25 Title to be shown on the World MSPT bar")
             public static String TITLE = "<gray>MSPT<yellow>:</yellow> <mspt> World<yellow>:</yellow> [<world>]";
 
-            @Comment("\uD83D\uDD25 Possible overlays: https://jd.advntr.dev/api/4.7.0/net/kyori/adventure/bossbar/BossBar.Overlay.html")
+            @Comment("\uD83D\uDD25 Possible overlays: https://jd.advntr.dev/api/4.26.1/net/kyori/adventure/bossbar/BossBar.Overlay.html")
             public static BossBar.Overlay PROGRESS_OVERLAY = BossBar.Overlay.NOTCHED_20;
 
             @Comment("\uD83D\uDD25 Delay (in ticks) between bar updates")
             public static int UPDATE_INTERVAL = 20;
 
-            @Comment("\uD83D\uDD25 Possible colors: https://jd.advntr.dev/api/4.7.0/net/kyori/adventure/bossbar/BossBar.Color.html")
+            @Comment("\uD83D\uDD25 Possible colors: https://jd.advntr.dev/api/4.26.1/net/kyori/adventure/bossbar/BossBar.Color.html")
             public static class PROGRESS_COLOR {
                 public static BossBar.Color GOOD = BossBar.Color.WHITE;
                 public static BossBar.Color MEDIUM = BossBar.Color.YELLOW;
@@ -68,13 +68,13 @@ public class WorldConfig extends StaticConfig {
             @Comment("\uD83D\uDD25 Title to be shown on the World MSPT bar")
             public static String TITLE = "<gray>MSPT<yellow>:</yellow> <mspt> World<yellow>:</yellow> [<world>]";
 
-            @Comment("\uD83D\uDD25 Possible overlays: https://jd.advntr.dev/api/4.7.0/net/kyori/adventure/bossbar/BossBar.Overlay.html")
+            @Comment("\uD83D\uDD25 Possible overlays: https://jd.advntr.dev/api/4.26.1/net/kyori/adventure/bossbar/BossBar.Overlay.html")
             public static BossBar.Overlay PROGRESS_OVERLAY = BossBar.Overlay.NOTCHED_20;
 
             @Comment("\uD83D\uDD25 Delay (in ticks) between bar updates on the player screen")
             public static int UPDATE_INTERVAL = 20;
 
-            @Comment("\uD83D\uDD25 Possible colors: https://jd.advntr.dev/api/4.7.0/net/kyori/adventure/bossbar/BossBar.Color.html")
+            @Comment("\uD83D\uDD25 Possible colors: https://jd.advntr.dev/api/4.26.1/net/kyori/adventure/bossbar/BossBar.Color.html")
             public static class PROGRESS_COLOR {
                 public static BossBar.Color GOOD = BossBar.Color.BLUE;
                 public static BossBar.Color MEDIUM = BossBar.Color.YELLOW;

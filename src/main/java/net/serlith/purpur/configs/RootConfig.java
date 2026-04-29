@@ -82,7 +82,7 @@ public class RootConfig extends StaticConfig {
             @Comment("\uD83D\uDD25 Title to be shown on the TPS bar")
             public static String TITLE = "<gray>TPS<yellow>:</yellow> <tps> MSPT<yellow>:</yellow> <mspt> Ping<yellow>:</yellow> <ping>ms";
 
-            @Comment("\uD83D\uDD25 Possible overlays: https://jd.advntr.dev/api/4.7.0/net/kyori/adventure/bossbar/BossBar.Overlay.html")
+            @Comment("\uD83D\uDD25 Possible overlays: https://jd.advntr.dev/api/4.26.1/net/kyori/adventure/bossbar/BossBar.Overlay.html")
             public static BossBar.Overlay PROGRESS_OVERLAY = BossBar.Overlay.NOTCHED_20;
 
             @Comment("\uD83D\uDD25 Possible values: TPS, MSPT & PING")
@@ -97,7 +97,7 @@ public class RootConfig extends StaticConfig {
             @Comment("\uD83D\uDD03 Sampling time interval (in seconds) for MSPT. If 5, this means 5 second average, max, 95%ile...")
             public static int MSPT_SAMPLING_INTERVAL = 5;
 
-            @Comment("\uD83D\uDD25 Possible colors: https://jd.advntr.dev/api/4.7.0/net/kyori/adventure/bossbar/BossBar.Color.html")
+            @Comment("\uD83D\uDD25 Possible colors: https://jd.advntr.dev/api/4.26.1/net/kyori/adventure/bossbar/BossBar.Color.html")
             public static class PROGRESS_COLOR {
                 public static BossBar.Color GOOD = BossBar.Color.GREEN;
                 public static BossBar.Color MEDIUM = BossBar.Color.YELLOW;
@@ -119,13 +119,13 @@ public class RootConfig extends StaticConfig {
             @Comment("\uD83D\uDD25 Title to be shown on the RAM bar")
             public static String TITLE = "<gray>Ram<yellow>:</yellow> <used>/<xmx> (<percent>)";
 
-            @Comment("\uD83D\uDD25 Possible overlays: https://jd.advntr.dev/api/4.7.0/net/kyori/adventure/bossbar/BossBar.Overlay.html")
+            @Comment("\uD83D\uDD25 Possible overlays: https://jd.advntr.dev/api/4.26.1/net/kyori/adventure/bossbar/BossBar.Overlay.html")
             public static BossBar.Overlay PROGRESS_OVERLAY = BossBar.Overlay.NOTCHED_20;
 
             @Comment("\uD83D\uDD25 Delay (in ticks) between bar updates on the player screen")
             public static int UPDATE_INTERVAL = 20;
 
-            @Comment("\uD83D\uDD25 Possible colors: https://jd.advntr.dev/api/4.7.0/net/kyori/adventure/bossbar/BossBar.Color.html")
+            @Comment("\uD83D\uDD25 Possible colors: https://jd.advntr.dev/api/4.26.1/net/kyori/adventure/bossbar/BossBar.Color.html")
             public static class PROGRESS_COLOR {
                 public static BossBar.Color GOOD = BossBar.Color.GREEN;
                 public static BossBar.Color MEDIUM = BossBar.Color.YELLOW;
@@ -147,13 +147,13 @@ public class RootConfig extends StaticConfig {
             @Comment("\uD83D\uDD25 Title to be shown on the COMPASS bar")
             public static String TITLE = "S  ·  ◈  ·  ◈  ·  ◈  ·  SW  ·  ◈  ·  ◈  ·  ◈  ·  W  ·  ◈  ·  ◈  ·  ◈  ·  NW  ·  ◈  ·  ◈  ·  ◈  ·  N  ·  ◈  ·  ◈  ·  ◈  ·  NE  ·  ◈  ·  ◈  ·  ◈  ·  E  ·  ◈  ·  ◈  ·  ◈  ·  SE  ·  ◈  ·  ◈  ·  ◈  ·  S  ·  ◈  ·  ◈  ·  ◈  ·  SW  ·  ◈  ·  ◈  ·  ◈  ·  W  ·  ◈  ·  ◈  ·  ◈  ·  NW  ·  ◈  ·  ◈  ·  ◈  ·  N  ·  ◈  ·  ◈  ·  ◈  ·  NE  ·  ◈  ·  ◈  ·  ◈  ·  E  ·  ◈  ·  ◈  ·  ◈  ·  SE  ·  ◈  ·  ◈  ·  ◈  ·  ";
 
-            @Comment("\uD83D\uDD25 Possible overlays: https://jd.advntr.dev/api/4.7.0/net/kyori/adventure/bossbar/BossBar.Overlay.html")
+            @Comment("\uD83D\uDD25 Possible overlays: https://jd.advntr.dev/api/4.26.1/net/kyori/adventure/bossbar/BossBar.Overlay.html")
             public static BossBar.Overlay PROGRESS_OVERLAY = BossBar.Overlay.PROGRESS;
 
             @Comment("\uD83D\uDD25 Delay (in ticks) between bar updates on the player screen")
             public static int UPDATE_INTERVAL = 5;
 
-            @Comment("\uD83D\uDD25 Possible colors: https://jd.advntr.dev/api/4.7.0/net/kyori/adventure/bossbar/BossBar.Color.html")
+            @Comment("\uD83D\uDD25 Possible colors: https://jd.advntr.dev/api/4.26.1/net/kyori/adventure/bossbar/BossBar.Color.html")
             public static BossBar.Color PROGRESS_COLOR = BossBar.Color.BLUE;
 
             @Comment("\uD83D\uDD25 How full the bar should be, can take any number from 0.0 to 1.0")
