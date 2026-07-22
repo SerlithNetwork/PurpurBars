@@ -2,8 +2,6 @@ package net.serlith.purpur.configs;
 
 import net.j4c0b3y.api.config.StaticConfig;
 import net.kyori.adventure.bossbar.BossBar;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.serlith.purpur.PurpurBars;
 import net.serlith.purpur.tasks.region.RegionBarTask;
 import net.serlith.purpur.tasks.region.RegionFollowBarTask;
@@ -13,10 +11,17 @@ import java.io.File;
 @StaticConfig.Header({
         "If you're reading this config, it means you're running Folia",
         "",
+        "==============================================================",
+        "                       READ CAREFULLY",
+        " Folia per-region TPS and MSPT tracking consume a lot of RAM",
+        "  This also applies to TPS or MSPT placeholders from other",
+        "  plugins. DO NOT keep multiple region bars active at once",
+        "==============================================================",
+        "",
         "Configurations marked with \uD83D\uDD25 can be hot-reloaded",
         "Configurations marked with \uD83D\uDD03 require a server-restart",
         "Message configurations only support Adventure's MiniMessage format",
-        "Learn more: https://docs.advntr.dev/minimessage/format.html"
+        "Learn more: https://docs.papermc.io/adventure/minimessage/format"
 })
 public class RegionConfig extends StaticConfig {
 
@@ -45,7 +50,7 @@ public class RegionConfig extends StaticConfig {
             @Comment("\uD83D\uDD25 Title to be shown on the TPS bar")
             public static String TITLE = "<gray>MSPT<yellow>:</yellow> <mspt> Player<yellow>:</yellow> [<player>] Ping<yellow>:</yellow> <ping>ms";
 
-            @Comment("\uD83D\uDD25 Possible overlays: https://jd.advntr.dev/api/4.7.0/net/kyori/adventure/bossbar/BossBar.Overlay.html")
+            @Comment("\uD83D\uDD25 Possible overlays: https://jd.advntr.dev/api/4.26.1/net/kyori/adventure/bossbar/BossBar.Overlay.html")
             public static BossBar.Overlay PROGRESS_OVERLAY = BossBar.Overlay.NOTCHED_20;
 
             @Comment("\uD83D\uDD25 Possible values: TPS, MSPT & PING")
@@ -54,7 +59,7 @@ public class RegionConfig extends StaticConfig {
             @Comment("\uD83D\uDD25 Delay (in ticks) between bar updates on the player screen")
             public static int UPDATE_INTERVAL = 20;
 
-            @Comment("\uD83D\uDD25 Possible colors: https://jd.advntr.dev/api/4.7.0/net/kyori/adventure/bossbar/BossBar.Color.html")
+            @Comment("\uD83D\uDD25 Possible colors: https://jd.advntr.dev/api/4.26.1/net/kyori/adventure/bossbar/BossBar.Color.html")
             public static class PROGRESS_COLOR {
                 public static BossBar.Color GOOD = BossBar.Color.WHITE;
                 public static BossBar.Color MEDIUM = BossBar.Color.YELLOW;
@@ -75,7 +80,7 @@ public class RegionConfig extends StaticConfig {
             @Comment("\uD83D\uDD25 Title to be shown on the TPS bar")
             public static String TITLE = "<gray>TPS<yellow>:</yellow> <tps> MSPT<yellow>:</yellow> <mspt> Ping<yellow>:</yellow> <ping>ms";
 
-            @Comment("\uD83D\uDD25 Possible overlays: https://jd.advntr.dev/api/4.7.0/net/kyori/adventure/bossbar/BossBar.Overlay.html")
+            @Comment("\uD83D\uDD25 Possible overlays: https://jd.advntr.dev/api/4.26.1/net/kyori/adventure/bossbar/BossBar.Overlay.html")
             public static BossBar.Overlay PROGRESS_OVERLAY = BossBar.Overlay.NOTCHED_20;
 
             @Comment("\uD83D\uDD25 Possible values: TPS, MSPT & PING")
@@ -84,7 +89,7 @@ public class RegionConfig extends StaticConfig {
             @Comment("\uD83D\uDD25 Delay (in ticks) between bar updates on the player screen")
             public static int UPDATE_INTERVAL = 20;
 
-            @Comment("\uD83D\uDD25 Possible colors: https://jd.advntr.dev/api/4.7.0/net/kyori/adventure/bossbar/BossBar.Color.html")
+            @Comment("\uD83D\uDD25 Possible colors: https://jd.advntr.dev/api/4.26.1/net/kyori/adventure/bossbar/BossBar.Color.html")
             public static class PROGRESS_COLOR {
                 public static BossBar.Color GOOD = BossBar.Color.BLUE;
                 public static BossBar.Color MEDIUM = BossBar.Color.YELLOW;
@@ -102,15 +107,6 @@ public class RegionConfig extends StaticConfig {
 
     }
 
-    @Priority(2)
-    public static class MESSAGES {
-
-        public static String PLAYER_DOES_NOT_EXIST = "<red>This player is not online!";
-        @Ignore
-        public static Component _PLAYER_DOES_NOT_EXIST = Component.empty();
-
-    }
-
     @Override
     public void load() {
         if (!this.plugin.isSupportsFoliaMSPT() && !new File(this.plugin.getDataFolder(), "settings-region.yml").exists()) {
@@ -122,9 +118,6 @@ public class RegionConfig extends StaticConfig {
             this.plugin.getLogger().warning("");
         }
         super.load();
-
-        MESSAGES._PLAYER_DOES_NOT_EXIST = MiniMessage.miniMessage().deserialize(MESSAGES.PLAYER_DOES_NOT_EXIST);
-
     }
 
 }

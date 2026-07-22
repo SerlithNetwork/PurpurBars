@@ -16,7 +16,7 @@ public class PlayerRegionListener implements Listener {
 
     @EventHandler
     public void onPlayerQuit(PlayerQuitEvent event) {
-        this.plugin.getBarsTask().removeRegionTask(event.getPlayer().getName());
+        this.plugin.getBarsTask().removeRegionTask(event.getPlayer());
     }
 
 }

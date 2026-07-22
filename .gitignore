@@ -119,4 +119,4 @@ runs/
 !gradle-wrapper.jar
 
 # PurpurBars
-!/libs/paper-api-1.19.4-R0.1-SNAPSHOT.jar
+!/libs/fake-api-1.21.11.local-SNAPSHOT.jar

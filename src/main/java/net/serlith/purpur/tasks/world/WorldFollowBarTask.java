@@ -11,13 +11,16 @@ import net.serlith.purpur.data.DataStorage;
 import net.serlith.purpur.tasks.AbstractTask;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
 import java.util.Set;
 import java.util.UUID;
 
+@NullMarked
 public class WorldFollowBarTask extends AbstractTask {
 
-    private static WorldFollowBarTask INSTANCE;
+    private static @Nullable WorldFollowBarTask INSTANCE;
     public static WorldFollowBarTask getInstance() {
         if (INSTANCE == null) {
             throw new IllegalStateException("WorldFollowBar has not yet been initialized");
@@ -46,7 +49,7 @@ public class WorldFollowBarTask extends AbstractTask {
         bossBar.color(this.getBossBarColor(mspt));
         bossBar.name(MiniMessage.miniMessage().deserialize(WorldConfig.FORMAT.WORLD_FOLLOW_BAR.TITLE,
                 Placeholder.component("mspt", this.getMsptColor(mspt)),
-                Placeholder.component("world", this.getWorldColor(world.getName(), mspt)),
+                Placeholder.component("world", this.getWorldColor(this.getWorldName(world), mspt)),
                 Placeholder.component("ping", this.getPingColor(player.getPing()))
         ));
     }
@@ -73,7 +76,7 @@ public class WorldFollowBarTask extends AbstractTask {
     }
 
     private float getPercent(double mspt) {
-        return Math.max(Math.min(((float) mspt) / 50F, 1F), 0F);
+        return Math.clamp(((float) mspt) / 50F, 0F, 1F);
     }
 
     private BossBar.Color getBossBarColor(double mspt) {
@@ -130,6 +133,10 @@ public class WorldFollowBarTask extends AbstractTask {
 
     private boolean isMedium(double mspt) {
         return mspt < 50;
+    }
+
+    private String getWorldName(final World world) {
+        return WorldConfig.FORMAT.WORLD_FOLLOW_BAR.USE_MINIMAL_NAME ? world.getKey().asMinimalString() : world.getKey().asString();
     }
 
 }

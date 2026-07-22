@@ -25,12 +25,14 @@ repositories {
 }
 
 dependencies {
-    compileOnly("io.papermc.paper:paper-api:1.21-R0.1-SNAPSHOT")
-    compileOnly(files("libs/paper-api-1.19.4-R0.1-SNAPSHOT.jar")) // This is a Paper build that contains PWT and Folia API backported
+    compileOnly("io.papermc.paper:paper-api:1.21.11-R0.1-SNAPSHOT")
+    compileOnly(files("libs/fake-api-1.21.11.local-SNAPSHOT.jar")) // This is a Paper build that contains PWT and Folia API backported, Folia doesn't officially implement this API yet so a modular project is not an option
     compileOnly("me.clip:placeholderapi:2.11.6")
+    compileOnly("org.jspecify:jspecify:1.0.0")
 
-    implementation("net.serlith.ConfigAPI:ConfigAPI-core:1.2.5")
-    implementation("org.bstats:bstats-bukkit:3.0.2")
+    implementation("net.serlith.ConfigAPI:ConfigAPI-core:1.2.11")
+    implementation("net.serlith.ConfigAPI:ConfigAPI-adventure:1.2.11")
+    implementation("org.bstats:bstats-bukkit:3.2.1")
 }
 
 java {
@@ -47,6 +49,7 @@ tasks {
 
         downloadPlugins {
             modrinth("luckperms", "v5.5.17-bukkit")
+            modrinth("placeholderapi", "2.12.2")
         }
     }
 

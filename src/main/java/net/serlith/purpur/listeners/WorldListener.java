@@ -18,12 +18,12 @@ public class WorldListener implements Listener {
 
     @EventHandler
     public void onWorldLoad(WorldLoadEvent event) {
-        this.plugin.getBarsTask().addWorldTask(event.getWorld().getName(), new WorldBarTask(this.plugin, event.getWorld()));
+        this.plugin.getBarsTask().addWorldTask(event.getWorld(), new WorldBarTask(this.plugin, event.getWorld()));
     }
 
     @EventHandler
     public void onWorldUnload(WorldUnloadEvent event) {
-        this.plugin.getBarsTask().removeWorldTask(event.getWorld().getName());
+        this.plugin.getBarsTask().removeWorldTask(event.getWorld());
     }
 
 }

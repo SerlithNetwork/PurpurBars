@@ -7,8 +7,9 @@ import org.bukkit.event.Event;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.plugin.EventExecutor;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NullMarked;
 
+@NullMarked
 public class PlayerListener implements Listener, EventExecutor {
 
     private final PurpurBars plugin;
@@ -19,7 +20,7 @@ public class PlayerListener implements Listener, EventExecutor {
     }
 
     @Override
-    public void execute(@NotNull Listener listener, @NotNull Event event) {
+    public void execute(Listener listener, Event event) {
         if (!(event instanceof PlayerJoinEvent joinEvent)) return;
         Player player = joinEvent.getPlayer();
         this.plugin.getBarsTask().refreshTasks(player);

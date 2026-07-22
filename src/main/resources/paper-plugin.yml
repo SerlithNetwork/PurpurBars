@@ -1,7 +1,8 @@
 name: PurpurBars
 version: $version
 main: net.serlith.purpur.PurpurBars
-api-version: '1.19'
+bootstrapper: net.serlith.purpur.PurpurBarsBootstrap
+api-version: '1.21'
 authors: [ Biquaternions ]
 description: Plugin implementation of Purpur's tps and ram bars
 website: https://serlith.net

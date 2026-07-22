@@ -10,10 +10,12 @@ import net.serlith.purpur.configs.RegionConfig;
 import net.serlith.purpur.tasks.AbstractTask;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.jspecify.annotations.NullMarked;
 
 import java.util.Set;
 import java.util.UUID;
 
+@NullMarked
 public class RegionBarTask extends AbstractTask {
 
     @Getter
@@ -76,9 +78,9 @@ public class RegionBarTask extends AbstractTask {
 
     private float getPercent() {
         return switch (RegionConfig.FORMAT.REGION_BAR.PROGRESS_FILL_MODE) {
-            case MSPT -> Math.max(Math.min(((float) this.mspt) / 50F, 1F), 0F);
-            case TPS -> Math.max(Math.min(((float) this.tps) / 20F, 1F), 0F);
-            case PING -> Math.max(Math.min(((float) this.ping) / 200F, 1F), 0F);
+            case MSPT -> Math.clamp(((float) this.mspt) / 50F, 0F, 1F);
+            case TPS -> Math.clamp(((float) this.tps) / 20F, 0F, 1F);
+            case PING -> Math.clamp(((float) this.ping) / 200F, 0F, 1F);
         };
     }
 

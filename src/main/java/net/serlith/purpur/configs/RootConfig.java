@@ -1,10 +1,9 @@
 package net.serlith.purpur.configs;
 
 import net.j4c0b3y.api.config.StaticConfig;
+import net.j4c0b3y.api.config.platform.adventure.types.PrefixedComponent;
 import net.kyori.adventure.bossbar.BossBar;
-import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
-import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.serlith.purpur.PurpurBars;
 import net.serlith.purpur.tasks.AbstractTask;
 import net.serlith.purpur.tasks.stats.TpsBarTask;
@@ -19,7 +18,7 @@ import java.util.Map;
         "Configurations marked with \uD83D\uDD25 can be hot-reloaded",
         "Configurations marked with \uD83D\uDD03 require a server-restart",
         "Message configurations only support Adventure's MiniMessage format",
-        "Learn more: https://docs.advntr.dev/minimessage/format.html"
+        "Learn more: https://docs.papermc.io/adventure/minimessage/format"
 })
 public class RootConfig extends StaticConfig {
 
@@ -83,7 +82,7 @@ public class RootConfig extends StaticConfig {
             @Comment("\uD83D\uDD25 Title to be shown on the TPS bar")
             public static String TITLE = "<gray>TPS<yellow>:</yellow> <tps> MSPT<yellow>:</yellow> <mspt> Ping<yellow>:</yellow> <ping>ms";
 
-            @Comment("\uD83D\uDD25 Possible overlays: https://jd.advntr.dev/api/4.7.0/net/kyori/adventure/bossbar/BossBar.Overlay.html")
+            @Comment("\uD83D\uDD25 Possible overlays: https://jd.advntr.dev/api/4.26.1/net/kyori/adventure/bossbar/BossBar.Overlay.html")
             public static BossBar.Overlay PROGRESS_OVERLAY = BossBar.Overlay.NOTCHED_20;
 
             @Comment("\uD83D\uDD25 Possible values: TPS, MSPT & PING")
@@ -98,7 +97,7 @@ public class RootConfig extends StaticConfig {
             @Comment("\uD83D\uDD03 Sampling time interval (in seconds) for MSPT. If 5, this means 5 second average, max, 95%ile...")
             public static int MSPT_SAMPLING_INTERVAL = 5;
 
-            @Comment("\uD83D\uDD25 Possible colors: https://jd.advntr.dev/api/4.7.0/net/kyori/adventure/bossbar/BossBar.Color.html")
+            @Comment("\uD83D\uDD25 Possible colors: https://jd.advntr.dev/api/4.26.1/net/kyori/adventure/bossbar/BossBar.Color.html")
             public static class PROGRESS_COLOR {
                 public static BossBar.Color GOOD = BossBar.Color.GREEN;
                 public static BossBar.Color MEDIUM = BossBar.Color.YELLOW;
@@ -120,13 +119,13 @@ public class RootConfig extends StaticConfig {
             @Comment("\uD83D\uDD25 Title to be shown on the RAM bar")
             public static String TITLE = "<gray>Ram<yellow>:</yellow> <used>/<xmx> (<percent>)";
 
-            @Comment("\uD83D\uDD25 Possible overlays: https://jd.advntr.dev/api/4.7.0/net/kyori/adventure/bossbar/BossBar.Overlay.html")
+            @Comment("\uD83D\uDD25 Possible overlays: https://jd.advntr.dev/api/4.26.1/net/kyori/adventure/bossbar/BossBar.Overlay.html")
             public static BossBar.Overlay PROGRESS_OVERLAY = BossBar.Overlay.NOTCHED_20;
 
             @Comment("\uD83D\uDD25 Delay (in ticks) between bar updates on the player screen")
             public static int UPDATE_INTERVAL = 20;
 
-            @Comment("\uD83D\uDD25 Possible colors: https://jd.advntr.dev/api/4.7.0/net/kyori/adventure/bossbar/BossBar.Color.html")
+            @Comment("\uD83D\uDD25 Possible colors: https://jd.advntr.dev/api/4.26.1/net/kyori/adventure/bossbar/BossBar.Color.html")
             public static class PROGRESS_COLOR {
                 public static BossBar.Color GOOD = BossBar.Color.GREEN;
                 public static BossBar.Color MEDIUM = BossBar.Color.YELLOW;
@@ -148,13 +147,13 @@ public class RootConfig extends StaticConfig {
             @Comment("\uD83D\uDD25 Title to be shown on the COMPASS bar")
             public static String TITLE = "S  ·  ◈  ·  ◈  ·  ◈  ·  SW  ·  ◈  ·  ◈  ·  ◈  ·  W  ·  ◈  ·  ◈  ·  ◈  ·  NW  ·  ◈  ·  ◈  ·  ◈  ·  N  ·  ◈  ·  ◈  ·  ◈  ·  NE  ·  ◈  ·  ◈  ·  ◈  ·  E  ·  ◈  ·  ◈  ·  ◈  ·  SE  ·  ◈  ·  ◈  ·  ◈  ·  S  ·  ◈  ·  ◈  ·  ◈  ·  SW  ·  ◈  ·  ◈  ·  ◈  ·  W  ·  ◈  ·  ◈  ·  ◈  ·  NW  ·  ◈  ·  ◈  ·  ◈  ·  N  ·  ◈  ·  ◈  ·  ◈  ·  NE  ·  ◈  ·  ◈  ·  ◈  ·  E  ·  ◈  ·  ◈  ·  ◈  ·  SE  ·  ◈  ·  ◈  ·  ◈  ·  ";
 
-            @Comment("\uD83D\uDD25 Possible overlays: https://jd.advntr.dev/api/4.7.0/net/kyori/adventure/bossbar/BossBar.Overlay.html")
+            @Comment("\uD83D\uDD25 Possible overlays: https://jd.advntr.dev/api/4.26.1/net/kyori/adventure/bossbar/BossBar.Overlay.html")
             public static BossBar.Overlay PROGRESS_OVERLAY = BossBar.Overlay.PROGRESS;
 
             @Comment("\uD83D\uDD25 Delay (in ticks) between bar updates on the player screen")
             public static int UPDATE_INTERVAL = 5;
 
-            @Comment("\uD83D\uDD25 Possible colors: https://jd.advntr.dev/api/4.7.0/net/kyori/adventure/bossbar/BossBar.Color.html")
+            @Comment("\uD83D\uDD25 Possible colors: https://jd.advntr.dev/api/4.26.1/net/kyori/adventure/bossbar/BossBar.Color.html")
             public static BossBar.Color PROGRESS_COLOR = BossBar.Color.BLUE;
 
             @Comment("\uD83D\uDD25 How full the bar should be, can take any number from 0.0 to 1.0")
@@ -240,34 +239,8 @@ public class RootConfig extends StaticConfig {
     @Comment("\uD83D\uDD25 Configurations for message feedback when running a command")
     public static class MESSAGES {
 
-        public static String NO_PERMISSION = "<red>You have no permission to run this command";
-        @Ignore
-        public static Component _NO_PERMISSION = Component.empty();
-
-
-        public static String NOT_FOUND = "<red>Command not found";
-        @Ignore
-        public static Component _NOT_FOUND = Component.empty();
-
-
-        public static String NOT_PLAYER = "<red>This command can only be used by a player";
-        @Ignore
-        public static Component _NOT_PLAYER = Component.empty();
-
-
-        public static String FAILED_RELOAD = "<red>Failed to load configuration!";
-        @Ignore
-        public static Component _FAILED_RELOAD = Component.empty();
-
-
-        public static String INVALID_COMMAND_SYNTAX = "<red>Invalid command syntax!";
-        @Ignore
-        public static Component _INVALID_COMMAND_SYNTAX = Component.empty();
-
-
-        public static String SUCCESSFUL_RELOAD = "<green>Configuration reloaded!";
-        @Ignore
-        public static Component _SUCCESSFUL_RELOAD = Component.empty();
+        public static PrefixedComponent FAILED_RELOAD = new PrefixedComponent("<red>Failed to load configuration!");
+        public static PrefixedComponent SUCCESSFUL_RELOAD = new PrefixedComponent("<green>Configuration reloaded!");
 
     }
 
@@ -280,12 +253,6 @@ public class RootConfig extends StaticConfig {
         FORMAT.RAM.USAGE_BAR.COLOR._UNUSED = TextColor.fromHexString(FORMAT.RAM.USAGE_BAR.COLOR.UNUSED);
         FORMAT.RAM.USAGE_BAR.COLOR._BORDER = TextColor.fromHexString(FORMAT.RAM.USAGE_BAR.COLOR.BORDER);
 
-        MESSAGES._NO_PERMISSION = MiniMessage.miniMessage().deserialize(MESSAGES.NO_PERMISSION);
-        MESSAGES._NOT_FOUND = MiniMessage.miniMessage().deserialize(MESSAGES.NOT_FOUND);
-        MESSAGES._NOT_PLAYER = MiniMessage.miniMessage().deserialize(MESSAGES.NOT_PLAYER);
-        MESSAGES._FAILED_RELOAD = MiniMessage.miniMessage().deserialize(MESSAGES.FAILED_RELOAD);
-        MESSAGES._INVALID_COMMAND_SYNTAX = MiniMessage.miniMessage().deserialize(MESSAGES.INVALID_COMMAND_SYNTAX);
-        MESSAGES._SUCCESSFUL_RELOAD = MiniMessage.miniMessage().deserialize(MESSAGES.SUCCESSFUL_RELOAD);
 
     }
 

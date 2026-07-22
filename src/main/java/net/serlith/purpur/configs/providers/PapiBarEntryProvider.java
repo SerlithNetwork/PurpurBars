@@ -5,15 +5,16 @@ import net.j4c0b3y.api.config.provider.context.LoadContext;
 import net.j4c0b3y.api.config.provider.context.SaveContext;
 import net.kyori.adventure.bossbar.BossBar;
 import net.serlith.purpur.configs.types.PapiBarEntry;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.NullMarked;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+@NullMarked
 public class PapiBarEntryProvider implements TypeProvider<PapiBarEntry> {
 
     @Override
-    public @Nullable PapiBarEntry load(LoadContext context) {
+    public PapiBarEntry load(LoadContext context) {
         if (context.getObject() instanceof Map<?,?> object) {
             if (object.get("color") instanceof Map<?,?> color && object.get("bound") instanceof Map<?,?> bound) {
                 return new PapiBarEntry(
@@ -37,7 +38,7 @@ public class PapiBarEntryProvider implements TypeProvider<PapiBarEntry> {
     }
 
     @Override
-    public @Nullable Object save(SaveContext<PapiBarEntry> context) {
+    public Object save(SaveContext<PapiBarEntry> context) {
         Map<String, Object> colors = new LinkedHashMap<>();
         Map<String, Object> bounds = new LinkedHashMap<>();
         Map<String, Object> map = new LinkedHashMap<>();

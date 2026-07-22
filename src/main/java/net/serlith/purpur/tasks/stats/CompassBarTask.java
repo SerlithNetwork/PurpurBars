@@ -8,13 +8,16 @@ import net.serlith.purpur.configs.RootConfig;
 import net.serlith.purpur.data.DataStorage;
 import net.serlith.purpur.tasks.AbstractTask;
 import org.bukkit.entity.Player;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
 import java.util.Set;
 import java.util.UUID;
 
+@NullMarked
 public class CompassBarTask extends AbstractTask {
 
-    private static CompassBarTask INSTANCE;
+    private static @Nullable CompassBarTask INSTANCE;
     public static CompassBarTask getInstance() {
         if (INSTANCE == null) {
             throw new IllegalStateException("CompassBar has not yet been initialized");

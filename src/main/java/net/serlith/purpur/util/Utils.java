@@ -1,5 +1,8 @@
 package net.serlith.purpur.util;
 
+import org.bukkit.NamespacedKey;
+import org.jspecify.annotations.Nullable;
+
 public class Utils {
 
     private static final char[] SIZES = { 'B', 'K', 'M', 'G', 'T', 'P', 'E' };
@@ -17,6 +20,21 @@ public class Utils {
             }
         }
         return value;
+    }
+
+    public static @Nullable NamespacedKey keyOrNullFromString(String fullKey) {
+        String[] splits = fullKey.split(":");
+        if (splits.length != 2) {
+            return null;
+        }
+
+        String namespace = splits[0];
+        String key = splits[1];
+        if (namespace.isBlank() || key.isBlank()) {
+            return null;
+        }
+
+        return new NamespacedKey(namespace, key);
     }
 
 }

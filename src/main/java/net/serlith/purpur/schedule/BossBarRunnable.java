@@ -7,20 +7,25 @@ import net.serlith.purpur.tasks.AbstractTask;
 import net.serlith.purpur.tasks.custom.PapiBarTask;
 import net.serlith.purpur.tasks.region.RegionBarTask;
 import net.serlith.purpur.tasks.world.WorldBarTask;
+import org.bukkit.NamespacedKey;
+import org.bukkit.World;
 import org.bukkit.entity.Player;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 import java.util.stream.Stream;
 
+@NullMarked
 public class BossBarRunnable implements Runnable {
 
     private static final Comparator<AbstractTask> TASK_COMPARATOR = Comparator.comparingInt(a -> RootConfig.JOIN_EVENT.ORDER.indexOf(a.getType()));
     private final List<AbstractTask> tasks = new ArrayList<>();
-    private final Map<String, WorldBarTask> worldTasks = new ConcurrentHashMap<>();
-    private final Map<String, RegionBarTask> regionTasks = new ConcurrentHashMap<>();
-    private final Map<String, PapiBarTask> papiTasks = new ConcurrentHashMap<>();
+    private final ConcurrentMap<NamespacedKey, WorldBarTask> worldTasks = new ConcurrentHashMap<>();
+    private final ConcurrentMap<UUID, RegionBarTask> regionTasks = new ConcurrentHashMap<>();
+    private final ConcurrentMap<String, PapiBarTask> papiTasks = new ConcurrentHashMap<>();
     private final PurpurBars plugin;
 
     public BossBarRunnable(PurpurBars plugin) {
@@ -60,33 +65,35 @@ public class BossBarRunnable implements Runnable {
         this.tasks.add(task);
     }
 
-    public @Nullable WorldBarTask getWorldBarTask(String worldName) {
-        return worldTasks.get(worldName);
+    public @Nullable WorldBarTask getWorldBarTask(World world) {
+        return this.worldTasks.get(world.getKey());
     }
 
-    public void addWorldTask(String name, WorldBarTask task) {
-        if (!this.worldTasks.containsKey(name)) {
-            this.worldTasks.put(name, task);
-        }
+    public @Nullable WorldBarTask getWorldBarTask(NamespacedKey key) {
+        return this.worldTasks.get(key);
     }
 
-    public void removeWorldTask(String name) {
-        WorldBarTask task = this.worldTasks.remove(name);
+    public void addWorldTask(World world, WorldBarTask task) {
+        this.worldTasks.putIfAbsent(world.getKey(), task);
+    }
+
+    public void removeWorldTask(World world) {
+        WorldBarTask task = this.worldTasks.remove(world.getKey());
         if (task != null) {
             task.stop();
         }
     }
 
-    public @Nullable RegionBarTask getRegionBarTask(String playerName) {
-        return regionTasks.get(playerName);
+    public @Nullable RegionBarTask getRegionBarTask(Player player) {
+        return this.regionTasks.get(player.getUniqueId());
     }
 
-    public void addRegionTask(String playerName, RegionBarTask task) {
-        this.regionTasks.put(playerName, task);
+    public void addRegionTask(Player player, RegionBarTask task) {
+        this.regionTasks.put(player.getUniqueId(), task);
     }
 
-    public void removeRegionTask(String playerName) {
-        RegionBarTask task = this.regionTasks.remove(playerName);
+    public void removeRegionTask(Player player) {
+        RegionBarTask task = this.regionTasks.remove(player.getUniqueId());
         if (task != null) {
             task.stop();
         }

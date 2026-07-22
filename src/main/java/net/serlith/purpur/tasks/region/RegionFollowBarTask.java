@@ -10,13 +10,16 @@ import net.serlith.purpur.data.DataStorage;
 import net.serlith.purpur.tasks.AbstractTask;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
 import java.util.Set;
 import java.util.UUID;
 
+@NullMarked
 public class RegionFollowBarTask extends AbstractTask {
 
-    private static RegionFollowBarTask INSTANCE;
+    private static @Nullable RegionFollowBarTask INSTANCE;
     public static RegionFollowBarTask getInstance() {
         if (INSTANCE == null) {
             throw new IllegalStateException("Folia TpsBar has not yet been initialized");
@@ -74,9 +77,9 @@ public class RegionFollowBarTask extends AbstractTask {
 
     private float getPercent(double tps, double mspt, int ping) {
         return switch (RegionConfig.FORMAT.REGION_FOLLOW_BAR.PROGRESS_FILL_MODE) {
-            case MSPT -> Math.max(Math.min(((float) mspt) / 50F, 1F), 0F);
-            case TPS -> Math.max(Math.min(((float) tps) / 20F, 1F), 0F);
-            case PING -> Math.max(Math.min(((float) ping) / 200F, 1F), 0F);
+            case MSPT -> Math.clamp(((float) mspt) / 50F, 0F, 1F);
+            case TPS -> Math.clamp(((float) tps) / 20F, 0F, 1F);
+            case PING -> Math.clamp(((float) ping) / 200F, 0F, 1F);
         };
     }
 
