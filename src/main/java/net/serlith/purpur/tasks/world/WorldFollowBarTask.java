@@ -49,7 +49,7 @@ public class WorldFollowBarTask extends AbstractTask {
         bossBar.color(this.getBossBarColor(mspt));
         bossBar.name(MiniMessage.miniMessage().deserialize(WorldConfig.FORMAT.WORLD_FOLLOW_BAR.TITLE,
                 Placeholder.component("mspt", this.getMsptColor(mspt)),
-                Placeholder.component("world", this.getWorldColor(world.getName(), mspt)),
+                Placeholder.component("world", this.getWorldColor(this.getWorldName(world), mspt)),
                 Placeholder.component("ping", this.getPingColor(player.getPing()))
         ));
     }
@@ -133,6 +133,10 @@ public class WorldFollowBarTask extends AbstractTask {
 
     private boolean isMedium(double mspt) {
         return mspt < 50;
+    }
+
+    private String getWorldName(final World world) {
+        return WorldConfig.FORMAT.WORLD_FOLLOW_BAR.USE_MINIMAL_NAME ? world.getKey().asMinimalString() : world.getKey().asString();
     }
 
 }

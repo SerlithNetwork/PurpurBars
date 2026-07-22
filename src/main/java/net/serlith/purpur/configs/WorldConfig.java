@@ -43,6 +43,9 @@ public class WorldConfig extends StaticConfig {
             @Comment("\uD83D\uDD25 Delay (in ticks) between bar updates")
             public static int UPDATE_INTERVAL = 20;
 
+            @Comment("\uD83D\uDD25 Minecraft world names will display as 'overworld' instead of 'minecraft:overworld'")
+            public static boolean USE_MINIMAL_NAME = false;
+
             @Comment("\uD83D\uDD25 Possible colors: https://jd.advntr.dev/api/4.26.1/net/kyori/adventure/bossbar/BossBar.Color.html")
             public static class PROGRESS_COLOR {
                 public static BossBar.Color GOOD = BossBar.Color.WHITE;
@@ -73,6 +76,9 @@ public class WorldConfig extends StaticConfig {
 
             @Comment("\uD83D\uDD25 Delay (in ticks) between bar updates on the player screen")
             public static int UPDATE_INTERVAL = 20;
+
+            @Comment("\uD83D\uDD25 Minecraft world names will display as 'overworld' instead of 'minecraft:overworld'")
+            public static boolean USE_MINIMAL_NAME = false;
 
             @Comment("\uD83D\uDD25 Possible colors: https://jd.advntr.dev/api/4.26.1/net/kyori/adventure/bossbar/BossBar.Color.html")
             public static class PROGRESS_COLOR {

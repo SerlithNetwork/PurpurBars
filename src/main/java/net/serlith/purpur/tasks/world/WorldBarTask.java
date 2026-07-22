@@ -88,7 +88,7 @@ public class WorldBarTask extends AbstractTask {
     }
 
     private Component getWorldColor() {
-        return MiniMessage.miniMessage().deserialize(this.getColor(), Placeholder.parsed("text", this.world.getName()));
+        return MiniMessage.miniMessage().deserialize(this.getColor(), Placeholder.parsed("text", this.getWorldName(this.world)));
     }
 
     private String getColor() {
@@ -109,6 +109,10 @@ public class WorldBarTask extends AbstractTask {
 
     private boolean isMedium() {
         return this.mspt < 50;
+    }
+
+    private String getWorldName(final World world) {
+        return WorldConfig.FORMAT.WORLD_BAR.USE_MINIMAL_NAME ? world.getKey().asMinimalString() : world.getKey().asString();
     }
 
 }
