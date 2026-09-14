@@ -19,6 +19,9 @@ repositories {
     maven("https://repo.extendedclip.com/releases/") {
         name = "extendedclip"
     }
+    maven("https://repo.faststats.dev/releases") {
+        name = "faststatsReleases"
+    }
     maven("https://jitpack.io") {
         name = "jitpack"
     }
@@ -30,9 +33,10 @@ dependencies {
     compileOnly("me.clip:placeholderapi:2.11.6")
     compileOnly("org.jspecify:jspecify:1.0.0")
 
-    implementation("net.serlith.ConfigAPI:ConfigAPI-core:1.2.11")
-    implementation("net.serlith.ConfigAPI:ConfigAPI-adventure:1.2.11")
+    implementation("de.bsommerfeld.jshepherd:core:4.1.1")
+    implementation("de.bsommerfeld.jshepherd:yaml:4.1.1")
     implementation("org.bstats:bstats-bukkit:3.2.1")
+    implementation("dev.faststats.metrics:bukkit:0.30.1")
 }
 
 java {

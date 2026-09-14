@@ -42,6 +42,8 @@ public final class PurpurBars extends JavaPlugin {
 
     @Getter
     private static PurpurBars instance;
+    @Getter
+    private static final Component prefix = MiniMessage.miniMessage().deserialize("<gray>[<gradient:#429fff:#d621ff>PurpurBars</gradient>]<gray>");
 
     @Getter
     private final String namespace = "purpurbars";
@@ -77,7 +79,7 @@ public final class PurpurBars extends JavaPlugin {
 
     @Override
     public void onEnable() {
-        new RootConfig(this).load();
+        RootConfig.initialize(this);
         new DataStorage(this).load();
         new Metrics(this, 24547);
 
