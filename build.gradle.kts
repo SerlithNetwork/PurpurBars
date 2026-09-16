@@ -48,26 +48,35 @@ tasks {
         // Configure the Minecraft version for our task.
         // This is the only required configuration besides applying the plugin.
         // Your plugin's jar (or shadowJar if present) will be used automatically.
-        minecraftVersion("1.21")
+        minecraftVersion("1.21.11")
         jvmArgs("-Xms2G", "-Xmx2G")
 
         downloadPlugins {
-            modrinth("luckperms", "v5.5.17-bukkit")
-            modrinth("placeholderapi", "2.12.2")
+            modrinth("luckperms", "v5.5.71-bukkit")
+            modrinth("placeholderapi", "2.12.3")
+            modrinth("viaversion", "5.11.0")
         }
     }
 
+    build {
+        dependsOn("shadowJar")
+    }
+
     shadowJar {
-        minimize()
+        minimize() {
+            exclude(dependency("de.bsommerfeld.jshepherd:yaml"))
+        }
         archiveClassifier.set("")
 
         mapOf(
-            "org.bstats" to "metrics",
-            "net.j4c0b3y.api.config" to "config",
-            "dev.dejvokep.boostedyaml" to "boostedyaml",
+            "org.bstats" to "bstats",
+            "de.bsommerfeld.jshepherd" to "jshepherd",
+            "dev.faststats" to "faststats",
         ).forEach { (key, value) ->
             relocate(key, "net.serlith.purpur.libs.$value")
         }
+
+        mergeServiceFiles()
     }
 
     jar {
