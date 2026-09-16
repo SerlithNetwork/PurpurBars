@@ -10,12 +10,12 @@ import lombok.NoArgsConstructor;
 public class ProgressColorText {
 
     @Key("good")
-    private String good;
+    public String good;
 
     @Key("medium")
-    private String medium;
+    public String medium;
 
     @Key("low")
-    private String low;
+    public String low;
 
 }

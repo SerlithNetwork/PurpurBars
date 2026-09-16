@@ -21,7 +21,7 @@ import java.util.stream.Stream;
 @NullMarked
 public class BossBarRunnable implements Runnable {
 
-    private static final Comparator<AbstractTask> TASK_COMPARATOR = Comparator.comparingInt(a -> RootConfig.JOIN_EVENT.ORDER.indexOf(a.getType()));
+    private static final Comparator<AbstractTask> TASK_COMPARATOR = Comparator.comparingInt(a -> RootConfig.getInstance().joinEvent.order.indexOf(a.getType()));
     private final List<AbstractTask> tasks = new ArrayList<>();
     private final ConcurrentMap<NamespacedKey, WorldBarTask> worldTasks = new ConcurrentHashMap<>();
     private final ConcurrentMap<UUID, RegionBarTask> regionTasks = new ConcurrentHashMap<>();
@@ -105,13 +105,13 @@ public class BossBarRunnable implements Runnable {
 
     public void addNotPresentPapiBarTasks(Collection<PapiBarEntry> entries) {
         for (PapiBarEntry entry : entries) {
-            this.papiTasks.putIfAbsent(entry.name(), new PapiBarTask(this.plugin, entry));
+            this.papiTasks.putIfAbsent(entry.name, new PapiBarTask(this.plugin, entry));
         }
     }
 
     public void updatePresentPapiBarTasks(Collection<PapiBarEntry> entries) {
         for (PapiBarEntry entry : entries) {
-            PapiBarTask task = this.papiTasks.get(entry.name());
+            PapiBarTask task = this.papiTasks.get(entry.name);
             if (task != null) {
                 task.setEntry(entry);
             }

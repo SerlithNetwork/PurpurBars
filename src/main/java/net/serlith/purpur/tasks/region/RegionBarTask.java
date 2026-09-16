@@ -7,7 +7,7 @@ import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import net.serlith.purpur.PurpurBars;
 import net.serlith.purpur.configs.RegionConfig;
-import net.serlith.purpur.tasks.AbstractTask;
+import net.serlith.purpur.tasks.AbstractPerformanceTask;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.jspecify.annotations.NullMarked;
@@ -16,7 +16,7 @@ import java.util.Set;
 import java.util.UUID;
 
 @NullMarked
-public class RegionBarTask extends AbstractTask {
+public class RegionBarTask extends AbstractPerformanceTask {
 
     @Getter
     private double tps = 20.0;
@@ -34,7 +34,7 @@ public class RegionBarTask extends AbstractTask {
 
     @Override
     protected BossBar createBossBar() {
-        return BossBar.bossBar(Component.empty(), 0F, this.getBossBarColor(), RegionConfig.FORMAT.REGION_BAR.PROGRESS_OVERLAY);
+        return BossBar.bossBar(Component.empty(), 0F, this.getBossBarColor(), RegionConfig.getInstance().format.regionBar.progressOverlay);
     }
 
     @Override
@@ -43,9 +43,9 @@ public class RegionBarTask extends AbstractTask {
         this.mspt = this.plugin.isSupportsFoliaMSPT() ? Bukkit.getRegionAverageTickTimes(this.player.getLocation())[0] : 0.0;
         this.ping = this.player.getPing();
 
-        bossBar.progress(this.getPercent());
+        bossBar.progress(this.getPercent(this.tps, this.mspt, this.ping));
         bossBar.color(this.getBossBarColor());
-        bossBar.name(MiniMessage.miniMessage().deserialize(RegionConfig.FORMAT.REGION_BAR.TITLE,
+        bossBar.name(MiniMessage.miniMessage().deserialize(RegionConfig.getInstance().format.regionBar.title,
                 Placeholder.component("tps", this.getTpsColor()),
                 Placeholder.component("mspt", this.getMsptColor()),
                 Placeholder.component("player", this.getPlayerColor()),
@@ -60,7 +60,7 @@ public class RegionBarTask extends AbstractTask {
 
     @Override
     public void run() {
-        if (++this.tick % RegionConfig.FORMAT.REGION_BAR.UPDATE_INTERVAL != 0) return;
+        if (++this.tick % RegionConfig.getInstance().format.regionBar.updateInterval != 0) return;
         super.run();
     }
 
@@ -76,94 +76,51 @@ public class RegionBarTask extends AbstractTask {
     @Override
     public void dumpAllPlayerUUIDs() {}
 
-    private float getPercent() {
-        return switch (RegionConfig.FORMAT.REGION_BAR.PROGRESS_FILL_MODE) {
-            case MSPT -> Math.clamp(((float) this.mspt) / 50F, 0F, 1F);
-            case TPS -> Math.clamp(((float) this.tps) / 20F, 0F, 1F);
-            case PING -> Math.clamp(((float) this.ping) / 200F, 0F, 1F);
-        };
-    }
 
     private BossBar.Color getBossBarColor() {
         BossBar.Color color;
         if (this.isGood()) {
-            color = RegionConfig.FORMAT.REGION_BAR.PROGRESS_COLOR.GOOD;
+            color = RegionConfig.getInstance().format.regionBar.progressColor.good;
         } else if (this.isMedium()) {
-            color = RegionConfig.FORMAT.REGION_BAR.PROGRESS_COLOR.MEDIUM;
+            color = RegionConfig.getInstance().format.regionBar.progressColor.medium;
         } else {
-            color = RegionConfig.FORMAT.REGION_BAR.PROGRESS_COLOR.LOW;
+            color = RegionConfig.getInstance().format.regionBar.progressColor.low;
         }
         return color;
     }
 
     private boolean isGood() {
-        return switch (RegionConfig.FORMAT.REGION_BAR.PROGRESS_FILL_MODE) {
+        return switch (RegionConfig.getInstance().format.regionBar.progressFillMode) {
             case MSPT -> mspt < 40;
             case TPS -> tps >= 19;
             case PING -> ping < 100;
+            default -> false;
         };
     }
 
     private boolean isMedium() {
-        return switch (RegionConfig.FORMAT.REGION_BAR.PROGRESS_FILL_MODE) {
+        return switch (RegionConfig.getInstance().format.regionBar.progressFillMode) {
             case MSPT -> mspt < 50;
             case TPS -> tps >= 15;
             case PING -> ping < 200;
+            default -> false;
         };
     }
 
     private Component getTpsColor() {
-        return MiniMessage.miniMessage().deserialize(this.getTpsHealthColor(), Placeholder.parsed("text", "%.2f".formatted(this.tps)));
+        return MiniMessage.miniMessage().deserialize(this.getTpsHealthColor(RegionConfig.getInstance().format.regionBar.textColor, this.tps), Placeholder.parsed("text", "%.2f".formatted(this.tps)));
     }
 
     private Component getMsptColor() {
-        return MiniMessage.miniMessage().deserialize(this.getMsptHealthColor(), Placeholder.parsed("text", "%.2f".formatted(this.mspt)));
+        return MiniMessage.miniMessage().deserialize(this.getMsptHealthColor(RegionConfig.getInstance().format.regionBar.textColor, this.mspt), Placeholder.parsed("text", "%.2f".formatted(this.mspt)));
     }
 
     private Component getPlayerColor() {
-        return MiniMessage.miniMessage().deserialize(this.getMsptHealthColor(), Placeholder.parsed("text", this.player.getName()));
+        return MiniMessage.miniMessage().deserialize(this.getMsptHealthColor(RegionConfig.getInstance().format.regionBar.textColor, this.mspt), Placeholder.parsed("text", this.player.getName()));
     }
 
     private Component getPingColor() {
-        return MiniMessage.miniMessage().deserialize(this.getPingHealthColor(), Placeholder.parsed("text", "%d".formatted(this.ping)));
+        return MiniMessage.miniMessage().deserialize(this.getPingHealthColor(RegionConfig.getInstance().format.regionBar.textColor, this.ping), Placeholder.parsed("text", "%d".formatted(this.ping)));
     }
-
-    private String getTpsHealthColor() {
-        String colored;
-        if (this.tps >= 19) {
-            colored = RegionConfig.FORMAT.REGION_BAR.TEXT_COLOR.GOOD;
-        } else if (this.tps >= 15) {
-            colored = RegionConfig.FORMAT.REGION_BAR.TEXT_COLOR.MEDIUM;
-        } else {
-            colored = RegionConfig.FORMAT.REGION_BAR.TEXT_COLOR.LOW;
-        }
-        return colored;
-    }
-
-    private String getMsptHealthColor() {
-        String colored;
-        if (this.mspt < 40) {
-            colored = RegionConfig.FORMAT.REGION_BAR.TEXT_COLOR.GOOD;
-        } else if (this.mspt < 50) {
-            colored = RegionConfig.FORMAT.REGION_BAR.TEXT_COLOR.MEDIUM;
-        } else {
-            colored = RegionConfig.FORMAT.REGION_BAR.TEXT_COLOR.LOW;
-        }
-        return colored;
-    }
-
-    private String getPingHealthColor() {
-        String colored;
-        if (this.ping < 100) {
-            colored = RegionConfig.FORMAT.REGION_BAR.TEXT_COLOR.GOOD;
-        } else if (this.ping < 200) {
-            colored = RegionConfig.FORMAT.REGION_BAR.TEXT_COLOR.MEDIUM;
-        } else {
-            colored = RegionConfig.FORMAT.REGION_BAR.TEXT_COLOR.LOW;
-        }
-        return colored;
-    }
-
-    public enum ProgressFillMode { TPS, MSPT, PING }
 
 }

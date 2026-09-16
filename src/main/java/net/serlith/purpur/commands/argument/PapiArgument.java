@@ -14,7 +14,6 @@ import java.util.Locale;
 import java.util.concurrent.CompletableFuture;
 
 @NullMarked
-@SuppressWarnings("UnstableApiUsage")
 public class PapiArgument implements CustomArgumentType<String, String> {
 
     @Override
@@ -29,7 +28,7 @@ public class PapiArgument implements CustomArgumentType<String, String> {
 
     @Override
     public <S> CompletableFuture<Suggestions> listSuggestions(CommandContext<S> context, SuggestionsBuilder builder) {
-        PapiConfig.PAPI_BARS_NAMES.stream()
+        PapiConfig.getInstance().format.papiBarsNames.stream()
                 .filter(name -> name.toLowerCase(Locale.ROOT).startsWith(builder.getRemainingLowerCase()))
                 .forEach(builder::suggest);
         return builder.buildFuture();

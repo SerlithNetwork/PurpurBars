@@ -48,14 +48,14 @@ public class RamBarTask extends AbstractTask {
 
     @Override
     public BossBar createBossBar() {
-        return BossBar.bossBar(Component.empty(), 0F, getInstance().getBossBarColor(), RootConfig.FORMAT.RAM_BAR.PROGRESS_OVERLAY);
+        return BossBar.bossBar(Component.empty(), 0F, getInstance().getBossBarColor(), RootConfig.getInstance().format.ramBar.progressOverlay);
     }
 
     @Override
     public void updateBossBar(BossBar bossBar, Player player) {
         bossBar.progress(this.getPercent());
         bossBar.color(this.getBossBarColor());
-        bossBar.name(MiniMessage.miniMessage().deserialize(RootConfig.FORMAT.RAM_BAR.TITLE,
+        bossBar.name(MiniMessage.miniMessage().deserialize(RootConfig.getInstance().format.ramBar.title,
                 Placeholder.component("allocated", this.format(this.allocated)),
                 Placeholder.component("used", this.format(this.used)),
                 Placeholder.component("xmx", this.format(this.xmx)),
@@ -71,7 +71,7 @@ public class RamBarTask extends AbstractTask {
 
     @Override
     public void run() {
-        if (++this.tick % RootConfig.FORMAT.RAM_BAR.UPDATE_INTERVAL != 0) return;
+        if (++this.tick % RootConfig.getInstance().format.ramBar.updateInterval != 0) return;
 
         var heap = ManagementFactory.getMemoryMXBean().getHeapMemoryUsage();
         this.allocated = heap.getCommitted();
@@ -85,22 +85,22 @@ public class RamBarTask extends AbstractTask {
 
     @Override
     public void dumpAllPlayerUUIDs() {
-        DataStorage.RAM_BAR = this.getAllPlayerUUIDs();
+        DataStorage.getInstance().ramBar = this.getAllPlayerUUIDs();
     }
 
     @Override
     public Set<UUID> loadAllPlayerUUIDs() {
-        return DataStorage.RAM_BAR;
+        return DataStorage.getInstance().ramBar;
     }
 
     private BossBar.Color getBossBarColor() {
         BossBar.Color color;
         if (this.percent < 0.5F) {
-            color = RootConfig.FORMAT.RAM_BAR.PROGRESS_COLOR.GOOD;
+            color = RootConfig.getInstance().format.ramBar.progressColor.good;
         } else if (this.percent < 0.75F) {
-            color = RootConfig.FORMAT.RAM_BAR.PROGRESS_COLOR.MEDIUM;
+            color = RootConfig.getInstance().format.ramBar.progressColor.medium;
         } else {
-            color = RootConfig.FORMAT.RAM_BAR.PROGRESS_COLOR.LOW;
+            color = RootConfig.getInstance().format.ramBar.progressColor.low;
         }
         return color;
     }
@@ -108,11 +108,11 @@ public class RamBarTask extends AbstractTask {
     public Component format(long v) {
         String colored;
         if (this.percent < 0.6F) {
-            colored = RootConfig.FORMAT.RAM_BAR.TEXT_COLOR.GOOD;
+            colored = RootConfig.getInstance().format.ramBar.textColor.good;
         } else if (this.percent < 0.85F) {
-            colored = RootConfig.FORMAT.RAM_BAR.TEXT_COLOR.MEDIUM;
+            colored = RootConfig.getInstance().format.ramBar.textColor.medium;
         } else {
-            colored = RootConfig.FORMAT.RAM_BAR.TEXT_COLOR.LOW;
+            colored = RootConfig.getInstance().format.ramBar.textColor.low;
         }
 
         return MiniMessage.miniMessage().deserialize(colored,

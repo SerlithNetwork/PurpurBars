@@ -26,13 +26,13 @@ public class AdminCommands {
                             CommandSender sender = ctx.getSource().getSender();
 
                             try {
-                                RootConfig.INSTANCE.load();
-                                if (WorldConfig.INSTANCE != null) WorldConfig.INSTANCE.load();
-                                if (RegionConfig.INSTANCE != null) RegionConfig.INSTANCE.load();
-                                if (PapiConfig.INSTANCE != null) PapiConfig.INSTANCE.load();
-                                sender.sendMessage(RootConfig.MESSAGES.SUCCESSFUL_RELOAD.getComponent());
+                                RootConfig.getInstance().reload();
+                                WorldConfig.runIfInitialized(WorldConfig::reload);
+                                RegionConfig.runIfInitialized(RegionConfig::reload);
+                                PapiConfig.runIfInitialized(PapiConfig::reload);
+                                sender.sendMessage(RootConfig.getInstance().messages.successfulReload);
                             } catch (Exception e) {
-                                sender.sendMessage(RootConfig.MESSAGES.FAILED_RELOAD.getComponent());
+                                sender.sendMessage(RootConfig.getInstance().messages.failedReload);
                                 PurpurBars.getInstance().getSLF4JLogger().error("Failed to reload config", e);
                             }
 

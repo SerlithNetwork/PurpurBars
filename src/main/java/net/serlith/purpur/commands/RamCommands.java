@@ -42,7 +42,7 @@ public class RamCommands {
 
                     CommandSender sender = ctx.getSource().getSender();
                     RamBarTask ramTask = RamBarTask.getInstance();
-                    RootConfig.FORMAT.RAM.OUTPUT.stream().map(i -> MiniMessage.miniMessage().deserialize(i,
+                    RootConfig.getInstance().format.ram.output.stream().map(i -> MiniMessage.miniMessage().deserialize(i,
                             Placeholder.component("allocated", ramTask.format(ramTask.getAllocated())),
                             Placeholder.component("used", ramTask.format(ramTask.getUsed())),
                             Placeholder.component("xmx", ramTask.format(ramTask.getXmx())),
@@ -57,13 +57,13 @@ public class RamCommands {
     }
 
     private Component createProgressBar(long used, long max) {
-        long usedLength = (RootConfig.FORMAT.RAM.USAGE_BAR.LENGTH * used) / max;
-        long unusedLength = RootConfig.FORMAT.RAM.USAGE_BAR.LENGTH - usedLength;
+        long usedLength = (RootConfig.getInstance().format.ram.usageBar.length * used) / max;
+        long unusedLength = RootConfig.getInstance().format.ram.usageBar.length - usedLength;
 
-        return Component.text(RootConfig.FORMAT.RAM.USAGE_BAR.CHARS.START, RootConfig.FORMAT.RAM.USAGE_BAR.COLOR._BORDER)
-                .append(Component.text(RootConfig.FORMAT.RAM.USAGE_BAR.CHARS.BAR.repeat((int) usedLength), RootConfig.FORMAT.RAM.USAGE_BAR.COLOR._USED))
-                .append(Component.text(RootConfig.FORMAT.RAM.USAGE_BAR.CHARS.BAR.repeat((int) unusedLength), RootConfig.FORMAT.RAM.USAGE_BAR.COLOR._UNUSED))
-                .append(Component.text(RootConfig.FORMAT.RAM.USAGE_BAR.CHARS.END, RootConfig.FORMAT.RAM.USAGE_BAR.COLOR._BORDER));
+        return Component.text(RootConfig.getInstance().format.ram.usageBar.chars.start, RootConfig.getInstance().format.ram.usageBar.color.border)
+                .append(Component.text(RootConfig.getInstance().format.ram.usageBar.chars.bar.repeat((int) usedLength), RootConfig.getInstance().format.ram.usageBar.color.used))
+                .append(Component.text(RootConfig.getInstance().format.ram.usageBar.chars.bar.repeat((int) unusedLength), RootConfig.getInstance().format.ram.usageBar.color.unused))
+                .append(Component.text(RootConfig.getInstance().format.ram.usageBar.chars.end, RootConfig.getInstance().format.ram.usageBar.color.border));
     }
 
 }

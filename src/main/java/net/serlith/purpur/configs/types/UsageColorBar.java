@@ -3,7 +3,6 @@ package net.serlith.purpur.configs.types;
 import de.bsommerfeld.jshepherd.annotation.Key;
 import de.bsommerfeld.jshepherd.annotation.PostInject;
 import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import net.kyori.adventure.text.format.TextColor;
 import org.jspecify.annotations.NullMarked;

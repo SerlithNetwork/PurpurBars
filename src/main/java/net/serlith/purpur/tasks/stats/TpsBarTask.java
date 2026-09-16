@@ -9,7 +9,7 @@ import net.serlith.purpur.PurpurBars;
 import net.serlith.purpur.configs.RootConfig;
 import net.serlith.purpur.data.DataStorage;
 import net.serlith.purpur.listeners.ServerListener;
-import net.serlith.purpur.tasks.AbstractTask;
+import net.serlith.purpur.tasks.AbstractPerformanceTask;
 import org.bukkit.entity.Player;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
@@ -18,7 +18,7 @@ import java.util.Set;
 import java.util.UUID;
 
 @NullMarked
-public class TpsBarTask extends AbstractTask {
+public class TpsBarTask extends AbstractPerformanceTask {
 
     private static @Nullable TpsBarTask INSTANCE;
     public static TpsBarTask getInstance() {
@@ -59,15 +59,15 @@ public class TpsBarTask extends AbstractTask {
 
     @Override
     public BossBar createBossBar() {
-        return BossBar.bossBar(Component.empty(), 0F, getInstance().getBossBarColor(0), RootConfig.FORMAT.TPS_BAR.PROGRESS_OVERLAY);
+        return BossBar.bossBar(Component.empty(), 0F, getInstance().getBossBarColor(0), RootConfig.getInstance().format.tpsBar.progressOverlay);
     }
 
     @Override
     public void updateBossBar(BossBar bossBar, Player player) {
         int ping = player.getPing();
-        bossBar.progress(this.getPercent(ping));
+        bossBar.progress(this.getPercent(this.tps, this.mspt, ping));
         bossBar.color(this.getBossBarColor(ping));
-        bossBar.name(MiniMessage.miniMessage().deserialize(RootConfig.FORMAT.TPS_BAR.TITLE,
+        bossBar.name(MiniMessage.miniMessage().deserialize(RootConfig.getInstance().format.tpsBar.title,
                 Placeholder.component("tps", this.getTpsColor(this.tps)),
                 Placeholder.component("mspt", this.getMsptColor(this.mspt)),
                 Placeholder.component("ping", this.getPingColor(ping))
@@ -91,7 +91,7 @@ public class TpsBarTask extends AbstractTask {
 
     @Override
     public void run() {
-        if (++this.tick % RootConfig.FORMAT.TPS_BAR.UPDATE_INTERVAL != 0) return;
+        if (++this.tick % RootConfig.getInstance().format.tpsBar.updateInterval != 0) return;
 
         this.tps = Math.clamp(ServerListener.TPS_AVERAGE.getAverage(), 0.0, 20.0);
         this.mspt = Math.max(0.0, ServerListener.MSPT_AVERAGE.getAverage());
@@ -111,100 +111,56 @@ public class TpsBarTask extends AbstractTask {
 
     @Override
     public void dumpAllPlayerUUIDs() {
-        DataStorage.TPS_BAR = this.getAllPlayerUUIDs();
+        DataStorage.getInstance().tpsBar = this.getAllPlayerUUIDs();
     }
 
     @Override
     public Set<UUID> loadAllPlayerUUIDs() {
-        return DataStorage.TPS_BAR;
-    }
-
-    private float getPercent(int ping) {
-        return switch (RootConfig.FORMAT.TPS_BAR.PROGRESS_FILL_MODE) {
-            case MSPT -> Math.clamp(((float) this.mspt) / 50F, 0F, 1F);
-            case TPS -> Math.clamp(((float) this.tps) / 20F, 0F, 1F);
-            case PING -> Math.clamp(((float) ping) / 200F, 0F, 1F);
-        };
+        return DataStorage.getInstance().tpsBar;
     }
 
     private BossBar.Color getBossBarColor(int ping) {
         BossBar.Color color;
         if (this.isGood(ping)) {
-            color = RootConfig.FORMAT.TPS_BAR.PROGRESS_COLOR.GOOD;
+            color = RootConfig.getInstance().format.tpsBar.progressColor.good;
         } else if (this.isMedium(ping)) {
-            color = RootConfig.FORMAT.TPS_BAR.PROGRESS_COLOR.MEDIUM;
+            color = RootConfig.getInstance().format.tpsBar.progressColor.medium;
         } else {
-            color = RootConfig.FORMAT.TPS_BAR.PROGRESS_COLOR.LOW;
+            color = RootConfig.getInstance().format.tpsBar.progressColor.low;
         }
         return color;
     }
 
-    private boolean isGood(int ping) {
-        return switch (RootConfig.FORMAT.TPS_BAR.PROGRESS_FILL_MODE) {
+    @Override
+    protected boolean isGood(int ping) {
+        return switch (RootConfig.getInstance().format.tpsBar.progressFillMode) {
             case MSPT -> this.mspt < 40;
             case TPS -> this.tps >= 19;
             case PING -> ping < 100;
+            default -> false;
         };
     }
 
-    private boolean isMedium(int ping) {
-        return switch (RootConfig.FORMAT.TPS_BAR.PROGRESS_FILL_MODE) {
+    @Override
+    protected boolean isMedium(int ping) {
+        return switch (RootConfig.getInstance().format.tpsBar.progressFillMode) {
             case MSPT -> this.mspt < 50;
             case TPS -> this.tps >= 15;
             case PING -> ping < 200;
+            default -> false;
         };
     }
 
     private Component getTpsColor(double tps) {
-        return MiniMessage.miniMessage().deserialize(this.getTpsHealthColor(tps), Placeholder.parsed("text", "%.2f".formatted(tps)));
+        return MiniMessage.miniMessage().deserialize(this.getTpsHealthColor(RootConfig.getInstance().format.tpsBar.textColor, tps), Placeholder.parsed("text", "%.2f".formatted(tps)));
     }
 
     private Component getMsptColor(double mspt) {
-        return MiniMessage.miniMessage().deserialize(this.getMsptHealthColor(mspt), Placeholder.parsed("text", "%.2f".formatted(mspt)));
+        return MiniMessage.miniMessage().deserialize(this.getMsptHealthColor(RootConfig.getInstance().format.tpsBar.textColor, mspt), Placeholder.parsed("text", "%.2f".formatted(mspt)));
     }
 
     private Component getPingColor(int ping) {
-        return MiniMessage.miniMessage().deserialize(this.getPingHealthColor(ping), Placeholder.parsed("text", "%d".formatted(ping)));
+        return MiniMessage.miniMessage().deserialize(this.getPingHealthColor(RootConfig.getInstance().format.tpsBar.textColor, ping), Placeholder.parsed("text", "%d".formatted(ping)));
     }
-
-    private String getTpsHealthColor(double tps) {
-        String colored;
-        if (tps >= 19) {
-            colored = RootConfig.FORMAT.TPS_BAR.TEXT_COLOR.GOOD;
-        } else if (tps >= 15) {
-            colored = RootConfig.FORMAT.TPS_BAR.TEXT_COLOR.MEDIUM;
-        } else {
-            colored = RootConfig.FORMAT.TPS_BAR.TEXT_COLOR.LOW;
-        }
-        return colored;
-    }
-
-    private String getMsptHealthColor(double mspt) {
-        String colored;
-        if (mspt < 40) {
-            colored = RootConfig.FORMAT.TPS_BAR.TEXT_COLOR.GOOD;
-        } else if (mspt < 50) {
-            colored = RootConfig.FORMAT.TPS_BAR.TEXT_COLOR.MEDIUM;
-        } else {
-            colored = RootConfig.FORMAT.TPS_BAR.TEXT_COLOR.LOW;
-        }
-        return colored;
-    }
-
-    private String getPingHealthColor(double ping) {
-        String colored;
-        if (ping < 100) {
-            colored = RootConfig.FORMAT.TPS_BAR.TEXT_COLOR.GOOD;
-        } else if (ping < 200) {
-            colored = RootConfig.FORMAT.TPS_BAR.TEXT_COLOR.MEDIUM;
-        } else {
-            colored = RootConfig.FORMAT.TPS_BAR.TEXT_COLOR.LOW;
-        }
-        return colored;
-    }
-
-
-
-    public enum ProgressFillMode { TPS, MSPT, PING }
 
 }

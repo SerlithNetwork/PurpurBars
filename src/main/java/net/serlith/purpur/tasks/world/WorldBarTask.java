@@ -7,7 +7,7 @@ import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import net.serlith.purpur.PurpurBars;
 import net.serlith.purpur.configs.WorldConfig;
-import net.serlith.purpur.tasks.AbstractTask;
+import net.serlith.purpur.tasks.AbstractPerformanceTask;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.jspecify.annotations.NullMarked;
@@ -15,7 +15,7 @@ import org.jspecify.annotations.NullMarked;
 import java.util.*;
 
 @NullMarked
-public class WorldBarTask extends AbstractTask {
+public class WorldBarTask extends AbstractPerformanceTask {
 
     @Getter
     private double mspt = 0.0;
@@ -29,7 +29,7 @@ public class WorldBarTask extends AbstractTask {
 
     @Override
     protected BossBar createBossBar() {
-        return BossBar.bossBar(Component.empty(), 0F, this.getBossBarColor(), WorldConfig.FORMAT.WORLD_BAR.PROGRESS_OVERLAY);
+        return BossBar.bossBar(Component.empty(), 0F, this.getBossBarColor(), WorldConfig.getInstance().format.worldBar.progressOverlay);
     }
 
     @Override
@@ -37,7 +37,7 @@ public class WorldBarTask extends AbstractTask {
         this.mspt = this.world.getAverageTickTime();
         bossBar.progress(this.getPercent());
         bossBar.color(this.getBossBarColor());
-        bossBar.name(MiniMessage.miniMessage().deserialize(WorldConfig.FORMAT.WORLD_BAR.TITLE,
+        bossBar.name(MiniMessage.miniMessage().deserialize(WorldConfig.getInstance().format.worldBar.title,
                 Placeholder.component("mspt", this.getMsptColor()),
                 Placeholder.component("world", this.getWorldColor())
         ));
@@ -50,7 +50,7 @@ public class WorldBarTask extends AbstractTask {
 
     @Override
     public void run() {
-        if (++this.tick % WorldConfig.FORMAT.WORLD_BAR.UPDATE_INTERVAL != 0) return;
+        if (++this.tick % WorldConfig.getInstance().format.worldBar.updateInterval != 0) return;
         super.run();
     }
 
@@ -71,16 +71,18 @@ public class WorldBarTask extends AbstractTask {
         return Math.clamp(((float) this.mspt) / 50F, 0F, 1F);
     }
 
+    @Override
+    protected boolean isGood(final int ping) {
+        return this.mspt < 40;
+    }
+
+    @Override
+    protected boolean isMedium(final int ping) {
+        return this.mspt < 50;
+    }
+
     private BossBar.Color getBossBarColor() {
-        BossBar.Color color;
-        if (this.isGood()) {
-            color = WorldConfig.FORMAT.WORLD_BAR.PROGRESS_COLOR.GOOD;
-        } else if (this.isMedium()) {
-            color = WorldConfig.FORMAT.WORLD_BAR.PROGRESS_COLOR.MEDIUM;
-        } else {
-            color = WorldConfig.FORMAT.WORLD_BAR.PROGRESS_COLOR.LOW;
-        }
-        return color;
+        return this.getBossBarColor(WorldConfig.getInstance().format.worldBar.progressColor, 0);
     }
 
     private Component getMsptColor() {
@@ -92,27 +94,11 @@ public class WorldBarTask extends AbstractTask {
     }
 
     private String getColor() {
-        String colored;
-        if (this.isGood()) {
-            colored = WorldConfig.FORMAT.WORLD_BAR.TEXT_COLOR.GOOD;
-        } else if (this.isMedium()) {
-            colored = WorldConfig.FORMAT.WORLD_BAR.TEXT_COLOR.MEDIUM;
-        } else {
-            colored = WorldConfig.FORMAT.WORLD_BAR.TEXT_COLOR.LOW;
-        }
-        return colored;
-    }
-
-    private boolean isGood() {
-        return this.mspt < 40;
-    }
-
-    private boolean isMedium() {
-        return this.mspt < 50;
+        return this.getMsptHealthColor(WorldConfig.getInstance().format.worldBar.textColor, this.mspt);
     }
 
     private String getWorldName(final World world) {
-        return WorldConfig.FORMAT.WORLD_BAR.USE_MINIMAL_NAME ? world.getKey().asMinimalString() : world.getKey().asString();
+        return WorldConfig.getInstance().format.worldBar.useMinimalName ? world.getKey().asMinimalString() : world.getKey().asString();
     }
 
 }

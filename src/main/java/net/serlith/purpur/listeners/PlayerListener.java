@@ -16,7 +16,7 @@ public class PlayerListener implements Listener, EventExecutor {
 
     public PlayerListener(PurpurBars plugin) {
         this.plugin = plugin;
-        this.plugin.getServer().getPluginManager().registerEvent(PlayerJoinEvent.class, this, RootConfig.JOIN_EVENT.PRIORITY, this, plugin);
+        this.plugin.getServer().getPluginManager().registerEvent(PlayerJoinEvent.class, this, RootConfig.getInstance().joinEvent.priority, this, plugin);
     }
 
     @Override

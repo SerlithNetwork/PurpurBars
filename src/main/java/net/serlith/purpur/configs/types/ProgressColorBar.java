@@ -13,12 +13,12 @@ import org.jspecify.annotations.NullMarked;
 public class ProgressColorBar {
 
     @Key("good")
-    private BossBar.Color good;
+    public BossBar.Color good;
 
     @Key("medium")
-    private BossBar.Color medium;
+    public BossBar.Color medium;
 
     @Key("low")
-    private BossBar.Color low;
+    public BossBar.Color low;
 
 }

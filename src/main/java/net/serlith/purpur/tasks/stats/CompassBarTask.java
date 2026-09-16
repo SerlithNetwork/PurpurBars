@@ -35,15 +35,20 @@ public class CompassBarTask extends AbstractTask {
 
     @Override
     protected BossBar createBossBar() {
-        return BossBar.bossBar(Component.empty(), RootConfig.FORMAT.COMPASS_BAR.PROGRESS_PERCENT, RootConfig.FORMAT.COMPASS_BAR.PROGRESS_COLOR, RootConfig.FORMAT.COMPASS_BAR.PROGRESS_OVERLAY);
+        return BossBar.bossBar(Component.empty(),
+                RootConfig.getInstance().format.compassBar.progressPercent,
+                RootConfig.getInstance().format.compassBar.progressColor,
+                RootConfig.getInstance().format.compassBar.progressOverlay
+        );
     }
 
     @Override
     protected void updateBossBar(BossBar bossBar, Player player) {
-        float yaw = player.getLocation().getYaw();
-        int length = RootConfig.FORMAT.COMPASS_BAR.TITLE.length();
-        int pos = (int) ((normalize(yaw) * (length / 720F)) + (length / 2F));
-        bossBar.name(Component.text(RootConfig.FORMAT.COMPASS_BAR.TITLE.substring(pos - 25, pos + 25)));
+        final String title = RootConfig.getInstance().format.compassBar.title;
+        final float yaw = player.getLocation().getYaw();
+        final int length = title.length();
+        final int pos = (int) ((normalize(yaw) * (length / 720F)) + (length / 2F));
+        bossBar.name(Component.text(title.substring(pos - 25, pos + 25)));
     }
 
     @Override
@@ -53,18 +58,18 @@ public class CompassBarTask extends AbstractTask {
 
     @Override
     public void run() {
-        if (++this.tick % RootConfig.FORMAT.COMPASS_BAR.UPDATE_INTERVAL != 0) return;
+        if (++this.tick % RootConfig.getInstance().format.compassBar.updateInterval != 0) return;
         super.run();
     }
 
     @Override
     public void dumpAllPlayerUUIDs() {
-        DataStorage.COMPASS_BAR = this.getAllPlayerUUIDs();
+        DataStorage.getInstance().compassBar = this.getAllPlayerUUIDs();
     }
 
     @Override
     public Set<UUID> loadAllPlayerUUIDs() {
-        return DataStorage.COMPASS_BAR;
+        return DataStorage.getInstance().compassBar;
     }
 
     private float normalize(float yaw) {

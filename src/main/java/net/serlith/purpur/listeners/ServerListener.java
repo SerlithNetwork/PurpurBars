@@ -21,8 +21,8 @@ public class ServerListener implements Listener {
     private static final int TPS_SAMPLE_INTERVAL = 20;
     private static final BigDecimal TPS_BASE = new BigDecimal(SEC_IN_NANO).multiply(new BigDecimal(TPS_SAMPLE_INTERVAL));
 
-    public static final TpsRollingAverage TPS_AVERAGE = new TpsRollingAverage(RootConfig.FORMAT.TPS_BAR.TPS_SAMPLING_INTERVAL);
-    public static final RollingAverage MSPT_AVERAGE = new RollingAverage(20 * RootConfig.FORMAT.TPS_BAR.MSPT_SAMPLING_INTERVAL);
+    public static final TpsRollingAverage TPS_AVERAGE = new TpsRollingAverage(RootConfig.getInstance().format.tpsBar.tpsSamplingInterval);
+    public static final RollingAverage MSPT_AVERAGE = new RollingAverage(20 * RootConfig.getInstance().format.tpsBar.msptSamplingInterval);
 
     private int tick = 0;
     private long last = 0;

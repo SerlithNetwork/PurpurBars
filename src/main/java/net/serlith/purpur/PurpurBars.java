@@ -1,8 +1,6 @@
 package net.serlith.purpur;
 
 import lombok.Getter;
-import net.j4c0b3y.api.config.ConfigHandler;
-import net.j4c0b3y.api.config.platform.adventure.AdventureConfigHandler;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.serlith.purpur.commands.*;
@@ -10,10 +8,6 @@ import net.serlith.purpur.configs.PapiConfig;
 import net.serlith.purpur.configs.RegionConfig;
 import net.serlith.purpur.configs.WorldConfig;
 import net.serlith.purpur.configs.RootConfig;
-import net.serlith.purpur.configs.providers.PapiBarEntryProvider;
-import net.serlith.purpur.configs.providers.WorldBarDataProvider;
-import net.serlith.purpur.configs.types.PapiBarEntry;
-import net.serlith.purpur.configs.types.WorldBarData;
 import net.serlith.purpur.data.DataStorage;
 import net.serlith.purpur.hooks.PapiHook;
 import net.serlith.purpur.listeners.*;
@@ -29,8 +23,7 @@ import org.bstats.bukkit.Metrics;
 import org.bukkit.*;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.io.File;
-import java.util.Arrays;
+import java.nio.file.Path;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -48,9 +41,7 @@ public final class PurpurBars extends JavaPlugin {
     @Getter
     private final String namespace = "purpurbars";
     @Getter
-    private ConfigHandler configHandler;
-    @Getter
-    private File storageFolder;
+    private Path storageFolder;
     @Getter
     private BossBarRunnable barsTask;
     @Getter
@@ -69,18 +60,13 @@ public final class PurpurBars extends JavaPlugin {
     @Override
     public void onLoad() {
         instance = this;
-
-        this.configHandler = new AdventureConfigHandler(this.getLogger(), MiniMessage.miniMessage().deserialize("<gray>[<gradient:#429fff:#d621ff>PurpurBars</gradient>]<gray>"));
-        this.storageFolder = new File(getDataFolder(), "storage");
-
-        this.configHandler.bind(WorldBarData.class, new WorldBarDataProvider());
-        this.configHandler.bind(PapiBarEntry.class, new PapiBarEntryProvider());
+        this.storageFolder = this.getDataPath().resolve(".storage");
     }
 
     @Override
     public void onEnable() {
         RootConfig.initialize(this);
-        new DataStorage(this).load();
+        DataStorage.initialize(this);
         new Metrics(this, 24547);
 
         new PlayerListener(this);
@@ -100,19 +86,19 @@ public final class PurpurBars extends JavaPlugin {
         this.systemMonitorRunnable = new SystemMonitorRunnable();
 
         if (this.supportsPapiPlaceholders()) {
-            new PapiConfig(this).load();
+            PapiConfig.initialize(this);
             new PapiHook(this).register();
             this.getLogger().info("PlaceholderAPI support enabled!");
         }
 
         String extraFeature = "";
         if (this.supportsFoliaRegions()) {
-            new RegionConfig(this).load();
+            RegionConfig.initialize(this);
             new PlayerRegionListener(this);
             this.barsTask.addTask(new RegionFollowBarTask(this));
             extraFeature = "+ Folia";
         } else if (this.supportsParallelWorldTicking()) {
-            new WorldConfig(this).load();
+            WorldConfig.initialize(this);
             new WorldListener(this);
             this.barsTask.addTask(new WorldFollowBarTask(this));
             Bukkit.getWorlds().forEach(world -> this.barsTask.addWorldTask(world, new WorldBarTask(this, world)));
@@ -134,7 +120,7 @@ public final class PurpurBars extends JavaPlugin {
     public void onDisable() {
         EXECUTOR.shutdown();
         this.barsTask.stop();
-        DataStorage.INSTANCE.save();
+        DataStorage.getInstance().save();
     }
 
 

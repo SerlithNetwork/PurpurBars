@@ -7,7 +7,7 @@ import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import net.serlith.purpur.PurpurBars;
 import net.serlith.purpur.configs.RegionConfig;
 import net.serlith.purpur.data.DataStorage;
-import net.serlith.purpur.tasks.AbstractTask;
+import net.serlith.purpur.tasks.AbstractPerformanceTask;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.jspecify.annotations.NullMarked;
@@ -17,7 +17,7 @@ import java.util.Set;
 import java.util.UUID;
 
 @NullMarked
-public class RegionFollowBarTask extends AbstractTask {
+public class RegionFollowBarTask extends AbstractPerformanceTask {
 
     private static @Nullable RegionFollowBarTask INSTANCE;
     public static RegionFollowBarTask getInstance() {
@@ -36,7 +36,7 @@ public class RegionFollowBarTask extends AbstractTask {
 
     @Override
     protected BossBar createBossBar() {
-        return BossBar.bossBar(Component.empty(), 0F, getInstance().getBossBarColor(20.0, 0.0, 0), RegionConfig.FORMAT.REGION_FOLLOW_BAR.PROGRESS_OVERLAY);
+        return BossBar.bossBar(Component.empty(), 0F, getInstance().getBossBarColor(20.0, 0.0, 0), RegionConfig.getInstance().format.regionFollowBar.progressOverlay);
     }
 
     @Override
@@ -47,7 +47,7 @@ public class RegionFollowBarTask extends AbstractTask {
 
         bossBar.progress(this.getPercent(tps, mspt, ping));
         bossBar.color(this.getBossBarColor(tps, mspt, ping));
-        bossBar.name(MiniMessage.miniMessage().deserialize(RegionConfig.FORMAT.REGION_FOLLOW_BAR.TITLE,
+        bossBar.name(MiniMessage.miniMessage().deserialize(RegionConfig.getInstance().format.regionFollowBar.title,
                 Placeholder.component("tps", this.getTpsColor(tps)),
                 Placeholder.component("mspt", this.getMsptColor(mspt)),
                 Placeholder.component("ping", this.getPingColor(ping))
@@ -61,104 +61,60 @@ public class RegionFollowBarTask extends AbstractTask {
 
     @Override
     public void run() {
-        if (++this.tick % RegionConfig.FORMAT.REGION_FOLLOW_BAR.UPDATE_INTERVAL != 0) return;
+        if (++this.tick % RegionConfig.getInstance().format.regionFollowBar.updateInterval != 0) return;
         super.run();
     }
 
     @Override
     public Set<UUID> loadAllPlayerUUIDs() {
-        return DataStorage.REGION_FOLLOW_BAR;
+        return DataStorage.getInstance().regionFollowBar;
     }
 
     @Override
     public void dumpAllPlayerUUIDs() {
-        DataStorage.REGION_FOLLOW_BAR = this.getAllPlayerUUIDs();
-    }
-
-    private float getPercent(double tps, double mspt, int ping) {
-        return switch (RegionConfig.FORMAT.REGION_FOLLOW_BAR.PROGRESS_FILL_MODE) {
-            case MSPT -> Math.clamp(((float) mspt) / 50F, 0F, 1F);
-            case TPS -> Math.clamp(((float) tps) / 20F, 0F, 1F);
-            case PING -> Math.clamp(((float) ping) / 200F, 0F, 1F);
-        };
+        DataStorage.getInstance().regionFollowBar = this.getAllPlayerUUIDs();
     }
 
     private BossBar.Color getBossBarColor(double tps, double mspt, int ping) {
         BossBar.Color color;
         if (this.isGood(tps, mspt, ping)) {
-            color = RegionConfig.FORMAT.REGION_FOLLOW_BAR.PROGRESS_COLOR.GOOD;
+            color = RegionConfig.getInstance().format.regionFollowBar.progressColor.good;
         } else if (this.isMedium(tps, mspt, ping)) {
-            color = RegionConfig.FORMAT.REGION_FOLLOW_BAR.PROGRESS_COLOR.MEDIUM;
+            color = RegionConfig.getInstance().format.regionFollowBar.progressColor.medium;
         } else {
-            color = RegionConfig.FORMAT.REGION_FOLLOW_BAR.PROGRESS_COLOR.LOW;
+            color = RegionConfig.getInstance().format.regionFollowBar.progressColor.low;
         }
         return color;
     }
 
     private boolean isGood(double tps, double mspt, int ping) {
-        return switch (RegionConfig.FORMAT.REGION_FOLLOW_BAR.PROGRESS_FILL_MODE) {
+        return switch (RegionConfig.getInstance().format.regionFollowBar.progressFillMode) {
             case MSPT -> mspt < 40;
             case TPS -> tps >= 19;
             case PING -> ping < 100;
+            default -> false;
         };
     }
 
     private boolean isMedium(double tps, double mspt, int ping) {
-        return switch (RegionConfig.FORMAT.REGION_FOLLOW_BAR.PROGRESS_FILL_MODE) {
+        return switch (RegionConfig.getInstance().format.regionFollowBar.progressFillMode) {
             case MSPT -> mspt < 50;
             case TPS -> tps >= 15;
             case PING -> ping < 200;
+            default -> false;
         };
     }
 
     private Component getTpsColor(double tps) {
-        return MiniMessage.miniMessage().deserialize(this.getTpsHealthColor(tps), Placeholder.parsed("text", "%.2f".formatted(tps)));
+        return MiniMessage.miniMessage().deserialize(this.getTpsHealthColor(RegionConfig.getInstance().format.regionFollowBar.textColor, tps), Placeholder.parsed("text", "%.2f".formatted(tps)));
     }
 
     private Component getMsptColor(double mspt) {
-        return MiniMessage.miniMessage().deserialize(this.getMsptHealthColor(mspt), Placeholder.parsed("text", "%.2f".formatted(mspt)));
+        return MiniMessage.miniMessage().deserialize(this.getMsptHealthColor(RegionConfig.getInstance().format.regionFollowBar.textColor, mspt), Placeholder.parsed("text", "%.2f".formatted(mspt)));
     }
 
     private Component getPingColor(int ping) {
-        return MiniMessage.miniMessage().deserialize(this.getPingHealthColor(ping), Placeholder.parsed("text", "%d".formatted(ping)));
+        return MiniMessage.miniMessage().deserialize(this.getPingHealthColor(RegionConfig.getInstance().format.regionFollowBar.textColor, ping), Placeholder.parsed("text", "%d".formatted(ping)));
     }
-
-    private String getTpsHealthColor(double tps) {
-        String colored;
-        if (tps >= 19) {
-            colored = RegionConfig.FORMAT.REGION_FOLLOW_BAR.TEXT_COLOR.GOOD;
-        } else if (tps >= 15) {
-            colored = RegionConfig.FORMAT.REGION_FOLLOW_BAR.TEXT_COLOR.MEDIUM;
-        } else {
-            colored = RegionConfig.FORMAT.REGION_FOLLOW_BAR.TEXT_COLOR.LOW;
-        }
-        return colored;
-    }
-
-    private String getMsptHealthColor(double mspt) {
-        String colored;
-        if (mspt < 40) {
-            colored = RegionConfig.FORMAT.REGION_FOLLOW_BAR.TEXT_COLOR.GOOD;
-        } else if (mspt < 50) {
-            colored = RegionConfig.FORMAT.REGION_FOLLOW_BAR.TEXT_COLOR.MEDIUM;
-        } else {
-            colored = RegionConfig.FORMAT.REGION_FOLLOW_BAR.TEXT_COLOR.LOW;
-        }
-        return colored;
-    }
-
-    private String getPingHealthColor(double ping) {
-        String colored;
-        if (ping < 100) {
-            colored = RegionConfig.FORMAT.REGION_FOLLOW_BAR.TEXT_COLOR.GOOD;
-        } else if (ping < 200) {
-            colored = RegionConfig.FORMAT.REGION_FOLLOW_BAR.TEXT_COLOR.MEDIUM;
-        } else {
-            colored = RegionConfig.FORMAT.REGION_FOLLOW_BAR.TEXT_COLOR.LOW;
-        }
-        return colored;
-    }
-
-    public enum ProgressFillMode { TPS, MSPT, PING }
 
 }

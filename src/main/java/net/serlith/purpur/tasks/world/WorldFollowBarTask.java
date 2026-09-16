@@ -8,7 +8,7 @@ import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import net.serlith.purpur.PurpurBars;
 import net.serlith.purpur.configs.WorldConfig;
 import net.serlith.purpur.data.DataStorage;
-import net.serlith.purpur.tasks.AbstractTask;
+import net.serlith.purpur.tasks.AbstractPerformanceTask;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.jspecify.annotations.NullMarked;
@@ -18,7 +18,7 @@ import java.util.Set;
 import java.util.UUID;
 
 @NullMarked
-public class WorldFollowBarTask extends AbstractTask {
+public class WorldFollowBarTask extends AbstractPerformanceTask {
 
     private static @Nullable WorldFollowBarTask INSTANCE;
     public static WorldFollowBarTask getInstance() {
@@ -38,7 +38,7 @@ public class WorldFollowBarTask extends AbstractTask {
 
     @Override
     protected BossBar createBossBar() {
-        return BossBar.bossBar(Component.empty(), 0F, WorldConfig.FORMAT.WORLD_FOLLOW_BAR.PROGRESS_COLOR.GOOD, WorldConfig.FORMAT.WORLD_FOLLOW_BAR.PROGRESS_OVERLAY);
+        return BossBar.bossBar(Component.empty(), 0F, WorldConfig.getInstance().format.worldFollowBar.progressColor.good, WorldConfig.getInstance().format.worldFollowBar.progressOverlay);
     }
 
     @Override
@@ -47,7 +47,7 @@ public class WorldFollowBarTask extends AbstractTask {
         double mspt = world.getAverageTickTime();
         bossBar.progress(this.getPercent(mspt));
         bossBar.color(this.getBossBarColor(mspt));
-        bossBar.name(MiniMessage.miniMessage().deserialize(WorldConfig.FORMAT.WORLD_FOLLOW_BAR.TITLE,
+        bossBar.name(MiniMessage.miniMessage().deserialize(WorldConfig.getInstance().format.worldFollowBar.title,
                 Placeholder.component("mspt", this.getMsptColor(mspt)),
                 Placeholder.component("world", this.getWorldColor(this.getWorldName(world), mspt)),
                 Placeholder.component("ping", this.getPingColor(player.getPing()))
@@ -61,18 +61,18 @@ public class WorldFollowBarTask extends AbstractTask {
 
     @Override
     public void run() {
-        if (++this.tick % WorldConfig.FORMAT.WORLD_FOLLOW_BAR.UPDATE_INTERVAL != 0) return;
+        if (++this.tick % WorldConfig.getInstance().format.worldFollowBar.updateInterval != 0) return;
         super.run();
     }
 
     @Override
     public void dumpAllPlayerUUIDs() {
-        DataStorage.WORLD_FOLLOW_BAR = this.getAllPlayerUUIDs();
+        DataStorage.getInstance().worldFollowBar = this.getAllPlayerUUIDs();
     }
 
     @Override
     public Set<UUID> loadAllPlayerUUIDs() {
-        return DataStorage.WORLD_FOLLOW_BAR;
+        return DataStorage.getInstance().worldFollowBar;
     }
 
     private float getPercent(double mspt) {
@@ -82,11 +82,11 @@ public class WorldFollowBarTask extends AbstractTask {
     private BossBar.Color getBossBarColor(double mspt) {
         BossBar.Color color;
         if (this.isGood(mspt)) {
-            color = WorldConfig.FORMAT.WORLD_FOLLOW_BAR.PROGRESS_COLOR.GOOD;
+            color = WorldConfig.getInstance().format.worldFollowBar.progressColor.good;
         } else if (this.isMedium(mspt)) {
-            color = WorldConfig.FORMAT.WORLD_FOLLOW_BAR.PROGRESS_COLOR.MEDIUM;
+            color = WorldConfig.getInstance().format.worldFollowBar.progressColor.medium;
         } else {
-            color = WorldConfig.FORMAT.WORLD_FOLLOW_BAR.PROGRESS_COLOR.LOW;
+            color = WorldConfig.getInstance().format.worldFollowBar.progressColor.low;
         }
         return color;
     }
@@ -106,11 +106,11 @@ public class WorldFollowBarTask extends AbstractTask {
     private String getColor(double mspt) {
         String colored;
         if (this.isGood(mspt)) {
-            colored = WorldConfig.FORMAT.WORLD_FOLLOW_BAR.TEXT_COLOR.GOOD;
+            colored = WorldConfig.getInstance().format.worldFollowBar.textColor.good;
         } else if (this.isMedium(mspt)) {
-            colored = WorldConfig.FORMAT.WORLD_FOLLOW_BAR.TEXT_COLOR.MEDIUM;
+            colored = WorldConfig.getInstance().format.worldFollowBar.textColor.medium;
         } else {
-            colored = WorldConfig.FORMAT.WORLD_FOLLOW_BAR.TEXT_COLOR.LOW;
+            colored = WorldConfig.getInstance().format.worldFollowBar.textColor.low;
         }
         return colored;
     }
@@ -118,11 +118,11 @@ public class WorldFollowBarTask extends AbstractTask {
     private String getPingHealthColor(double ping) {
         String colored;
         if (ping < 100) {
-            colored = WorldConfig.FORMAT.WORLD_FOLLOW_BAR.TEXT_COLOR.GOOD;
+            colored = WorldConfig.getInstance().format.worldFollowBar.textColor.good;
         } else if (ping < 200) {
-            colored = WorldConfig.FORMAT.WORLD_FOLLOW_BAR.TEXT_COLOR.MEDIUM;
+            colored = WorldConfig.getInstance().format.worldFollowBar.textColor.medium;
         } else {
-            colored = WorldConfig.FORMAT.WORLD_FOLLOW_BAR.TEXT_COLOR.LOW;
+            colored = WorldConfig.getInstance().format.worldFollowBar.textColor.low;
         }
         return colored;
     }
@@ -136,7 +136,7 @@ public class WorldFollowBarTask extends AbstractTask {
     }
 
     private String getWorldName(final World world) {
-        return WorldConfig.FORMAT.WORLD_FOLLOW_BAR.USE_MINIMAL_NAME ? world.getKey().asMinimalString() : world.getKey().asString();
+        return WorldConfig.getInstance().format.worldFollowBar.useMinimalName ? world.getKey().asMinimalString() : world.getKey().asString();
     }
 
 }

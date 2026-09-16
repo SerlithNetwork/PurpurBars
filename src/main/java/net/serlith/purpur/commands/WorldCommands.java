@@ -43,7 +43,7 @@ public class WorldCommands {
                             World world = ctx.getArgument("world", World.class);
                             WorldBarTask task = PurpurBars.getInstance().getBarsTask().getWorldBarTask(world);
                             if (task == null) {
-                                player.sendMessage(WorldConfig.MESSAGES.WORLD_DOES_NOT_EXIST.getComponent());
+                                player.sendMessage(WorldConfig.getInstance().messages.worldDoesNotExist);
                                 return Command.SINGLE_SUCCESS;
                             }
                             task.togglePlayer(player);

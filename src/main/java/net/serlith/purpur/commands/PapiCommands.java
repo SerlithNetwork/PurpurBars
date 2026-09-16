@@ -32,7 +32,7 @@ public class PapiCommands {
                             String bar = ctx.getArgument("bar", String.class);
                             PapiBarTask task = PurpurBars.getInstance().getBarsTask().getPapiBarTask(bar);
                             if (task == null) {
-                                sender.sendMessage(PapiConfig.MESSAGES.BAR_DOES_NOT_EXIST.getComponent());
+                                sender.sendMessage(PapiConfig.getInstance().messages.barDoesNotExist);
                                 return Command.SINGLE_SUCCESS;
                             }
 

@@ -10,12 +10,12 @@ import lombok.NoArgsConstructor;
 public class UsageCharBar {
 
     @Key("bar")
-    private String bar;
+    public String bar;
 
     @Key("start")
-    private String start;
+    public String start;
 
     @Key("end")
-    private String end;
+    public String end;
 
 }

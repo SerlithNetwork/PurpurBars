@@ -9,11 +9,12 @@ import net.serlith.purpur.PurpurBars;
 import net.serlith.purpur.configs.types.PapiBarEntry;
 import net.serlith.purpur.tasks.AbstractTask;
 import org.bukkit.entity.Player;
-import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.NullMarked;
 
 import java.util.Set;
 import java.util.UUID;
 
+@NullMarked
 public class PapiBarTask extends AbstractTask {
 
     @Setter
@@ -27,15 +28,15 @@ public class PapiBarTask extends AbstractTask {
 
     @Override
     protected BossBar createBossBar() {
-        return BossBar.bossBar(Component.empty(), 0F, this.entry.colorLow(), this.entry.overlay());
+        return BossBar.bossBar(Component.empty(), 0F, this.entry.colorLow, this.entry.overlay);
     }
 
     @Override
-    protected void updateBossBar(@NonNull BossBar bossBar, @NonNull Player player) {
+    protected void updateBossBar(BossBar bossBar, Player player) {
         float percent = this.getPercent(player);
         bossBar.progress(percent);
         bossBar.color(this.getBossBarColor(percent));
-        bossBar.name(MiniMessage.miniMessage().deserialize(PlaceholderAPI.setPlaceholders(player, this.entry.title())));
+        bossBar.name(MiniMessage.miniMessage().deserialize(PlaceholderAPI.setPlaceholders(player, this.entry.title)));
     }
 
     @Override
@@ -45,7 +46,7 @@ public class PapiBarTask extends AbstractTask {
 
     @Override
     public void run() {
-        if (++this.tick % this.entry.updateInterval() != 0) return;
+        if (++this.tick % this.entry.updateInterval != 0) return;
         super.run();
     }
 
@@ -62,9 +63,9 @@ public class PapiBarTask extends AbstractTask {
     public void dumpAllPlayerUUIDs() {}
 
     private float getPercent(Player player) {
-        float min = this.tryParseNumber(player, this.entry.min());
-        float value = this.tryParseNumber(player, this.entry.value()) - min;
-        float max = this.tryParseNumber(player, this.entry.max()) - min;
+        float min = this.tryParseNumber(player, this.entry.min);
+        float value = this.tryParseNumber(player, this.entry.value) - min;
+        float max = this.tryParseNumber(player, this.entry.max) - min;
         return Math.clamp(value / max, 0F, 1F);
     }
 
@@ -78,19 +79,19 @@ public class PapiBarTask extends AbstractTask {
             try {
                 min = Float.parseFloat(parsed);
             } catch (NumberFormatException e) {
-                throw new NumberFormatException("Value '" + string + "' for '" + this.entry.name() + "' is not a number or placeholder that can be parsed into a number");
+                throw new NumberFormatException("Value '" + string + "' for '" + this.entry.name + "' is not a number or placeholder that can be parsed into a number");
             }
         }
         return min;
     }
 
     private BossBar.Color getBossBarColor(float percent) {
-        if (percent < this.entry.boundMiddle()) {
-            return this.entry.colorLow();
-        } else if (percent >= this.entry.boundMiddle() && percent < this.entry.boundHigh()) {
-            return this.entry.colorMiddle();
+        if (percent < this.entry.boundMiddle) {
+            return this.entry.colorLow;
+        } else if (percent >= this.entry.boundMiddle && percent < this.entry.boundHigh) {
+            return this.entry.colorMiddle;
         } else {
-            return this.entry.colorHigh();
+            return this.entry.colorHigh;
         }
     }
 

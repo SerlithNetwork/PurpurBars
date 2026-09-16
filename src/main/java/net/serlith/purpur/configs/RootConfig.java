@@ -8,22 +8,18 @@ import de.bsommerfeld.jshepherd.core.ConfigurablePojo;
 import de.bsommerfeld.jshepherd.core.ConfigurationLoader;
 import net.kyori.adventure.bossbar.BossBar;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.serlith.purpur.PurpurBars;
 import net.serlith.purpur.configs.types.ProgressColorBar;
 import net.serlith.purpur.configs.types.ProgressColorText;
 import net.serlith.purpur.configs.types.UsageCharBar;
 import net.serlith.purpur.configs.types.UsageColorBar;
+import net.serlith.purpur.tasks.AbstractPerformanceTask;
 import net.serlith.purpur.tasks.AbstractTask;
-import net.serlith.purpur.tasks.stats.TpsBarTask;
 import org.bukkit.event.EventPriority;
 import org.jspecify.annotations.NullMarked;
 
-import java.io.File;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @NullMarked
 @Comment({
@@ -32,6 +28,7 @@ import java.util.Map;
         "Message configurations only support Adventure's MiniMessage format",
         "Learn more: https://docs.papermc.io/adventure/minimessage/format"
 })
+@SuppressWarnings({"unused", "FieldMayBeFinal", "FieldCanBeLocal"})
 public class RootConfig extends ConfigurablePojo<RootConfig> {
     private RootConfig() {
     }
@@ -75,7 +72,7 @@ public class RootConfig extends ConfigurablePojo<RootConfig> {
 
             @Comment("\uD83D\uDD25 Possible values: TPS, MSPT & PING")
             @Key("progress-fill-mode")
-            public TpsBarTask.ProgressFillMode progressFillMode = TpsBarTask.ProgressFillMode.MSPT;
+            public AbstractPerformanceTask.ProgressFillMode progressFillMode = AbstractPerformanceTask.ProgressFillMode.MSPT;
 
             @Comment("\uD83D\uDD25 Delay (in ticks) between bar updates on the player screen")
             @Key("update-interval")
@@ -243,7 +240,7 @@ public class RootConfig extends ConfigurablePojo<RootConfig> {
     @Comment("\uD83D\uDD25 Configurations for message feedback when running a command")
     @Section("messages")
     public Messages messages = new Messages();
-    @SuppressWarnings({"NotNullFieldNotInitialized", "FieldCanBeLocal", "FieldMayBeFinal"})
+    @SuppressWarnings({"NotNullFieldNotInitialized"})
     public static class Messages {
 
         private String failedReloadString = "<red>Failed to load configuration!";
