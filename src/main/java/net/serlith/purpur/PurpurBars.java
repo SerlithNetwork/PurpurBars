@@ -1,5 +1,7 @@
 package net.serlith.purpur;
 
+import de.bsommerfeld.jshepherd.core.PersistenceDelegateFactoryRegistry;
+import de.bsommerfeld.jshepherd.yaml.YamlPersistenceDelegateFactory;
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
@@ -61,6 +63,7 @@ public final class PurpurBars extends JavaPlugin {
     public void onLoad() {
         instance = this;
         this.storageFolder = this.getDataPath().resolve(".storage");
+        PersistenceDelegateFactoryRegistry.registerFactory(new YamlPersistenceDelegateFactory());
     }
 
     @Override

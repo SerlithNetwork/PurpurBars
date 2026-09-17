@@ -64,14 +64,15 @@ tasks {
 
     shadowJar {
         minimize() {
+            exclude(dependency("de.bsommerfeld.jshepherd:core"))
             exclude(dependency("de.bsommerfeld.jshepherd:yaml"))
         }
         archiveClassifier.set("")
 
         mapOf(
             "org.bstats" to "bstats",
-            "de.bsommerfeld.jshepherd" to "jshepherd",
             "dev.faststats" to "faststats",
+            "de.bsommerfeld.jshepherd" to "jshepherd",
         ).forEach { (key, value) ->
             relocate(key, "net.serlith.purpur.libs.$value")
         }
