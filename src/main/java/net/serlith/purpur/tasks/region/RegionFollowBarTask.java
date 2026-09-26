@@ -42,7 +42,7 @@ public class RegionFollowBarTask extends AbstractPerformanceTask {
     @Override
     protected void updateBossBar(BossBar bossBar, Player player) {
         double tps = Bukkit.getRegionTPS(player.getLocation())[0];
-        double mspt = this.plugin.isSupportsFoliaMSPT() ? Bukkit.getRegionAverageTickTimes(player.getLocation())[0] : 0.0;
+        double mspt = Bukkit.getRegionAverageTickTimes(player.getLocation())[0];
         int ping = player.getPing();
 
         bossBar.progress(this.getPercent(tps, mspt, ping));
@@ -75,7 +75,7 @@ public class RegionFollowBarTask extends AbstractPerformanceTask {
         DataStorage.getInstance().regionFollowBar = this.getAllPlayerUUIDs();
     }
 
-    private BossBar.Color getBossBarColor(double tps, double mspt, int ping) {
+    protected BossBar.Color getBossBarColor(double tps, double mspt, int ping) {
         BossBar.Color color;
         if (this.isGood(tps, mspt, ping)) {
             color = RegionConfig.getInstance().format.regionFollowBar.progressColor.good;
@@ -105,15 +105,15 @@ public class RegionFollowBarTask extends AbstractPerformanceTask {
         };
     }
 
-    private Component getTpsColor(double tps) {
+    protected Component getTpsColor(double tps) {
         return MiniMessage.miniMessage().deserialize(this.getTpsHealthColor(RegionConfig.getInstance().format.regionFollowBar.textColor, tps), Placeholder.parsed("text", "%.2f".formatted(tps)));
     }
 
-    private Component getMsptColor(double mspt) {
+    protected Component getMsptColor(double mspt) {
         return MiniMessage.miniMessage().deserialize(this.getMsptHealthColor(RegionConfig.getInstance().format.regionFollowBar.textColor, mspt), Placeholder.parsed("text", "%.2f".formatted(mspt)));
     }
 
-    private Component getPingColor(int ping) {
+    protected Component getPingColor(int ping) {
         return MiniMessage.miniMessage().deserialize(this.getPingHealthColor(RegionConfig.getInstance().format.regionFollowBar.textColor, ping), Placeholder.parsed("text", "%d".formatted(ping)));
     }
 

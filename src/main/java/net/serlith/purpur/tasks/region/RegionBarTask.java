@@ -19,13 +19,14 @@ import java.util.UUID;
 public class RegionBarTask extends AbstractPerformanceTask {
 
     @Getter
-    private double tps = 20.0;
+    protected double tps = 20.0;
     @Getter
-    private double mspt = 20.0;
+    protected double mspt = 20.0;
     @Getter
-    private int ping = 0;
+    protected int ping = 0;
+
+    protected final Player player;
     private int tick = 0;
-    private final Player player;
 
     public RegionBarTask(PurpurBars plugin, Player player) {
         super(plugin);
@@ -40,7 +41,7 @@ public class RegionBarTask extends AbstractPerformanceTask {
     @Override
     protected void updateBossBar(BossBar bossBar, Player player) {
         this.tps = Bukkit.getRegionTPS(this.player.getLocation())[0];
-        this.mspt = this.plugin.isSupportsFoliaMSPT() ? Bukkit.getRegionAverageTickTimes(this.player.getLocation())[0] : 0.0;
+        this.mspt = Bukkit.getRegionAverageTickTimes(this.player.getLocation())[0];
         this.ping = this.player.getPing();
 
         bossBar.progress(this.getPercent(this.tps, this.mspt, this.ping));
@@ -77,7 +78,7 @@ public class RegionBarTask extends AbstractPerformanceTask {
     public void dumpAllPlayerUUIDs() {}
 
 
-    private BossBar.Color getBossBarColor() {
+    protected BossBar.Color getBossBarColor() {
         BossBar.Color color;
         if (this.isGood()) {
             color = RegionConfig.getInstance().format.regionBar.progressColor.good;
@@ -107,19 +108,19 @@ public class RegionBarTask extends AbstractPerformanceTask {
         };
     }
 
-    private Component getTpsColor() {
+    protected Component getTpsColor() {
         return MiniMessage.miniMessage().deserialize(this.getTpsHealthColor(RegionConfig.getInstance().format.regionBar.textColor, this.tps), Placeholder.parsed("text", "%.2f".formatted(this.tps)));
     }
 
-    private Component getMsptColor() {
+    protected Component getMsptColor() {
         return MiniMessage.miniMessage().deserialize(this.getMsptHealthColor(RegionConfig.getInstance().format.regionBar.textColor, this.mspt), Placeholder.parsed("text", "%.2f".formatted(this.mspt)));
     }
 
-    private Component getPlayerColor() {
+    protected Component getPlayerColor() {
         return MiniMessage.miniMessage().deserialize(this.getMsptHealthColor(RegionConfig.getInstance().format.regionBar.textColor, this.mspt), Placeholder.parsed("text", this.player.getName()));
     }
 
-    private Component getPingColor() {
+    protected Component getPingColor() {
         return MiniMessage.miniMessage().deserialize(this.getPingHealthColor(RegionConfig.getInstance().format.regionBar.textColor, this.ping), Placeholder.parsed("text", "%d".formatted(this.ping)));
     }
 
