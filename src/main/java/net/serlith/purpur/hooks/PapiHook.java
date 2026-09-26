@@ -88,12 +88,14 @@ public class PapiHook extends PlaceholderExpansion {
                 }
 
                 if (args[0].equalsIgnoreCase("region") && player instanceof Player onlinePlayer) {
-                    if (args[1].equalsIgnoreCase("tps") && this.plugin.isSupportsFoliaTPS()) {
-                        double tps = Bukkit.getRegionTPS(onlinePlayer.getLocation())[0];
-                        yield "%.2f".formatted(tps);
-                    } else if (args[1].equalsIgnoreCase("mspt") && this.plugin.isSupportsFoliaMSPT()) {
-                        double mspt = Bukkit.getRegionAverageTickTimes(onlinePlayer.getLocation())[0];
-                        yield "%.2f".formatted(mspt);
+                    if (this.plugin.isSupportsFoliaMetrics()) {
+                        if (args[1].equalsIgnoreCase("tps")) {
+                            double tps = Bukkit.getRegionTPS(onlinePlayer.getLocation())[0];
+                            yield "%.2f".formatted(tps);
+                        } else if (args[1].equalsIgnoreCase("mspt")) {
+                            double mspt = Bukkit.getRegionAverageTickTimes(onlinePlayer.getLocation())[0];
+                            yield "%.2f".formatted(mspt);
+                        }
                     }
                     yield null;
                 }

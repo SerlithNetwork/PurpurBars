@@ -1,8 +1,11 @@
 package net.serlith.purpur;
 
+import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import de.bsommerfeld.jshepherd.core.PersistenceDelegateFactoryRegistry;
 import de.bsommerfeld.jshepherd.yaml.YamlPersistenceDelegateFactory;
+import io.papermc.paper.ServerBuildInfo;
 import lombok.Getter;
+import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.serlith.purpur.commands.*;
@@ -16,6 +19,7 @@ import net.serlith.purpur.listeners.*;
 import net.serlith.purpur.schedule.BossBarRunnable;
 import net.serlith.purpur.schedule.SystemMonitorRunnable;
 import net.serlith.purpur.tasks.region.RegionFollowBarTask;
+import net.serlith.purpur.tasks.region.compat.CompatRegionFollowBarTask;
 import net.serlith.purpur.tasks.stats.CompassBarTask;
 import net.serlith.purpur.tasks.stats.RamBarTask;
 import net.serlith.purpur.tasks.stats.TpsBarTask;
@@ -54,9 +58,7 @@ public final class PurpurBars extends JavaPlugin {
     @Getter
     private boolean supportsPWT = false;
     @Getter
-    private boolean supportsFoliaTPS = false;
-    @Getter
-    private boolean supportsFoliaMSPT = false;
+    private boolean supportsFoliaMetrics = false;
 
 
     @Override
@@ -75,16 +77,6 @@ public final class PurpurBars extends JavaPlugin {
         new PlayerListener(this);
         new ServerListener(this);
 
-        EXECUTOR = Executors.newSingleThreadScheduledExecutor(runnable -> {
-            Thread thread = new Thread(runnable);
-            thread.setName("PurpurBars Worker Thread");
-            thread.setDaemon(false);
-            thread.setPriority(Thread.MIN_PRIORITY);
-            thread.setUncaughtExceptionHandler((t, e) -> {
-                this.getSLF4JLogger().error("Uncaught exception in PurpurBars thread", e);
-            });
-            return thread;
-        });
         this.barsTask = new BossBarRunnable(this);
         this.systemMonitorRunnable = new SystemMonitorRunnable();
 
@@ -95,10 +87,16 @@ public final class PurpurBars extends JavaPlugin {
         }
 
         String extraFeature = "";
-        if (this.supportsFoliaRegions()) {
+        int threads = 1;
+        if (ServerBuildInfo.buildInfo().isBrandCompatible(Key.key("papermc", "folia"))) {
             RegionConfig.initialize(this);
             new PlayerRegionListener(this);
-            this.barsTask.addTask(new RegionFollowBarTask(this));
+            if (this.supportsFoliaRegionMetrics()) {
+                this.barsTask.addTask(new RegionFollowBarTask(this));
+            } else {
+                this.barsTask.addTask(new CompatRegionFollowBarTask(this));
+                threads = 2; // Just to prevent the future joins to delay other tasks
+            }
             extraFeature = "+ Folia";
         } else if (this.supportsParallelWorldTicking()) {
             WorldConfig.initialize(this);
@@ -107,6 +105,14 @@ public final class PurpurBars extends JavaPlugin {
             Bukkit.getWorlds().forEach(world -> this.barsTask.addWorldTask(world, new WorldBarTask(this, world)));
             extraFeature = "+ PWT";
         }
+
+        EXECUTOR = Executors.newScheduledThreadPool(threads, new ThreadFactoryBuilder()
+                .setNameFormat("PurpurBars Worker Thread - %d")
+                .setDaemon(false)
+                .setPriority(Thread.MIN_PRIORITY)
+                .setUncaughtExceptionHandler((t, e) -> this.getSLF4JLogger().error("Uncaught exception in PurpurBars thread", e))
+                .build()
+        );
 
         this.barsTask.addTask(new TpsBarTask(this));
         this.barsTask.addTask(new RamBarTask(this));
@@ -173,30 +179,20 @@ public final class PurpurBars extends JavaPlugin {
         return enabled;
     }
 
-    private boolean supportsFoliaRegions() {
-        try {
-            Class.forName("io.papermc.paper.threadedregions.RegionizedServer");
-            this.getLogger().info("Folia API found, attempting to hook...");
-        } catch (ClassNotFoundException e) {
-            return false;
-        }
+    private boolean supportsFoliaRegionMetrics() {
         try {
             Bukkit.class.getMethod("getRegionTPS", Location.class);
-            this.supportsFoliaTPS = true;
         } catch (NoSuchMethodException e) {
-            this.getLogger().severe("Failed to hook Folia TPS API, you might be running an old unsupported version");
             return false;
         }
 
         try {
             Bukkit.class.getMethod("getRegionAverageTickTimes", Location.class);
-            this.supportsFoliaMSPT = true;
         } catch (NoSuchMethodException ignore) {
-            this.getLogger().info("Folia MSPT API not found, region MSPT placeholders will not be available");
+            return false;
         }
 
-        this.getLogger().info("Folia support enabled!");
-
+        this.supportsFoliaMetrics = true;
         return true;
     }
 

@@ -164,11 +164,10 @@ public class RegionConfig extends ConfigurablePojo<RegionConfig> {
 
     @PostInject
     public void validate() {
-        if (!this.plugin.isSupportsFoliaMSPT() && !Files.exists(this.plugin.getDataPath().resolve("settings-region.yml"))) {
+        if (!this.plugin.isSupportsFoliaMetrics() && !Files.exists(this.plugin.getDataPath().resolve("settings-region.yml"))) {
             this.plugin.getLogger().warning("");
             this.plugin.getLogger().warning(" You have loaded PurpurBars in a Folia server that doesn't provide a MSPT API");
-            this.plugin.getLogger().warning(" Placeholders for region MSPT will not be available in this version");
-            this.plugin.getLogger().warning(" RegionBar will not display the actual region MSPT");
+            this.plugin.getLogger().warning(" PurpurBars will load in compatibility mode, some bars might update slower");
             this.plugin.getLogger().warning(" You won't see this warning again!");
             this.plugin.getLogger().warning("");
         }
