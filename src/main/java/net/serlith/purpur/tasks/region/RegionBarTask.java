@@ -12,7 +12,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.jspecify.annotations.NullMarked;
 
-import java.util.Set;
+import java.util.List;
 import java.util.UUID;
 
 @NullMarked
@@ -70,8 +70,8 @@ public class RegionBarTask extends AbstractPerformanceTask {
     }
 
     @Override
-    public Set<UUID> loadAllPlayerUUIDs() {
-        return Set.of();
+    public List<UUID> loadAllPlayerUUIDs() {
+        return List.of();
     }
 
     @Override

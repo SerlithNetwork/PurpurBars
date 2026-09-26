@@ -14,7 +14,7 @@ import org.bukkit.entity.Player;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
-import java.util.Set;
+import java.util.List;
 import java.util.UUID;
 
 @NullMarked
@@ -67,12 +67,12 @@ public class WorldFollowBarTask extends AbstractPerformanceTask {
 
     @Override
     public void dumpAllPlayerUUIDs() {
-        DataStorage.getInstance().worldFollowBar = this.getAllPlayerUUIDs();
+        DataStorage.getInstance().setWorldFollowBar(this.getAllPlayerUUIDs());
     }
 
     @Override
-    public Set<UUID> loadAllPlayerUUIDs() {
-        return DataStorage.getInstance().worldFollowBar;
+    public List<UUID> loadAllPlayerUUIDs() {
+        return DataStorage.getInstance().getWorldFollowBar();
     }
 
     private float getPercent(double mspt) {

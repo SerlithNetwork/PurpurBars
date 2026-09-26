@@ -11,7 +11,7 @@ import org.bukkit.entity.Player;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
-import java.util.Set;
+import java.util.List;
 import java.util.UUID;
 
 @NullMarked
@@ -64,12 +64,12 @@ public class CompassBarTask extends AbstractTask {
 
     @Override
     public void dumpAllPlayerUUIDs() {
-        DataStorage.getInstance().compassBar = this.getAllPlayerUUIDs();
+        DataStorage.getInstance().setCompassBar(this.getAllPlayerUUIDs());
     }
 
     @Override
-    public Set<UUID> loadAllPlayerUUIDs() {
-        return DataStorage.getInstance().compassBar;
+    public List<UUID> loadAllPlayerUUIDs() {
+        return DataStorage.getInstance().getCompassBar();
     }
 
     private float normalize(float yaw) {

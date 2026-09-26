@@ -11,7 +11,7 @@ import net.serlith.purpur.tasks.AbstractTask;
 import org.bukkit.entity.Player;
 import org.jspecify.annotations.NullMarked;
 
-import java.util.Set;
+import java.util.List;
 import java.util.UUID;
 
 @NullMarked
@@ -55,8 +55,8 @@ public class PapiBarTask extends AbstractTask {
     }
 
     @Override
-    public Set<UUID> loadAllPlayerUUIDs() {
-        return Set.of();
+    public List<UUID> loadAllPlayerUUIDs() {
+        return List.of();
     }
 
     @Override

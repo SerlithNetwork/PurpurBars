@@ -44,7 +44,7 @@ public abstract class AbstractTask implements Runnable {
     protected abstract BossBar createBossBar();
     protected abstract void updateBossBar(BossBar bossBar, Player player);
     public abstract Type getType();
-    public abstract Set<UUID> loadAllPlayerUUIDs();
+    public abstract List<UUID> loadAllPlayerUUIDs();
     public abstract void dumpAllPlayerUUIDs();
 
     public Set<UUID> getAllPlayerUUIDs() {

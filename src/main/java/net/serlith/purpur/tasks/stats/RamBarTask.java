@@ -15,7 +15,7 @@ import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
 import java.lang.management.ManagementFactory;
-import java.util.Set;
+import java.util.List;
 import java.util.UUID;
 
 @NullMarked
@@ -85,12 +85,12 @@ public class RamBarTask extends AbstractTask {
 
     @Override
     public void dumpAllPlayerUUIDs() {
-        DataStorage.getInstance().ramBar = this.getAllPlayerUUIDs();
+        DataStorage.getInstance().setRamBar(this.getAllPlayerUUIDs());
     }
 
     @Override
-    public Set<UUID> loadAllPlayerUUIDs() {
-        return DataStorage.getInstance().ramBar;
+    public List<UUID> loadAllPlayerUUIDs() {
+        return DataStorage.getInstance().getRamBar();
     }
 
     private BossBar.Color getBossBarColor() {

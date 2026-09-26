@@ -13,7 +13,7 @@ import org.bukkit.entity.Player;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
-import java.util.Set;
+import java.util.List;
 import java.util.UUID;
 
 @NullMarked
@@ -66,13 +66,13 @@ public class RegionFollowBarTask extends AbstractPerformanceTask {
     }
 
     @Override
-    public Set<UUID> loadAllPlayerUUIDs() {
-        return DataStorage.getInstance().regionFollowBar;
+    public List<UUID> loadAllPlayerUUIDs() {
+        return DataStorage.getInstance().getRegionFollowBar();
     }
 
     @Override
     public void dumpAllPlayerUUIDs() {
-        DataStorage.getInstance().regionFollowBar = this.getAllPlayerUUIDs();
+        DataStorage.getInstance().setRegionFollowBar(this.getAllPlayerUUIDs());
     }
 
     protected BossBar.Color getBossBarColor(double tps, double mspt, int ping) {

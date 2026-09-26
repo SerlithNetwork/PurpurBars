@@ -14,7 +14,7 @@ import org.bukkit.entity.Player;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
-import java.util.Set;
+import java.util.List;
 import java.util.UUID;
 
 @NullMarked
@@ -111,12 +111,12 @@ public class TpsBarTask extends AbstractPerformanceTask {
 
     @Override
     public void dumpAllPlayerUUIDs() {
-        DataStorage.getInstance().tpsBar = this.getAllPlayerUUIDs();
+        DataStorage.getInstance().setTpsBar(this.getAllPlayerUUIDs());
     }
 
     @Override
-    public Set<UUID> loadAllPlayerUUIDs() {
-        return DataStorage.getInstance().tpsBar;
+    public List<UUID> loadAllPlayerUUIDs() {
+        return DataStorage.getInstance().getTpsBar();
     }
 
     private BossBar.Color getBossBarColor(int ping) {

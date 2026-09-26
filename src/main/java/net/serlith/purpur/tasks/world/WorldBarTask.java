@@ -63,8 +63,8 @@ public class WorldBarTask extends AbstractPerformanceTask {
     }
 
     @Override
-    public Set<UUID> loadAllPlayerUUIDs() {
-        return Set.of();
+    public List<UUID> loadAllPlayerUUIDs() {
+        return List.of();
     }
 
     private float getPercent() {
