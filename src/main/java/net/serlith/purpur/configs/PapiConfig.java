@@ -73,7 +73,7 @@ public class PapiConfig extends ConfigurablePojo<PapiConfig> {
                 "This is a list of custom bars for you to create",
                 "Each element follows roughly the same rules as the builtin ones",
                 "The provided example consists of a 'name', which must be unique and will be used spawn the bossbar using /papibar <name>",
-                "Followed by a title, which supports both Minimessage format and PlaceholderAPI placeholders from any plugin",
+                "Followed by a title, which supports both MiniMessage format and PlaceholderAPI placeholders from any plugin",
                 "Min, value and max represent the minimum value, the real-time value and maximum possible value the bar can range, all can be a placeholder or a number",
                 "Update interval to configure the refresh rate (in ticks)",
                 "Overlay and Colors from MiniMessage enums",
@@ -107,6 +107,8 @@ public class PapiConfig extends ConfigurablePojo<PapiConfig> {
     @SuppressWarnings({"NotNullFieldNotInitialized"})
     public static class Messages {
 
+        @Comment("\uD83D\uDD25 Message when a bar does not exist")
+        @Key("bar-does-not-exist")
         private String barDoesNotExistString = "<red>This bar does not exist!";
         public transient Component barDoesNotExist;
 

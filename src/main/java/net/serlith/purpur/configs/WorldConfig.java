@@ -156,6 +156,8 @@ public class WorldConfig extends ConfigurablePojo<WorldConfig> {
     @SuppressWarnings({"NotNullFieldNotInitialized"})
     public static class Messages {
 
+        @Comment("\uD83D\uDD25 Message when a world does not exist")
+        @Key("world-does-not-exist")
         private String worldDoesNotExistString = "<red>This world does not exist! Was it unloaded?";
         public transient Component worldDoesNotExist;
 

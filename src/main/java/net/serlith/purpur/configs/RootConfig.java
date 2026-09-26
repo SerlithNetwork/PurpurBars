@@ -226,6 +226,7 @@ public class RootConfig extends ConfigurablePojo<RootConfig> {
                 "Possible values: LOWEST, LOW, NORMAL, HIGH, HIGHEST, MONITOR",
                 "Source: https://jd.papermc.io/paper/26.2/org/bukkit/event/EventPriority.html"
         })
+        @Key("priority")
         public EventPriority priority = EventPriority.MONITOR;
 
         @Comment({
@@ -233,6 +234,7 @@ public class RootConfig extends ConfigurablePojo<RootConfig> {
                 "Possible values: TPS_BAR, RAM_BAR, COMPASS_BAR, WORLD_FOLLOW_BAR, REGION_BAR",
                 "Example: [TPS_BAR, RAM_BAR] will place the TPS bar above the RAM bar"
         })
+        @Key("order")
         public List<AbstractTask.Type> order = List.of();
 
     }
@@ -243,9 +245,13 @@ public class RootConfig extends ConfigurablePojo<RootConfig> {
     @SuppressWarnings({"NotNullFieldNotInitialized"})
     public static class Messages {
 
+        @Comment("\uD83D\uDD25 Message when a plugin reload fails")
+        @Key("failed-reload")
         private String failedReloadString = "<red>Failed to load configuration!";
         public transient Component failedReload;
 
+        @Comment("\uD83D\uDD25 Message when a plugin reload succeeds")
+        @Key("successful-reload")
         private String successfulReloadString = "<green>Configuration reloaded!";
         public transient Component successfulReload;
 
