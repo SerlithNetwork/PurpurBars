@@ -110,13 +110,6 @@ public class PapiConfig extends ConfigurablePojo<PapiConfig> {
         private String barDoesNotExistString = "<red>This bar does not exist!";
         public transient Component barDoesNotExist;
 
-        @PostInject
-        public void convert() {
-            this.barDoesNotExist = PurpurBars.getPrefix()
-                    .appendSpace()
-                    .append(MiniMessage.miniMessage().deserialize(this.barDoesNotExistString));
-        }
-
     }
 
     @PostInject
@@ -126,6 +119,10 @@ public class PapiConfig extends ConfigurablePojo<PapiConfig> {
         this.plugin.getBarsTask().removeNotPresentPapiBarTasks(this.format.papiBarsNames);
         this.plugin.getBarsTask().updatePresentPapiBarTasks(this.format.papiBars);
         this.plugin.getBarsTask().addNotPresentPapiBarTasks(this.format.papiBars);
+
+        this.messages.barDoesNotExist = PurpurBars.getPrefix()
+                .appendSpace()
+                .append(MiniMessage.miniMessage().deserialize(this.messages.barDoesNotExistString));
 
     }
 

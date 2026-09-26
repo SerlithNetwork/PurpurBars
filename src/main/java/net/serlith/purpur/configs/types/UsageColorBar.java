@@ -1,7 +1,6 @@
 package net.serlith.purpur.configs.types;
 
 import de.bsommerfeld.jshepherd.annotation.Key;
-import de.bsommerfeld.jshepherd.annotation.PostInject;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import net.kyori.adventure.text.format.TextColor;
@@ -32,7 +31,6 @@ public class UsageColorBar {
         this.borderString = border;
     }
 
-    @PostInject
     public void convert() {
         this.used = Objects.requireNonNull(TextColor.fromHexString(this.usedString));
         this.unused = Objects.requireNonNull(TextColor.fromHexString(this.unusedString));

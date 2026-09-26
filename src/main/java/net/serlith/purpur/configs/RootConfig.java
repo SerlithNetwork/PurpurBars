@@ -249,16 +249,17 @@ public class RootConfig extends ConfigurablePojo<RootConfig> {
         private String successfulReloadString = "<green>Configuration reloaded!";
         public transient Component successfulReload;
 
-        @PostInject
-        public void convert() {
-            this.failedReload = PurpurBars.getPrefix()
-                    .appendSpace()
-                    .append(MiniMessage.miniMessage().deserialize(this.failedReloadString));
-            this.successfulReload = PurpurBars.getPrefix()
-                    .appendSpace()
-                    .append(MiniMessage.miniMessage().deserialize(this.successfulReloadString));
-        }
+    }
 
+    @PostInject
+    public void convert() {
+        this.messages.failedReload = PurpurBars.getPrefix()
+                .appendSpace()
+                .append(MiniMessage.miniMessage().deserialize(this.messages.failedReloadString));
+        this.messages.successfulReload = PurpurBars.getPrefix()
+                .appendSpace()
+                .append(MiniMessage.miniMessage().deserialize(this.messages.successfulReloadString));
+        this.format.ram.usageBar.color.convert();
     }
 
 }

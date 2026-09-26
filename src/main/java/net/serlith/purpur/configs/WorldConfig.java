@@ -159,13 +159,13 @@ public class WorldConfig extends ConfigurablePojo<WorldConfig> {
         private String worldDoesNotExistString = "<red>This world does not exist! Was it unloaded?";
         public transient Component worldDoesNotExist;
 
-        @PostInject
-        public void convert() {
-            this.worldDoesNotExist = PurpurBars.getPrefix()
-                    .appendSpace()
-                    .append(MiniMessage.miniMessage().deserialize(this.worldDoesNotExistString));
-        }
+    }
 
+    @PostInject
+    public void convert() {
+        this.messages.worldDoesNotExist = PurpurBars.getPrefix()
+                .appendSpace()
+                .append(MiniMessage.miniMessage().deserialize(this.messages.worldDoesNotExistString));
     }
 
 }
