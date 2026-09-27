@@ -35,10 +35,6 @@ import java.util.function.Consumer;
 })
 @SuppressWarnings({"unused", "FieldMayBeFinal", "FieldCanBeLocal"})
 public class RegionConfig extends ConfigurablePojo<RegionConfig> {
-    private final transient PurpurBars plugin;
-    private RegionConfig(final PurpurBars plugin) {
-        this.plugin = plugin;
-    }
 
     private static @Nullable RegionConfig INSTANCE = null;
     public static RegionConfig getInstance() {
@@ -65,7 +61,7 @@ public class RegionConfig extends ConfigurablePojo<RegionConfig> {
 
         INSTANCE = ConfigurationLoader.from(plugin.getDataPath().resolve("settings-region.yml"))
                 .withComments()
-                .load(() -> new RegionConfig(plugin));
+                .load(RegionConfig::new);
         INSTANCE.save();
         INITIALIZED = true;
     }
@@ -164,12 +160,13 @@ public class RegionConfig extends ConfigurablePojo<RegionConfig> {
 
     @PostInject
     public void validate() {
-        if (!this.plugin.isSupportsFoliaMetrics() && !Files.exists(this.plugin.getDataPath().resolve("settings-region.yml"))) {
-            this.plugin.getLogger().warning("");
-            this.plugin.getLogger().warning(" You have loaded PurpurBars in a Folia server that doesn't provide a MSPT API");
-            this.plugin.getLogger().warning(" PurpurBars will load in compatibility mode, some bars might update slower");
-            this.plugin.getLogger().warning(" You won't see this warning again!");
-            this.plugin.getLogger().warning("");
+        final PurpurBars plugin = PurpurBars.getInstance();
+        if (!plugin.isSupportsFoliaMetrics() && !Files.exists(plugin.getDataPath().resolve("settings-region.yml"))) {
+            plugin.getLogger().warning("");
+            plugin.getLogger().warning(" You have loaded PurpurBars in a Folia server that doesn't provide a MSPT API");
+            plugin.getLogger().warning(" PurpurBars will load in compatibility mode, some bars might update slower");
+            plugin.getLogger().warning(" You won't see this warning again!");
+            plugin.getLogger().warning("");
         }
     }
 

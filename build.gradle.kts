@@ -54,7 +54,7 @@ tasks {
         downloadPlugins {
             modrinth("luckperms", "v5.5.71-bukkit")
             modrinth("placeholderapi", "2.12.3")
-            modrinth("viaversion", "5.11.0")
+            modrinth("viaversion", "5.12.0")
         }
     }
 

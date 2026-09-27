@@ -28,10 +28,6 @@ import java.util.function.Consumer;
 })
 @SuppressWarnings({"unused", "FieldMayBeFinal", "FieldCanBeLocal"})
 public class PapiConfig extends ConfigurablePojo<PapiConfig> {
-    private final transient PurpurBars plugin;
-    private PapiConfig(final PurpurBars plugin) {
-        this.plugin = plugin;
-    }
 
     private static @Nullable PapiConfig INSTANCE = null;
     public static PapiConfig getInstance() {
@@ -58,7 +54,7 @@ public class PapiConfig extends ConfigurablePojo<PapiConfig> {
 
         INSTANCE = ConfigurationLoader.from(plugin.getDataPath().resolve("settings-papi.yml"))
                 .withComments()
-                .load(() -> new PapiConfig(plugin));
+                .load(PapiConfig::new);
         INSTANCE.save();
         INITIALIZED = true;
     }
@@ -118,9 +114,10 @@ public class PapiConfig extends ConfigurablePojo<PapiConfig> {
     public void convert() {
         this.format.papiBarsNames = this.format.papiBars.stream().map(e -> e.name).toList();
 
-        this.plugin.getBarsTask().removeNotPresentPapiBarTasks(this.format.papiBarsNames);
-        this.plugin.getBarsTask().updatePresentPapiBarTasks(this.format.papiBars);
-        this.plugin.getBarsTask().addNotPresentPapiBarTasks(this.format.papiBars);
+        final PurpurBars plugin = PurpurBars.getInstance();
+        plugin.getBarsTask().removeNotPresentPapiBarTasks(this.format.papiBarsNames);
+        plugin.getBarsTask().updatePresentPapiBarTasks(this.format.papiBars);
+        plugin.getBarsTask().addNotPresentPapiBarTasks(this.format.papiBars);
 
         this.messages.barDoesNotExist = PurpurBars.getPrefix()
                 .appendSpace()
