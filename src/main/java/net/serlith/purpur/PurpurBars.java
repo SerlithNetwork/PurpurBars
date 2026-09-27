@@ -9,6 +9,7 @@ import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.serlith.purpur.commands.*;
+import net.serlith.purpur.concurrent.PurpurBarsThread;
 import net.serlith.purpur.configs.PapiConfig;
 import net.serlith.purpur.configs.RegionConfig;
 import net.serlith.purpur.configs.WorldConfig;
@@ -111,6 +112,7 @@ public final class PurpurBars extends JavaPlugin {
 
         EXECUTOR = Executors.newScheduledThreadPool(threads, new ThreadFactoryBuilder()
                 .setNameFormat("PurpurBars Worker Thread - %d")
+                .setThreadFactory(PurpurBarsThread::new)
                 .setDaemon(false)
                 .setPriority(Thread.MIN_PRIORITY)
                 .setUncaughtExceptionHandler((t, e) -> this.getSLF4JLogger().error("Uncaught exception in PurpurBars thread", e))
