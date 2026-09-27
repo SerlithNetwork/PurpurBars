@@ -66,6 +66,20 @@ public class RegionConfig extends ConfigurablePojo<RegionConfig> {
         INITIALIZED = true;
     }
 
+    @Comment("Configurations for concurrency in Folia compatibility mode")
+    @Section("concurrency")
+    public Concurrency concurrency = new Concurrency();
+    public static class Concurrency {
+
+        @Comment({
+                "\uD83D\uDD03 Number of threads to use in Folia compatibility mode",
+                "This mode only enables on Folia builds that lack region TPS and MSPT API (Folia up to 26.2 at the moment of writing this)"
+        })
+        @Key("threads")
+        public int threads = 2;
+
+    }
+
     @Comment("Configurations for formatting bars")
     @Section("format")
     public Format format = new Format();
@@ -161,12 +175,19 @@ public class RegionConfig extends ConfigurablePojo<RegionConfig> {
     @PostInject
     public void validate() {
         final PurpurBars plugin = PurpurBars.getInstance();
+        int threads = this.concurrency.threads;
+        if (threads < 1) {
+            plugin.getSLF4JLogger().warn("PurpurBars can't use less than 1 thread to update bars");
+            threads = 1;
+        }
+        this.concurrency.threads = Math.max(2, threads);
+
         if (!plugin.isSupportsFoliaMetrics() && !Files.exists(plugin.getDataPath().resolve("settings-region.yml"))) {
-            plugin.getLogger().warning("");
-            plugin.getLogger().warning(" You have loaded PurpurBars in a Folia server that doesn't provide a MSPT API");
-            plugin.getLogger().warning(" PurpurBars will load in compatibility mode, some bars might update slower");
-            plugin.getLogger().warning(" You won't see this warning again!");
-            plugin.getLogger().warning("");
+            plugin.getSLF4JLogger().warn("");
+            plugin.getSLF4JLogger().warn(" You have loaded PurpurBars in a Folia server that doesn't provide a MSPT API");
+            plugin.getSLF4JLogger().warn(" PurpurBars will load in compatibility mode, some bars might update slower");
+            plugin.getSLF4JLogger().warn(" You won't see this warning again!");
+            plugin.getSLF4JLogger().warn("");
         }
     }
 

@@ -98,7 +98,7 @@ public final class PurpurBars extends JavaPlugin {
                 this.barsTask.addTask(new RegionFollowBarTask(this));
             } else {
                 this.barsTask.addTask(new CompatRegionFollowBarTask(this));
-                threads = 2; // Just to prevent the future joins to delay other tasks
+                threads = RegionConfig.getInstance().concurrency.threads; // Just to prevent the future joins to delay other tasks
             }
             this.supportsFolia = true;
             extraFeature = "+ Folia";
