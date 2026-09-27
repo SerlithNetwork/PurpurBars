@@ -24,7 +24,6 @@ public class AdminCommands {
                         .executes(ctx -> {
 
                             CommandSender sender = ctx.getSource().getSender();
-
                             try {
                                 RootConfig.getInstance().reload();
                                 WorldConfig.runIfInitialized(WorldConfig::reload);
@@ -34,6 +33,7 @@ public class AdminCommands {
                             } catch (Exception e) {
                                 sender.sendMessage(RootConfig.getInstance().messages.failedReload);
                                 PurpurBars.getInstance().getSLF4JLogger().error("Failed to reload config", e);
+                                PurpurBars.ERROR_TRACKER.trackError(e);
                             }
 
                             return Command.SINGLE_SUCCESS;

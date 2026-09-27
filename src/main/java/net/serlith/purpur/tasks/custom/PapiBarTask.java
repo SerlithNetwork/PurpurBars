@@ -73,12 +73,13 @@ public class PapiBarTask extends AbstractTask {
         Float min = null;
         try {
             min = Float.parseFloat(string);
-        } catch (NumberFormatException ignore) {}
+        } catch (NumberFormatException ignore) {
+        }
         if (min == null) {
             String parsed = PlaceholderAPI.setPlaceholders(player, string);
             try {
                 min = Float.parseFloat(parsed);
-            } catch (NumberFormatException e) {
+            } catch (NumberFormatException ignored) {
                 throw new NumberFormatException("Value '" + string + "' for '" + this.entry.name + "' is not a number or placeholder that can be parsed into a number");
             }
         }

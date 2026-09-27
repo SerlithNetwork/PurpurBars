@@ -3,6 +3,8 @@ package net.serlith.purpur;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import de.bsommerfeld.jshepherd.core.PersistenceDelegateFactoryRegistry;
 import de.bsommerfeld.jshepherd.yaml.YamlPersistenceDelegateFactory;
+import dev.faststats.ErrorTracker;
+import dev.faststats.bukkit.BukkitContext;
 import io.papermc.paper.ServerBuildInfo;
 import lombok.Getter;
 import net.kyori.adventure.key.Key;
@@ -39,6 +41,9 @@ import java.util.stream.Stream;
 public final class PurpurBars extends JavaPlugin {
 
     private static ScheduledExecutorService EXECUTOR = null;
+    public static final ErrorTracker ERROR_TRACKER = ErrorTracker.contextAware()
+            .ignoreError(NoSuchMethodException.class)
+            .ignoreError(NumberFormatException.class);
 
     @Getter
     private static PurpurBars instance;
@@ -63,6 +68,10 @@ public final class PurpurBars extends JavaPlugin {
     @Getter
     private boolean supportsFoliaMetrics = false;
 
+    private final BukkitContext faststatsContext = new BukkitContext.Factory(this, "d6f408be167b37cc221f32d26a514d6c")
+            .errorTrackerService(ERROR_TRACKER)
+            .metrics(dev.faststats.Metrics.Factory::create)
+            .create();
 
     @Override
     public void onLoad() {
@@ -76,6 +85,7 @@ public final class PurpurBars extends JavaPlugin {
         RootConfig.initialize(this);
         DataStorage.initialize(this);
         new Metrics(this, 24547);
+        this.faststatsContext.ready();
 
         new PlayerListener(this);
         new ServerListener(this);
@@ -135,6 +145,7 @@ public final class PurpurBars extends JavaPlugin {
     public void onDisable() {
         EXECUTOR.shutdown();
         this.barsTask.stop();
+        this.faststatsContext.shutdown();
         DataStorage.getInstance().save();
     }
 
@@ -162,7 +173,7 @@ public final class PurpurBars extends JavaPlugin {
         try {
             Server.class.getMethod("isParallelWorldTickingEnabled");
             this.getLogger().info("Parallel World Ticking API found, attempting to hook...");
-        } catch (NoSuchMethodException e) {
+        } catch (NoSuchMethodException ignored) {
             return false;
         }
 
@@ -176,7 +187,7 @@ public final class PurpurBars extends JavaPlugin {
         try {
             World.class.getMethod("getAverageTickTime");
             this.supportsPWT = true;
-        } catch (NoSuchMethodException e) {
+        } catch (NoSuchMethodException ignored) {
             this.getLogger().severe("Your server software does not properly implement the Parallel World Ticking API method: World#getAverageTickTime");
             this.getLogger().severe("Contact the author of: " + Bukkit.getName());
             return false;
@@ -188,13 +199,13 @@ public final class PurpurBars extends JavaPlugin {
     private boolean supportsFoliaRegionMetrics() {
         try {
             Bukkit.class.getMethod("getRegionTPS", Location.class);
-        } catch (NoSuchMethodException e) {
+        } catch (NoSuchMethodException ignored) {
             return false;
         }
 
         try {
             Bukkit.class.getMethod("getRegionAverageTickTimes", Location.class);
-        } catch (NoSuchMethodException ignore) {
+        } catch (NoSuchMethodException ignored) {
             return false;
         }
 
