@@ -1,13 +1,13 @@
 package net.serlith.purpur.hooks;
 
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
+import net.kyori.adventure.key.Key;
 import net.serlith.purpur.PurpurBars;
 import net.serlith.purpur.tasks.stats.RamBarTask;
 import net.serlith.purpur.tasks.stats.TpsBarTask;
 import net.serlith.purpur.tasks.world.WorldBarTask;
 import net.serlith.purpur.util.Utils;
 import org.bukkit.Bukkit;
-import org.bukkit.NamespacedKey;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.jspecify.annotations.NullMarked;
@@ -76,7 +76,7 @@ public class PapiHook extends PlaceholderExpansion {
                     if (args[0].equalsIgnoreCase("@") && player instanceof Player onlinePlayer) {
                         task = this.plugin.getBarsTask().getWorldBarTask(onlinePlayer.getWorld());
                     } else {
-                        NamespacedKey key = Utils.keyOrNullFromString(args[0]);
+                        Key key = Utils.keyOrNullFromString(args[0]);
                         if (key != null) {
                             task = this.plugin.getBarsTask().getWorldBarTask(key);
                         }

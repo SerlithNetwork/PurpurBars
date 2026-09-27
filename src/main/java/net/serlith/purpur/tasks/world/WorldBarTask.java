@@ -98,7 +98,7 @@ public class WorldBarTask extends AbstractPerformanceTask {
     }
 
     private String getWorldName(final World world) {
-        return WorldConfig.getInstance().format.worldBar.useMinimalName ? world.getKey().asMinimalString() : world.getKey().asString();
+        return WorldConfig.getInstance().format.worldBar.useMinimalName ? world.key().asMinimalString() : world.key().asString();
     }
 
 }

@@ -1,5 +1,6 @@
 package net.serlith.purpur.schedule;
 
+import net.kyori.adventure.key.Key;
 import net.serlith.purpur.PurpurBars;
 import net.serlith.purpur.configs.RootConfig;
 import net.serlith.purpur.configs.types.PapiBarEntry;
@@ -7,7 +8,6 @@ import net.serlith.purpur.tasks.AbstractTask;
 import net.serlith.purpur.tasks.custom.PapiBarTask;
 import net.serlith.purpur.tasks.region.RegionBarTask;
 import net.serlith.purpur.tasks.world.WorldBarTask;
-import org.bukkit.NamespacedKey;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.jspecify.annotations.NullMarked;
@@ -23,7 +23,7 @@ public class BossBarRunnable implements Runnable {
 
     private static final Comparator<AbstractTask> TASK_COMPARATOR = Comparator.comparingInt(a -> RootConfig.getInstance().joinEvent.order.indexOf(a.getType()));
     private final List<AbstractTask> tasks = new ArrayList<>();
-    private final ConcurrentMap<NamespacedKey, WorldBarTask> worldTasks = new ConcurrentHashMap<>();
+    private final ConcurrentMap<Key, WorldBarTask> worldTasks = new ConcurrentHashMap<>();
     private final ConcurrentMap<UUID, RegionBarTask> regionTasks = new ConcurrentHashMap<>();
     private final ConcurrentMap<String, PapiBarTask> papiTasks = new ConcurrentHashMap<>();
     private final PurpurBars plugin;
@@ -66,19 +66,19 @@ public class BossBarRunnable implements Runnable {
     }
 
     public @Nullable WorldBarTask getWorldBarTask(World world) {
-        return this.worldTasks.get(world.getKey());
+        return this.worldTasks.get(world.key());
     }
 
-    public @Nullable WorldBarTask getWorldBarTask(NamespacedKey key) {
+    public @Nullable WorldBarTask getWorldBarTask(Key key) {
         return this.worldTasks.get(key);
     }
 
     public void addWorldTask(World world, WorldBarTask task) {
-        this.worldTasks.putIfAbsent(world.getKey(), task);
+        this.worldTasks.putIfAbsent(world.key(), task);
     }
 
     public void removeWorldTask(World world) {
-        WorldBarTask task = this.worldTasks.remove(world.getKey());
+        WorldBarTask task = this.worldTasks.remove(world.key());
         if (task != null) {
             task.stop();
         }

@@ -7,6 +7,7 @@ import dev.faststats.ErrorTracker;
 import dev.faststats.bukkit.BukkitContext;
 import io.papermc.paper.ServerBuildInfo;
 import lombok.Getter;
+import net.kyori.adventure.key.InvalidKeyException;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
@@ -46,7 +47,8 @@ public final class PurpurBars extends JavaPlugin {
     private static @Nullable ScheduledExecutorService EXECUTOR = null;
     public static final ErrorTracker ERROR_TRACKER = ErrorTracker.contextAware()
             .ignoreError(NoSuchMethodException.class)
-            .ignoreError(NumberFormatException.class);
+            .ignoreError(NumberFormatException.class)
+            .ignoreError(InvalidKeyException.class);
 
     @Getter
     @SuppressWarnings("NotNullFieldNotInitialized") // Initialized in API lifecycle

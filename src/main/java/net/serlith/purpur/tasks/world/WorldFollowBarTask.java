@@ -136,7 +136,7 @@ public class WorldFollowBarTask extends AbstractPerformanceTask {
     }
 
     private String getWorldName(final World world) {
-        return WorldConfig.getInstance().format.worldFollowBar.useMinimalName ? world.getKey().asMinimalString() : world.getKey().asString();
+        return WorldConfig.getInstance().format.worldFollowBar.useMinimalName ? world.key().asMinimalString() : world.key().asString();
     }
 
 }
