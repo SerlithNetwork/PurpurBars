@@ -33,8 +33,8 @@ dependencies {
     compileOnly("me.clip:placeholderapi:2.11.6")
     compileOnly("org.jspecify:jspecify:1.0.0")
 
-    implementation("de.bsommerfeld.jshepherd:core:4.1.1")
-    implementation("de.bsommerfeld.jshepherd:yaml:4.1.1")
+    implementation("de.bsommerfeld.jshepherd:core:4.2.0")
+    implementation("de.bsommerfeld.jshepherd:yaml:4.2.0")
     implementation("org.bstats:bstats-bukkit:3.2.1")
     implementation("dev.faststats.metrics:bukkit:0.30.1")
 }
