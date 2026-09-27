@@ -1,5 +1,6 @@
 package net.serlith.purpur.configs.types;
 
+import de.bsommerfeld.jshepherd.annotation.Comment;
 import de.bsommerfeld.jshepherd.annotation.Key;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
@@ -13,14 +14,17 @@ import java.util.Objects;
 @SuppressWarnings({"FieldCanBeLocal", "unused", "NotNullFieldNotInitialized"})
 public class UsageColorBar {
 
+    @Comment("\uD83D\uDD25 Color to represent the used percent")
     @Key("used")
     private String usedString;
     public transient TextColor used = TextColor.color(0xF0, 0x99, 0xEE);
 
+    @Comment("\uD83D\uDD25 Color to represent the unused percent")
     @Key("unused")
     private String unusedString;
     public transient TextColor unused = TextColor.color(0xF0, 0x99, 0xEE);
 
+    @Comment("\uD83D\uDD25 Color to represent the borders of the bar")
     @Key("border")
     private String borderString;
     public transient TextColor border = TextColor.color(0xF0, 0x99, 0xEE);
