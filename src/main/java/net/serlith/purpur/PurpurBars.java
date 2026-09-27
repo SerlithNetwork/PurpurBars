@@ -31,6 +31,8 @@ import net.serlith.purpur.tasks.world.WorldFollowBarTask;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.*;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
 import java.nio.file.Path;
 import java.util.concurrent.Executors;
@@ -38,26 +40,30 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Stream;
 
+@NullMarked
 public final class PurpurBars extends JavaPlugin {
 
-    private static ScheduledExecutorService EXECUTOR = null;
+    private static @Nullable ScheduledExecutorService EXECUTOR = null;
     public static final ErrorTracker ERROR_TRACKER = ErrorTracker.contextAware()
             .ignoreError(NoSuchMethodException.class)
             .ignoreError(NumberFormatException.class);
 
     @Getter
+    @SuppressWarnings("NotNullFieldNotInitialized") // Initialized in API lifecycle
     private static PurpurBars instance;
+
     @Getter
     private static final Component prefix = MiniMessage.miniMessage().deserialize("<gray>[<gradient:#429fff:#d621ff>PurpurBars</gradient>]<gray>");
 
     @Getter
     private final String namespace = "purpurbars";
+
     @Getter
-    private Path storageFolder;
+    private final Path storageFolder;
     @Getter
-    private BossBarRunnable barsTask;
+    private final BossBarRunnable barsTask;
     @Getter
-    private SystemMonitorRunnable systemMonitorRunnable;
+    private final SystemMonitorRunnable systemMonitorRunnable;
 
     @Getter
     private boolean supportsPAPI = false;
@@ -73,10 +79,15 @@ public final class PurpurBars extends JavaPlugin {
             .metrics(dev.faststats.Metrics.Factory::create)
             .create();
 
+    public PurpurBars() {
+        this.storageFolder = this.getDataPath().resolve(".storage");
+        this.barsTask = new BossBarRunnable(this);
+        this.systemMonitorRunnable = new SystemMonitorRunnable();
+    }
+
     @Override
     public void onLoad() {
         instance = this;
-        this.storageFolder = this.getDataPath().resolve(".storage");
         PersistenceDelegateFactoryRegistry.registerFactory(new YamlPersistenceDelegateFactory());
     }
 
@@ -89,9 +100,6 @@ public final class PurpurBars extends JavaPlugin {
 
         new PlayerListener(this);
         new ServerListener(this);
-
-        this.barsTask = new BossBarRunnable(this);
-        this.systemMonitorRunnable = new SystemMonitorRunnable();
 
         if (this.supportsPapiPlaceholders()) {
             PapiConfig.initialize(this);
@@ -143,7 +151,11 @@ public final class PurpurBars extends JavaPlugin {
 
     @Override
     public void onDisable() {
-        EXECUTOR.shutdown();
+        final ScheduledExecutorService executor = EXECUTOR;
+        if (executor != null) {
+            EXECUTOR.shutdown();
+        }
+
         this.barsTask.stop();
         this.faststatsContext.shutdown();
         DataStorage.getInstance().save();
