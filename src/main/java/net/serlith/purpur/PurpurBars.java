@@ -58,6 +58,8 @@ public final class PurpurBars extends JavaPlugin {
     @Getter
     private boolean supportsPWT = false;
     @Getter
+    private boolean supportsFolia = false;
+    @Getter
     private boolean supportsFoliaMetrics = false;
 
 
@@ -97,6 +99,7 @@ public final class PurpurBars extends JavaPlugin {
                 this.barsTask.addTask(new CompatRegionFollowBarTask(this));
                 threads = 2; // Just to prevent the future joins to delay other tasks
             }
+            this.supportsFolia = true;
             extraFeature = "+ Folia";
         } else if (this.supportsParallelWorldTicking()) {
             WorldConfig.initialize(this);
