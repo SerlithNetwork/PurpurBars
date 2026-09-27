@@ -96,7 +96,7 @@ public class RegionConfig extends ConfigurablePojo<RegionConfig> {
 
             @Comment("\uD83D\uDD25 Title to be shown on the TPS bar")
             @Key("title")
-            public String title = "<gray>MSPT<yellow>:</yellow> <mspt> Player<yellow>:</yellow> [<player>] Ping<yellow>:</yellow> <ping>ms";
+            public String title = "<gray>TPS<yellow>:</yellow> <tps> <gray>MSPT<yellow>:</yellow> <mspt> Player<yellow>:</yellow> [<player>]";
 
             @Comment("\uD83D\uDD25 Possible overlays: https://jd.papermc.io/adventure/5.2.0/net.kyori.adventure.api/net/kyori/adventure/bossbar/BossBar.Overlay.html")
             @Key("progress-overlay")
