@@ -96,12 +96,13 @@ public final class PurpurBars extends JavaPlugin {
             new PlayerRegionListener(this);
             if (this.supportsFoliaRegionMetrics()) {
                 this.barsTask.addTask(new RegionFollowBarTask(this));
+                extraFeature = "+ Folia";
             } else {
                 this.barsTask.addTask(new CompatRegionFollowBarTask(this));
                 threads = RegionConfig.getInstance().concurrency.threads; // Just to prevent the future joins to delay other tasks
+                extraFeature = "+ Folia (Compatibility Mode)";
             }
             this.supportsFolia = true;
-            extraFeature = "+ Folia";
         } else if (this.supportsParallelWorldTicking()) {
             WorldConfig.initialize(this);
             new WorldListener(this);
