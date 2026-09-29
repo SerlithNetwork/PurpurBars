@@ -19,6 +19,9 @@ repositories {
     maven("https://repo.extendedclip.com/releases/") {
         name = "extendedclip"
     }
+    maven("https://repo.faststats.dev/releases") {
+        name = "faststatsReleases"
+    }
     maven("https://jitpack.io") {
         name = "jitpack"
     }
@@ -30,9 +33,10 @@ dependencies {
     compileOnly("me.clip:placeholderapi:2.11.6")
     compileOnly("org.jspecify:jspecify:1.0.0")
 
-    implementation("net.serlith.ConfigAPI:ConfigAPI-core:1.2.11")
-    implementation("net.serlith.ConfigAPI:ConfigAPI-adventure:1.2.11")
+    implementation("de.bsommerfeld.jshepherd:core:4.2.0")
+    implementation("de.bsommerfeld.jshepherd:yaml:4.2.0")
     implementation("org.bstats:bstats-bukkit:3.2.1")
+    implementation("dev.faststats.metrics:bukkit:0.30.1")
 }
 
 java {
@@ -44,26 +48,36 @@ tasks {
         // Configure the Minecraft version for our task.
         // This is the only required configuration besides applying the plugin.
         // Your plugin's jar (or shadowJar if present) will be used automatically.
-        minecraftVersion("1.21")
+        minecraftVersion("1.21.11")
         jvmArgs("-Xms2G", "-Xmx2G")
 
         downloadPlugins {
-            modrinth("luckperms", "v5.5.17-bukkit")
-            modrinth("placeholderapi", "2.12.2")
+            modrinth("luckperms", "v5.5.71-bukkit")
+            modrinth("placeholderapi", "2.12.3")
+            modrinth("viaversion", "5.12.0")
         }
     }
 
+    build {
+        dependsOn("shadowJar")
+    }
+
     shadowJar {
-        minimize()
+        minimize() {
+            exclude(dependency("de.bsommerfeld.jshepherd:core"))
+            exclude(dependency("de.bsommerfeld.jshepherd:yaml"))
+        }
         archiveClassifier.set("")
 
         mapOf(
-            "org.bstats" to "metrics",
-            "net.j4c0b3y.api.config" to "config",
-            "dev.dejvokep.boostedyaml" to "boostedyaml",
+            "org.bstats" to "bstats",
+            "dev.faststats" to "faststats",
+            "de.bsommerfeld.jshepherd" to "jshepherd",
         ).forEach { (key, value) ->
             relocate(key, "net.serlith.purpur.libs.$value")
         }
+
+        mergeServiceFiles()
     }
 
     jar {

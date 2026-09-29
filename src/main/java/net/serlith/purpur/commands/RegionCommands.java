@@ -10,7 +10,7 @@ import lombok.experimental.UtilityClass;
 import net.serlith.purpur.PurpurBars;
 import net.serlith.purpur.tasks.region.RegionBarTask;
 import net.serlith.purpur.tasks.region.RegionFollowBarTask;
-import org.bukkit.command.CommandSender;
+import net.serlith.purpur.tasks.region.compat.CompatRegionBarTask;
 import org.bukkit.entity.Player;
 import org.jspecify.annotations.NullMarked;
 
@@ -20,7 +20,7 @@ public class RegionCommands {
 
     public LiteralCommandNode<CommandSourceStack> buildRegionBarCommand() {
         return Commands.literal("regionbar")
-                .requires(s -> PurpurBars.getInstance().isSupportsFoliaTPS() && s.getExecutor() instanceof Player player && player.hasPermission("purpurbars.monitor.region"))
+                .requires(s -> PurpurBars.getInstance().isSupportsFolia() && s.getExecutor() instanceof Player player && player.hasPermission("purpurbars.monitor.region"))
                 .executes(ctx -> {
 
                     Player player = (Player) ctx.getSource().getExecutor();
@@ -40,14 +40,14 @@ public class RegionCommands {
                                 throw new IllegalStateException("Command executor cannot be null");
                             }
 
-                            CommandSender sender = ctx.getSource().getSender();
                             PlayerSelectorArgumentResolver playerResolver = ctx.getArgument("player", PlayerSelectorArgumentResolver.class);
                             Player target = playerResolver.resolve(ctx.getSource()).getFirst();
 
-                            RegionBarTask task = PurpurBars.getInstance().getBarsTask().getRegionBarTask(target);
+                            PurpurBars plugin = PurpurBars.getInstance();
+                            RegionBarTask task = plugin.getBarsTask().getRegionBarTask(target);
                             if (task == null) {
-                                task = new RegionBarTask(PurpurBars.getInstance(), target);
-                                PurpurBars.getInstance().getBarsTask().addRegionTask(target, task);
+                                task = plugin.isSupportsFoliaMetrics() ? new RegionBarTask(plugin, target) : new CompatRegionBarTask(plugin, target);
+                                plugin.getBarsTask().addRegionTask(target, task);
                             }
                             task.togglePlayer(player);
 

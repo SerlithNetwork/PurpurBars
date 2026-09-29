@@ -1,25 +1,29 @@
 package net.serlith.purpur;
 
+import com.google.common.util.concurrent.ThreadFactoryBuilder;
+import de.bsommerfeld.jshepherd.core.PersistenceDelegateFactoryRegistry;
+import de.bsommerfeld.jshepherd.yaml.YamlPersistenceDelegateFactory;
+import dev.faststats.ErrorTracker;
+import dev.faststats.bukkit.BukkitContext;
+import io.papermc.paper.ServerBuildInfo;
 import lombok.Getter;
-import net.j4c0b3y.api.config.ConfigHandler;
-import net.j4c0b3y.api.config.platform.adventure.AdventureConfigHandler;
+import net.kyori.adventure.key.InvalidKeyException;
+import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.serlith.purpur.commands.*;
+import net.serlith.purpur.concurrent.PurpurBarsThread;
 import net.serlith.purpur.configs.PapiConfig;
 import net.serlith.purpur.configs.RegionConfig;
 import net.serlith.purpur.configs.WorldConfig;
 import net.serlith.purpur.configs.RootConfig;
-import net.serlith.purpur.configs.providers.PapiBarEntryProvider;
-import net.serlith.purpur.configs.providers.WorldBarDataProvider;
-import net.serlith.purpur.configs.types.PapiBarEntry;
-import net.serlith.purpur.configs.types.WorldBarData;
 import net.serlith.purpur.data.DataStorage;
 import net.serlith.purpur.hooks.PapiHook;
 import net.serlith.purpur.listeners.*;
 import net.serlith.purpur.schedule.BossBarRunnable;
 import net.serlith.purpur.schedule.SystemMonitorRunnable;
 import net.serlith.purpur.tasks.region.RegionFollowBarTask;
+import net.serlith.purpur.tasks.region.compat.CompatRegionFollowBarTask;
 import net.serlith.purpur.tasks.stats.CompassBarTask;
 import net.serlith.purpur.tasks.stats.RamBarTask;
 import net.serlith.purpur.tasks.stats.TpsBarTask;
@@ -28,94 +32,113 @@ import net.serlith.purpur.tasks.world.WorldFollowBarTask;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.*;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
-import java.io.File;
-import java.util.Arrays;
+import java.nio.file.Path;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Stream;
 
+@NullMarked
 public final class PurpurBars extends JavaPlugin {
 
-    private static ScheduledExecutorService EXECUTOR = null;
+    private static @Nullable ScheduledExecutorService EXECUTOR = null;
+    public static final ErrorTracker ERROR_TRACKER = ErrorTracker.contextAware()
+            .ignoreError(NoSuchMethodException.class)
+            .ignoreError(NumberFormatException.class)
+            .ignoreError(InvalidKeyException.class);
 
     @Getter
+    @SuppressWarnings("NotNullFieldNotInitialized") // Initialized in API lifecycle
     private static PurpurBars instance;
 
     @Getter
+    private static final Component prefix = MiniMessage.miniMessage().deserialize("<gray>[<gradient:#429fff:#d621ff>PurpurBars</gradient>]<gray>");
+
+    @Getter
     private final String namespace = "purpurbars";
+
     @Getter
-    private ConfigHandler configHandler;
+    private final Path storageFolder;
     @Getter
-    private File storageFolder;
+    private final BossBarRunnable barsTask;
     @Getter
-    private BossBarRunnable barsTask;
-    @Getter
-    private SystemMonitorRunnable systemMonitorRunnable;
+    private final SystemMonitorRunnable systemMonitorRunnable;
 
     @Getter
     private boolean supportsPAPI = false;
     @Getter
     private boolean supportsPWT = false;
     @Getter
-    private boolean supportsFoliaTPS = false;
+    private boolean supportsFolia = false;
     @Getter
-    private boolean supportsFoliaMSPT = false;
+    private boolean supportsFoliaMetrics = false;
 
+    private final BukkitContext faststatsContext = new BukkitContext.Factory(this, "d6f408be167b37cc221f32d26a514d6c")
+            .errorTrackerService(ERROR_TRACKER)
+            .metrics(dev.faststats.Metrics.Factory::create)
+            .create();
+
+    public PurpurBars() {
+        this.storageFolder = this.getDataPath().resolve(".storage");
+        this.barsTask = new BossBarRunnable(this);
+        this.systemMonitorRunnable = new SystemMonitorRunnable();
+    }
 
     @Override
     public void onLoad() {
         instance = this;
-
-        this.configHandler = new AdventureConfigHandler(this.getLogger(), MiniMessage.miniMessage().deserialize("<gray>[<gradient:#429fff:#d621ff>PurpurBars</gradient>]<gray>"));
-        this.storageFolder = new File(getDataFolder(), "storage");
-
-        this.configHandler.bind(WorldBarData.class, new WorldBarDataProvider());
-        this.configHandler.bind(PapiBarEntry.class, new PapiBarEntryProvider());
+        PersistenceDelegateFactoryRegistry.registerFactory(new YamlPersistenceDelegateFactory());
     }
 
     @Override
     public void onEnable() {
-        new RootConfig(this).load();
-        new DataStorage(this).load();
+        RootConfig.initialize(this);
+        DataStorage.initialize(this);
         new Metrics(this, 24547);
+        this.faststatsContext.ready();
 
         new PlayerListener(this);
         new ServerListener(this);
 
-        EXECUTOR = Executors.newSingleThreadScheduledExecutor(runnable -> {
-            Thread thread = new Thread(runnable);
-            thread.setName("PurpurBars Worker Thread");
-            thread.setDaemon(false);
-            thread.setPriority(Thread.MIN_PRIORITY);
-            thread.setUncaughtExceptionHandler((t, e) -> {
-                this.getSLF4JLogger().error("Uncaught exception in PurpurBars thread", e);
-            });
-            return thread;
-        });
-        this.barsTask = new BossBarRunnable(this);
-        this.systemMonitorRunnable = new SystemMonitorRunnable();
-
         if (this.supportsPapiPlaceholders()) {
-            new PapiConfig(this).load();
+            PapiConfig.initialize(this);
             new PapiHook(this).register();
             this.getLogger().info("PlaceholderAPI support enabled!");
         }
 
         String extraFeature = "";
-        if (this.supportsFoliaRegions()) {
-            new RegionConfig(this).load();
+        int threads = 1;
+        if (ServerBuildInfo.buildInfo().isBrandCompatible(Key.key("papermc", "folia"))) {
+            RegionConfig.initialize(this);
             new PlayerRegionListener(this);
-            this.barsTask.addTask(new RegionFollowBarTask(this));
-            extraFeature = "+ Folia";
+            if (this.supportsFoliaRegionMetrics()) {
+                this.barsTask.addTask(new RegionFollowBarTask(this));
+                extraFeature = "+ Folia";
+            } else {
+                this.barsTask.addTask(new CompatRegionFollowBarTask(this));
+                threads = RegionConfig.getInstance().concurrency.threads; // Just to prevent the future joins to delay other tasks
+                extraFeature = "+ Folia (Compatibility Mode)";
+            }
+            this.supportsFolia = true;
         } else if (this.supportsParallelWorldTicking()) {
-            new WorldConfig(this).load();
+            WorldConfig.initialize(this);
             new WorldListener(this);
             this.barsTask.addTask(new WorldFollowBarTask(this));
             Bukkit.getWorlds().forEach(world -> this.barsTask.addWorldTask(world, new WorldBarTask(this, world)));
             extraFeature = "+ PWT";
         }
+
+        EXECUTOR = Executors.newScheduledThreadPool(threads, new ThreadFactoryBuilder()
+                .setNameFormat("PurpurBars Worker Thread - %d")
+                .setThreadFactory(PurpurBarsThread::new)
+                .setDaemon(false)
+                .setPriority(Thread.MIN_PRIORITY)
+                .setUncaughtExceptionHandler((t, e) -> this.getSLF4JLogger().error("Uncaught exception in PurpurBars thread", e))
+                .build()
+        );
 
         this.barsTask.addTask(new TpsBarTask(this));
         this.barsTask.addTask(new RamBarTask(this));
@@ -130,9 +153,14 @@ public final class PurpurBars extends JavaPlugin {
 
     @Override
     public void onDisable() {
-        EXECUTOR.shutdown();
+        final ScheduledExecutorService executor = EXECUTOR;
+        if (executor != null) {
+            EXECUTOR.shutdown();
+        }
+
         this.barsTask.stop();
-        DataStorage.INSTANCE.save();
+        this.faststatsContext.shutdown();
+        DataStorage.getInstance().save();
     }
 
 
@@ -159,7 +187,7 @@ public final class PurpurBars extends JavaPlugin {
         try {
             Server.class.getMethod("isParallelWorldTickingEnabled");
             this.getLogger().info("Parallel World Ticking API found, attempting to hook...");
-        } catch (NoSuchMethodException e) {
+        } catch (NoSuchMethodException ignored) {
             return false;
         }
 
@@ -173,7 +201,7 @@ public final class PurpurBars extends JavaPlugin {
         try {
             World.class.getMethod("getAverageTickTime");
             this.supportsPWT = true;
-        } catch (NoSuchMethodException e) {
+        } catch (NoSuchMethodException ignored) {
             this.getLogger().severe("Your server software does not properly implement the Parallel World Ticking API method: World#getAverageTickTime");
             this.getLogger().severe("Contact the author of: " + Bukkit.getName());
             return false;
@@ -182,30 +210,20 @@ public final class PurpurBars extends JavaPlugin {
         return enabled;
     }
 
-    private boolean supportsFoliaRegions() {
-        try {
-            Class.forName("io.papermc.paper.threadedregions.RegionizedServer");
-            this.getLogger().info("Folia API found, attempting to hook...");
-        } catch (ClassNotFoundException e) {
-            return false;
-        }
+    private boolean supportsFoliaRegionMetrics() {
         try {
             Bukkit.class.getMethod("getRegionTPS", Location.class);
-            this.supportsFoliaTPS = true;
-        } catch (NoSuchMethodException e) {
-            this.getLogger().severe("Failed to hook Folia TPS API, you might be running an old unsupported version");
+        } catch (NoSuchMethodException ignored) {
             return false;
         }
 
         try {
             Bukkit.class.getMethod("getRegionAverageTickTimes", Location.class);
-            this.supportsFoliaMSPT = true;
-        } catch (NoSuchMethodException ignore) {
-            this.getLogger().info("Folia MSPT API not found, region MSPT placeholders will not be available");
+        } catch (NoSuchMethodException ignored) {
+            return false;
         }
 
-        this.getLogger().info("Folia support enabled!");
-
+        this.supportsFoliaMetrics = true;
         return true;
     }
 
