@@ -37,41 +37,49 @@ public final class TpsRollingAverage {
     }
 
     public void add(BigDecimal x, long t, BigDecimal total) {
-        this.time -= this.times[this.index];
-        this.total = this.total.subtract(this.samples[this.index].multiply(new BigDecimal(this.times[this.index])));
-        this.samples[this.index] = x;
-        this.times[this.index] = t;
-        this.time += t;
-        this.total = this.total.add(total);
-        if (++this.index == this.size) {
-            this.index = 0;
+        synchronized (this) {
+            this.time -= this.times[this.index];
+            this.total = this.total.subtract(this.samples[this.index].multiply(new BigDecimal(this.times[this.index])));
+            this.samples[this.index] = x;
+            this.times[this.index] = t;
+            this.time += t;
+            this.total = this.total.add(total);
+            if (++this.index == this.size) {
+                this.index = 0;
+            }
         }
     }
 
     public double getAverage() {
-        return this.total.divide(new BigDecimal(this.time), 30, RoundingMode.HALF_UP).doubleValue();
+        synchronized (this) {
+            return this.total.divide(new BigDecimal(this.time), 30, RoundingMode.HALF_UP).doubleValue();
+        }
     }
 
     @SuppressWarnings("DuplicatedCode")
     public double getMin() {
-        BigDecimal min = null;
-        for (BigDecimal sample : this.samples) {
-            if (min == null || sample.compareTo(min) < 0) {
-                min = sample;
+        synchronized (this) {
+            BigDecimal min = null;
+            for (BigDecimal sample : this.samples) {
+                if (min == null || sample.compareTo(min) < 0) {
+                    min = sample;
+                }
             }
+            return min == null ? 0 : min.doubleValue();
         }
-        return min == null ? 0 : min.doubleValue();
     }
 
     @SuppressWarnings("DuplicatedCode")
     public double getMax() {
-        BigDecimal max = null;
-        for (BigDecimal sample : this.samples) {
-            if (max == null || sample.compareTo(max) > 0) {
-                max = sample;
+        synchronized (this) {
+            BigDecimal max = null;
+            for (BigDecimal sample : this.samples) {
+                if (max == null || sample.compareTo(max) > 0) {
+                    max = sample;
+                }
             }
+            return max == null ? 0 : max.doubleValue();
         }
-        return max == null ? 0 : max.doubleValue();
     }
 
     public double getPercentile(double percentile) {
@@ -80,10 +88,12 @@ public final class TpsRollingAverage {
         }
 
         BigDecimal[] sortedSamples;
-        if (this.samples.length == 0) {
-            return 0;
+        synchronized (this) {
+            if (this.samples.length == 0) {
+                return 0;
+            }
+            sortedSamples = this.samples.clone();
         }
-        sortedSamples = this.samples.clone();
         Arrays.sort(sortedSamples);
 
         int rank = (int) Math.ceil(percentile * (sortedSamples.length - 1));
